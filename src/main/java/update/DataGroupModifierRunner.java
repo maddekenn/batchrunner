@@ -6,10 +6,7 @@ import se.uu.ub.cora.bookkeeper.data.converter.JsonToDataConverterFactory;
 import se.uu.ub.cora.bookkeeper.data.converter.JsonToDataConverterFactoryImp;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerImp;
-import se.uu.ub.cora.json.parser.JsonArray;
-import se.uu.ub.cora.json.parser.JsonObject;
-import se.uu.ub.cora.json.parser.JsonParser;
-import se.uu.ub.cora.json.parser.JsonValue;
+import se.uu.ub.cora.json.parser.*;
 import se.uu.ub.cora.json.parser.org.OrgJsonParser;
 
 import java.io.IOException;
@@ -39,13 +36,35 @@ public class DataGroupModifierRunner {
 		JsonObject dataList = (JsonObject) jsonValue.getValue("dataList");
 		JsonArray data =  dataList.getValueAsJsonArray("data");
 		Iterator<JsonValue> iterator = data.iterator();
-
-
+		while(iterator.hasNext()) {
 		JsonToDataConverterFactory jsonToDataConverterFactory = new JsonToDataConverterFactoryImp();
-		JsonToDataConverter jsonToDataConverter = jsonToDataConverterFactory
-				.createForJsonObject(jsonValue);
-		DataGroup dataPart = (DataGroup)jsonToDataConverter.toInstance();
-		System.out.println(dataPart.getNameInData());
+			JsonObject next = (JsonObject) iterator.next();
+			JsonObject record = next.getValueAsJsonObject("record");
+			JsonObject recordData= record.getValueAsJsonObject("data");
+			JsonArray children = recordData.getValueAsJsonArray("children");
+			Iterator<JsonValue> iterator1 = children.iterator();
+			for (JsonValue child : children) {
+				JsonObject objectChild = (JsonObject)child;
+				JsonString name = objectChild.getValueAsJsonString("name");
+				if(name.getStringValue().equals("recordInfo")){
+					for(JsonValue recordInfoChild : objectChild.getValueAsJsonArray("children")){
+						JsonObject recordInfoObjectChild = (JsonObject)recordInfoChild;
+						JsonString name2 = recordInfoObjectChild.getValueAsJsonString("name");
+						if(name2.getStringValue().equals("id")){
+							JsonString nameValue = recordInfoObjectChild.getValueAsJsonString("value");
+							System.out.print(nameValue.getStringValue()+"\n");
+
+						}
+					}
+				}
+			}
+
+//			System.out.println("recordData");
+
+
+		}
+
+//		System.out.println(dataPart.getNameInData());
 //		return (DataGroup) dataPart;
 
 
