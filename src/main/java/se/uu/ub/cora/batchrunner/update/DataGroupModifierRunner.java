@@ -1,4 +1,4 @@
-package update;
+package se.uu.ub.cora.batchrunner.update;
 
 import se.uu.ub.cora.bookkeeper.data.DataGroup;
 import se.uu.ub.cora.bookkeeper.data.converter.JsonToDataConverter;
