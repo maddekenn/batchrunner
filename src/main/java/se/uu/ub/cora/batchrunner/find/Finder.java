@@ -1,16 +1,16 @@
 package se.uu.ub.cora.batchrunner.find;
 
-import se.uu.ub.cora.bookkeeper.data.DataGroup;
-import se.uu.ub.cora.httphandler.HttpHandler;
-import se.uu.ub.cora.spider.record.storage.RecordStorage;
-
 import java.util.Collection;
 
+import se.uu.ub.cora.httphandler.HttpHandlerFactory;
+import se.uu.ub.cora.spider.record.storage.RecordStorage;
+
 public interface Finder {
-    void setRecordStorage(RecordStorage recordStorage);
-    void setUrlString(String url);
+	void setRecordStorage(RecordStorage recordStorage);
 
-    Collection<DataGroup> findRecords();
+	void setUrlString(String url);
 
-    void setHttpHandler(HttpHandler httpHandler);
+	Collection<String> findRecords();
+
+	void setHttpHandlerFactory(HttpHandlerFactory httpHandlerFactorySpy);
 }
