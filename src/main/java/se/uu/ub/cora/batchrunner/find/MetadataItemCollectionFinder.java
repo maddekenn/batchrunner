@@ -60,7 +60,7 @@ public class MetadataItemCollectionFinder implements Finder {
 					}
 				}
 
-				else if ("recordInfo".equals(name.getStringValue())) {
+				else if (name.getStringValue().equals("recordInfo")) {
 					for (JsonValue recordInfoChild : objectChild.getValueAsJsonArray("children")) {
 						JsonObject recordInfoObjectChild = (JsonObject) recordInfoChild;
 						JsonString name2 = recordInfoObjectChild.getValueAsJsonString("name");
