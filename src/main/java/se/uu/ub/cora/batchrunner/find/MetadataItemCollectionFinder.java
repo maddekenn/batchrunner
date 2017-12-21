@@ -13,12 +13,10 @@ import se.uu.ub.cora.json.parser.JsonString;
 import se.uu.ub.cora.json.parser.JsonValue;
 import se.uu.ub.cora.json.parser.org.OrgJsonParser;
 
-public class MetadataItemCollectionFinder implements Finder {
+public class MetadataItemCollectionFinder extends MetadataFinder implements Finder {
 
-	private static final String CHILDREN = "children";
 	private String urlString;
 	private HttpHandlerFactory httpHandlerFactory;
-
 
 	@Override
 	public void setUrlString(String urlString) {
@@ -46,17 +44,6 @@ public class MetadataItemCollectionFinder implements Finder {
 
 		String recordId = getIdFromRecordInfo(children);
 		possiblyAddIdToFoundRecords(ids, recordId, numberOfItemReferences);
-	}
-
-	private JsonArray extractChildrenFromRecordData(JsonValue value) {
-		JsonObject recordData = getDataPartOfRecord(value);
-
-		return recordData.getValueAsJsonArray(CHILDREN);
-	}
-
-	private JsonObject getDataPartOfRecord(JsonValue value) {
-		JsonObject record = ((JsonObject) value).getValueAsJsonObject("record");
-		return record.getValueAsJsonObject("data");
 	}
 
 	private int getNumberOfItemReferences(JsonArray children) {
