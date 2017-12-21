@@ -6,7 +6,6 @@ import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.spider.record.storage.RecordStorage;
 
 public interface Finder {
-	void setRecordStorage(RecordStorage recordStorage);
 
 	void setUrlString(String url);
 

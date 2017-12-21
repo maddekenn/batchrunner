@@ -12,18 +12,12 @@ import se.uu.ub.cora.json.parser.JsonParser;
 import se.uu.ub.cora.json.parser.JsonString;
 import se.uu.ub.cora.json.parser.JsonValue;
 import se.uu.ub.cora.json.parser.org.OrgJsonParser;
-import se.uu.ub.cora.spider.record.storage.RecordStorage;
 
 public class MetadataItemCollectionFinder implements Finder {
 
-	private RecordStorage recordStorage;
 	private String urlString;
 	private HttpHandlerFactory httpHandlerFactory;
 
-	@Override
-	public void setRecordStorage(RecordStorage recordStorage) {
-		this.recordStorage = recordStorage;
-	}
 
 	@Override
 	public void setUrlString(String urlString) {
@@ -40,53 +34,91 @@ public class MetadataItemCollectionFinder implements Finder {
 		List<String> ids = new ArrayList<>();
 		JsonArray data = getDataFromListOfRecords(responseText);
 		for (JsonValue value : data) {
-			JsonObject recordData = getDataPartOFRecord(value);
-
-			JsonArray children = recordData.getValueAsJsonArray("children");
-			String recordId = "";
-			int numberOfItemReferences = 0;
-			for (JsonValue child : children) {
-				JsonObject objectChild = (JsonObject) child;
-				JsonString name = objectChild.getValueAsJsonString("name");
-
-				if ("collectionItemReferences".equals(name.getStringValue())) {
-					for (JsonValue itemRefChild : objectChild.getValueAsJsonArray("children")) {
-						JsonObject itemRefObjectChild = (JsonObject) itemRefChild;
-						JsonString itemRefChildName = itemRefObjectChild
-								.getValueAsJsonString("name");
-						if (itemRefChildName.getStringValue().equals("ref")) {
-							numberOfItemReferences++;
-						}
-					}
-				}
-
-				else if (name.getStringValue().equals("recordInfo")) {
-					for (JsonValue recordInfoChild : objectChild.getValueAsJsonArray("children")) {
-						JsonObject recordInfoObjectChild = (JsonObject) recordInfoChild;
-						JsonString name2 = recordInfoObjectChild.getValueAsJsonString("name");
-						if (name2.getStringValue().equals("id")) {
-							JsonString nameValue = recordInfoObjectChild
-									.getValueAsJsonString("value");
-							recordId = nameValue.getStringValue();
-
-						}
-					}
-				}
-			}
-			if (numberOfItemReferences == 1) {
-				ids.add(recordId);
-			}
-
+			findRecordsWithOneItemReference(ids, value);
 		}
 
 		return ids;
 	}
 
-	private JsonObject getDataPartOFRecord(JsonValue value) {
+	private void findRecordsWithOneItemReference(List<String> ids, JsonValue value) {
+		JsonObject recordData = getDataPartOfRecord(value);
+
+		JsonArray children = recordData.getValueAsJsonArray("children");
+		int numberOfItemReferences = 0;
+		numberOfItemReferences = getNumberOfItemReferences(children, numberOfItemReferences);
+		JsonObject recordInfo = (JsonObject) findChildWithName("recordInfo", children);
+		String recordId = getIdFromRecordInfo(recordInfo);
+		possiblyAddIdToFoundRecords(ids, recordId, numberOfItemReferences);
+	}
+
+	private int getNumberOfItemReferences(JsonArray children, int numberOfItemReferences) {
+		JsonObject collectionItemReferences = (JsonObject) findChildWithName("collectionItemReferences", children);
+		if(collectionItemReferences != null) {
+			numberOfItemReferences = countNumberOfItemReferences(collectionItemReferences);
+		}
+		return numberOfItemReferences;
+	}
+
+
+	private JsonObject getDataPartOfRecord(JsonValue value) {
 		JsonObject record = ((JsonObject) value).getValueAsJsonObject("record");
 		JsonObject recordData = record.getValueAsJsonObject("data");
 		return recordData;
 	}
+
+	private JsonValue findChildWithName(String nameToFind, JsonArray children){
+		for (JsonValue child : children) {
+			JsonObject objectChild = (JsonObject) child;
+			String name = extractNameFromObject(objectChild);
+			if(name.equals(nameToFind)){
+				return objectChild;
+			}
+
+		}
+		return null;
+	}
+
+	private String extractNameFromObject(JsonObject objectChild) {
+		return objectChild.getValueAsJsonString("name").getStringValue();
+	}
+
+	private void possiblyAddIdToFoundRecords(List<String> ids, String recordId, int numberOfItemReferences) {
+		if (numberOfItemReferences == 1) {
+            ids.add(recordId);
+        }
+	}
+
+	private String getIdFromRecordInfo(JsonObject objectChild) {
+		String recordId = "";
+		for (JsonValue recordInfoChild : objectChild.getValueAsJsonArray("children")) {
+            JsonObject recordInfoObjectChild = (JsonObject) recordInfoChild;
+            String name = extractNameFromObject(recordInfoObjectChild);
+            if (name.equals("id")) {
+				recordId = extractValueFromObject(recordInfoObjectChild);
+            }
+        }
+		return recordId;
+	}
+
+
+	private String extractValueFromObject(JsonObject recordInfoObjectChild) {
+		JsonString nameValue = recordInfoObjectChild
+                .getValueAsJsonString("value");
+		return nameValue.getStringValue();
+	}
+
+	private int countNumberOfItemReferences(JsonObject objectChild) {
+		int numberOfItemReferences = 0;
+		for (JsonValue itemRefChild : objectChild.getValueAsJsonArray("children")) {
+            JsonObject itemRefObjectChild = (JsonObject) itemRefChild;
+            String itemRefChildName = extractNameFromObject(itemRefObjectChild);
+            if (itemRefChildName.equals("ref")) {
+                numberOfItemReferences++;
+            }
+        }
+		return numberOfItemReferences;
+	}
+
 
 	private JsonArray getDataFromListOfRecords(String responseText) {
 		JsonParser jsonParser = new OrgJsonParser();

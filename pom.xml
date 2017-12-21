@@ -19,10 +19,8 @@
 
     <properties>
         <json.version>0.3-SNAPSHOT</json.version>
-        <bookkeeper.version>0.10-SNAPSHOT</bookkeeper.version>
         <httphandler.version>0.2-SNAPSHOT</httphandler.version>
         <spider.version>0.14-SNAPSHOT</spider.version>
-        <basicstorage.version>0.5-SNAPSHOT</basicstorage.version>
         <!--<javax.ws.rs.version>2.0.1</javax.ws.rs.version>-->
         <!--<jersey.version>2.23.2</jersey.version>-->
     </properties>
@@ -45,11 +43,6 @@
     <dependencies>
         <dependency>
             <groupId>se.uu.ub.cora</groupId>
-            <artifactId>bookkeeper</artifactId>
-            <version>${bookkeeper.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>se.uu.ub.cora</groupId>
             <artifactId>json</artifactId>
             <version>${json.version}</version>
         </dependency>
@@ -67,21 +60,9 @@
         </dependency>
         <dependency>
             <groupId>se.uu.ub.cora</groupId>
-            <artifactId>httphandler</artifactId>
-            <version>${httphandler.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>se.uu.ub.cora</groupId>
             <artifactId>spider</artifactId>
             <version>${spider.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>se.uu.ub.cora</groupId>
-            <artifactId>basicstorage</artifactId>
-            <version>${basicstorage.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -1,14 +1,13 @@
 package se.uu.ub.cora.batchrunner.find;
 
+import se.uu.ub.cora.httphandler.HttpHandlerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-import se.uu.ub.cora.spider.record.storage.RecordStorage;
-
-public class FinderSpy implements Finder {
+public class FinderNoRecordsSpy implements Finder {
 	boolean findRecordCalled = false;
 	public String url;
 
@@ -21,10 +20,7 @@ public class FinderSpy implements Finder {
 	@Override
 	public Collection<String> findRecords() {
 		findRecordCalled = true;
-		String id = "someId";
-		List<String> ids = new ArrayList<>();
-		ids.add(id);
-		return ids;
+		return Collections.emptyList();
 	}
 
 	@Override

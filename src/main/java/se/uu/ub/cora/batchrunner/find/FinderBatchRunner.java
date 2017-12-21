@@ -4,8 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import se.uu.ub.cora.spider.record.storage.RecordStorage;
-import se.uu.ub.cora.storage.RecordStorageOnDisk;
+import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class FinderBatchRunner {
 
@@ -20,23 +19,32 @@ public class FinderBatchRunner {
 		String basePath = args[0];
 		String finderClassName = args[1];
 		String url = args[2];
-		RecordStorage recordStorage = RecordStorageOnDisk
-				.createRecordStorageOnDiskWithBasePath(basePath);
+		String httpFactoryClassName = args[3];
 
-		Constructor<?> constructor = Class.forName(finderClassName).getConstructor();
-		finder = (Finder) constructor.newInstance();
-		finder.setRecordStorage(recordStorage);
-		finder.setUrlString(url);
+		createFinder(finderClassName, url, httpFactoryClassName);
+
 		Collection<String> records = finder.findRecords();
 
-		for (String record : records) {
-			// DataGroup recordInfo =
-			// record.getFirstGroupWithNameInData("recordInfo");
-			// System.out.println(recordInfo.getFirstAtomicValueWithNameInData("id"));
-			System.out.println(record);
-		}
+		records.forEach(System.out::println);
 
 		System.out.println("done");
 
+	}
+
+	private static void createFinder(String finderClassName, String url, String httpFactoryClassName) throws NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		constructFinder(finderClassName);
+		finder.setUrlString(url);
+		setHttpFactoryInFinder(httpFactoryClassName);
+	}
+
+	private static void constructFinder(String finderClassName) throws NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		Constructor<?> constructor = Class.forName(finderClassName).getConstructor();
+		finder = (Finder) constructor.newInstance();
+	}
+
+	private static void setHttpFactoryInFinder(String httpFactoryClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+		Constructor<?> constructor = Class.forName(httpFactoryClassName).getConstructor();
+		HttpHandlerFactory httpFactory = (HttpHandlerFactory) constructor.newInstance();
+		finder.setHttpHandlerFactory(httpFactory);
 	}
 }
