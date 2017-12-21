@@ -29,7 +29,5 @@ public class FinderSpy implements Finder {
 
 	@Override
 	public void setHttpHandlerFactory(HttpHandlerFactory httpHandlerFactorySpy) {
-		// TODO Auto-generated method stub
-
 	}
 }

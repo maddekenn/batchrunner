@@ -15,6 +15,7 @@ import se.uu.ub.cora.json.parser.org.OrgJsonParser;
 
 public class MetadataItemCollectionFinder implements Finder {
 
+	private static final String CHILDREN = "children";
 	private String urlString;
 	private HttpHandlerFactory httpHandlerFactory;
 
@@ -28,7 +29,6 @@ public class MetadataItemCollectionFinder implements Finder {
 	public Collection<String> findRecords() {
 		HttpHandler httpHandler = httpHandlerFactory.factor(urlString);
 		httpHandler.setRequestMethod("GET");
-		int responseCode = httpHandler.getResponseCode();
 		String responseText = httpHandler.getResponseText();
 
 		List<String> ids = new ArrayList<>();
@@ -41,17 +41,26 @@ public class MetadataItemCollectionFinder implements Finder {
 	}
 
 	private void findRecordsWithOneItemReference(List<String> ids, JsonValue value) {
-		JsonObject recordData = getDataPartOfRecord(value);
+		JsonArray children = extractChildrenFromRecordData(value);
+		int numberOfItemReferences = getNumberOfItemReferences(children);
 
-		JsonArray children = recordData.getValueAsJsonArray("children");
-		int numberOfItemReferences = 0;
-		numberOfItemReferences = getNumberOfItemReferences(children, numberOfItemReferences);
-		JsonObject recordInfo = (JsonObject) findChildWithName("recordInfo", children);
-		String recordId = getIdFromRecordInfo(recordInfo);
+		String recordId = getIdFromRecordInfo(children);
 		possiblyAddIdToFoundRecords(ids, recordId, numberOfItemReferences);
 	}
 
-	private int getNumberOfItemReferences(JsonArray children, int numberOfItemReferences) {
+	private JsonArray extractChildrenFromRecordData(JsonValue value) {
+		JsonObject recordData = getDataPartOfRecord(value);
+
+		return recordData.getValueAsJsonArray(CHILDREN);
+	}
+
+	private JsonObject getDataPartOfRecord(JsonValue value) {
+		JsonObject record = ((JsonObject) value).getValueAsJsonObject("record");
+		return record.getValueAsJsonObject("data");
+	}
+
+	private int getNumberOfItemReferences(JsonArray children) {
+		int numberOfItemReferences = 0;
 		JsonObject collectionItemReferences = (JsonObject) findChildWithName("collectionItemReferences", children);
 		if(collectionItemReferences != null) {
 			numberOfItemReferences = countNumberOfItemReferences(collectionItemReferences);
@@ -59,11 +68,9 @@ public class MetadataItemCollectionFinder implements Finder {
 		return numberOfItemReferences;
 	}
 
-
-	private JsonObject getDataPartOfRecord(JsonValue value) {
-		JsonObject record = ((JsonObject) value).getValueAsJsonObject("record");
-		JsonObject recordData = record.getValueAsJsonObject("data");
-		return recordData;
+	private String getIdFromRecordInfo(JsonArray children) {
+		JsonObject recordInfo = (JsonObject) findChildWithName("recordInfo", children);
+		return getIdFromRecordInfo(recordInfo);
 	}
 
 	private JsonValue findChildWithName(String nameToFind, JsonArray children){
@@ -90,10 +97,10 @@ public class MetadataItemCollectionFinder implements Finder {
 
 	private String getIdFromRecordInfo(JsonObject objectChild) {
 		String recordId = "";
-		for (JsonValue recordInfoChild : objectChild.getValueAsJsonArray("children")) {
+		for (JsonValue recordInfoChild : objectChild.getValueAsJsonArray(CHILDREN)) {
             JsonObject recordInfoObjectChild = (JsonObject) recordInfoChild;
             String name = extractNameFromObject(recordInfoObjectChild);
-            if (name.equals("id")) {
+			if ("id".equals(name)) {
 				recordId = extractValueFromObject(recordInfoObjectChild);
             }
         }
@@ -109,10 +116,10 @@ public class MetadataItemCollectionFinder implements Finder {
 
 	private int countNumberOfItemReferences(JsonObject objectChild) {
 		int numberOfItemReferences = 0;
-		for (JsonValue itemRefChild : objectChild.getValueAsJsonArray("children")) {
+		for (JsonValue itemRefChild : objectChild.getValueAsJsonArray(CHILDREN)) {
             JsonObject itemRefObjectChild = (JsonObject) itemRefChild;
             String itemRefChildName = extractNameFromObject(itemRefObjectChild);
-            if (itemRefChildName.equals("ref")) {
+            if ("ref".equals(itemRefChildName)) {
                 numberOfItemReferences++;
             }
         }
@@ -124,8 +131,7 @@ public class MetadataItemCollectionFinder implements Finder {
 		JsonParser jsonParser = new OrgJsonParser();
 		JsonObject jsonValue = jsonParser.parseStringAsObject(responseText);
 		JsonObject dataList = (JsonObject) jsonValue.getValue("dataList");
-		JsonArray data = dataList.getValueAsJsonArray("data");
-		return data;
+		return dataList.getValueAsJsonArray("data");
 	}
 
 	@Override
