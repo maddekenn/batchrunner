@@ -29,16 +29,20 @@ public class MetadataItemCollectionFinder extends MetadataFinder implements Find
 		httpHandler.setRequestMethod("GET");
 		String responseText = httpHandler.getResponseText();
 
+		return getRecordsWithOneItemReferenceFromResponse(responseText);
+
+	}
+
+	private List<String> getRecordsWithOneItemReferenceFromResponse(String responseText) {
 		List<String> ids = new ArrayList<>();
 		JsonArray data = getDataFromListOfRecords(responseText);
 		for (JsonValue value : data) {
-			findRecordsWithOneItemReference(ids, value);
+			getRecordsWithOneItemReference(ids, value);
 		}
-
 		return ids;
 	}
 
-	private void findRecordsWithOneItemReference(List<String> ids, JsonValue value) {
+	private void getRecordsWithOneItemReference(List<String> ids, JsonValue value) {
 		JsonArray children = extractChildrenFromRecordData(value);
 		int numberOfItemReferences = getNumberOfItemReferences(children);
 
@@ -82,18 +86,11 @@ public class MetadataItemCollectionFinder extends MetadataFinder implements Find
         }
 	}
 
-	private String getIdFromRecordInfo(JsonObject objectChild) {
-		String recordId = "";
-		for (JsonValue recordInfoChild : objectChild.getValueAsJsonArray(CHILDREN)) {
-            JsonObject recordInfoObjectChild = (JsonObject) recordInfoChild;
-            String name = extractNameFromObject(recordInfoObjectChild);
-			if ("id".equals(name)) {
-				recordId = extractValueFromObject(recordInfoObjectChild);
-            }
-        }
-		return recordId;
+	private String getIdFromRecordInfo(JsonObject recordInfo) {
+		JsonArray children = recordInfo.getValueAsJsonArray(CHILDREN);
+		JsonObject idChild = (JsonObject) findChildWithName("id", children);
+		return extractValueFromObject(idChild);
 	}
-
 
 	private String extractValueFromObject(JsonObject recordInfoObjectChild) {
 		JsonString nameValue = recordInfoObjectChild
@@ -105,10 +102,15 @@ public class MetadataItemCollectionFinder extends MetadataFinder implements Find
 		int numberOfItemReferences = 0;
 		for (JsonValue itemRefChild : objectChild.getValueAsJsonArray(CHILDREN)) {
             JsonObject itemRefObjectChild = (JsonObject) itemRefChild;
-            String itemRefChildName = extractNameFromObject(itemRefObjectChild);
-            if ("ref".equals(itemRefChildName)) {
-                numberOfItemReferences++;
-            }
+			numberOfItemReferences = countItemReferenceIfMatch(numberOfItemReferences, itemRefObjectChild);
+        }
+		return numberOfItemReferences;
+	}
+
+	private int countItemReferenceIfMatch(int numberOfItemReferences, JsonObject itemRefObjectChild) {
+		String itemRefChildName = extractNameFromObject(itemRefObjectChild);
+		if ("ref".equals(itemRefChildName)) {
+            numberOfItemReferences++;
         }
 		return numberOfItemReferences;
 	}
