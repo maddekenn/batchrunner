@@ -40,11 +40,9 @@ public class HttpHandlerFactorySpy implements HttpHandlerFactory {
 		try {
 			URL url = new URL(urlString);
 			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-			// if (factorValid) {
 			httpHandlerSpy = HttpHandlerSpy.usingURLConnection(urlConnection);
 			httpHandlerSpy.responseCode = responseCode;
 			return httpHandlerSpy;
-			// }
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

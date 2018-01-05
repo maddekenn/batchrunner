@@ -13,7 +13,7 @@ import se.uu.ub.cora.json.parser.JsonString;
 import se.uu.ub.cora.json.parser.JsonValue;
 import se.uu.ub.cora.json.parser.org.OrgJsonParser;
 
-public class MetadataItemCollectionFinder extends MetadataFinder implements Finder {
+public class MetadataItemCollectionOneReferenceFinder extends MetadataFinder implements Finder {
 
 	private String urlString;
 	private HttpHandlerFactory httpHandlerFactory;
@@ -59,43 +59,10 @@ public class MetadataItemCollectionFinder extends MetadataFinder implements Find
 		return numberOfItemReferences;
 	}
 
-	private String getIdFromRecordInfo(JsonArray children) {
-		JsonObject recordInfo = (JsonObject) findChildWithName("recordInfo", children);
-		return getIdFromRecordInfo(recordInfo);
-	}
-
-	private JsonValue findChildWithName(String nameToFind, JsonArray children){
-		for (JsonValue child : children) {
-			JsonObject objectChild = (JsonObject) child;
-			String name = extractNameFromObject(objectChild);
-			if(name.equals(nameToFind)){
-				return objectChild;
-			}
-
-		}
-		return null;
-	}
-
-	private String extractNameFromObject(JsonObject objectChild) {
-		return objectChild.getValueAsJsonString("name").getStringValue();
-	}
-
 	private void possiblyAddIdToFoundRecords(List<String> ids, String recordId, int numberOfItemReferences) {
 		if (numberOfItemReferences == 1) {
             ids.add(recordId);
         }
-	}
-
-	private String getIdFromRecordInfo(JsonObject recordInfo) {
-		JsonArray children = recordInfo.getValueAsJsonArray(CHILDREN);
-		JsonObject idChild = (JsonObject) findChildWithName("id", children);
-		return extractValueFromObject(idChild);
-	}
-
-	private String extractValueFromObject(JsonObject recordInfoObjectChild) {
-		JsonString nameValue = recordInfoObjectChild
-                .getValueAsJsonString("value");
-		return nameValue.getStringValue();
 	}
 
 	private int countNumberOfItemReferences(JsonObject objectChild) {
@@ -113,14 +80,6 @@ public class MetadataItemCollectionFinder extends MetadataFinder implements Find
             numberOfItemReferences++;
         }
 		return numberOfItemReferences;
-	}
-
-
-	private JsonArray getDataFromListOfRecords(String responseText) {
-		JsonParser jsonParser = new OrgJsonParser();
-		JsonObject jsonValue = jsonParser.parseStringAsObject(responseText);
-		JsonObject dataList = (JsonObject) jsonValue.getValue("dataList");
-		return dataList.getValueAsJsonArray("data");
 	}
 
 	@Override
