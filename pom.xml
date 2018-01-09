@@ -21,7 +21,7 @@
         <json.version>0.3-SNAPSHOT</json.version>
         <httphandler.version>0.2-SNAPSHOT</httphandler.version>
         <spider.version>0.14-SNAPSHOT</spider.version>
-        <!--<javax.ws.rs.version>2.0.1</javax.ws.rs.version>-->
+        <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <!--<jersey.version>2.23.2</jersey.version>-->
     </properties>
 
@@ -64,6 +64,12 @@
             <version>${spider.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${javax.ws.rs.version}</version>
+			<scope>compile</scope>
+		</dependency>
     </dependencies>
 
 
