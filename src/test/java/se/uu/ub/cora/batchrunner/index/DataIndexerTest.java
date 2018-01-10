@@ -26,7 +26,7 @@ public class DataIndexerTest {
 	}
 
 	@Test
-	public void testInit() {
+	public void testHttpHandlerProperties() {
 		List<String> idsToIndex = new ArrayList<>();
 		idsToIndex.add("firstText");
 		idsToIndex.add("secondText");
@@ -40,10 +40,30 @@ public class DataIndexerTest {
 		assertEquals(httpHandlerSpy.requestProperties.size(), 2);
 		assertEquals(httpHandlerFactorySpy.urlString,
 				"http://localhost:8080/therest/rest/record/workOrder?authToken=someToken");
+
+	}
+
+	@Test
+	public void testSentJson() {
+		List<String> idsToIndex = new ArrayList<>();
+		idsToIndex.add("firstText");
+		idsToIndex.add("secondText");
+		indexer.indexDataWithRecordTypeAndIdsToIndex("someRecordType", idsToIndex);
+		HttpHandlerSpy httpHandlerSpy = httpHandlerFactorySpy.httpHandlerSpy;
 		assertEquals(httpHandlerSpy.outputStrings.get(0),
 				"{\"name\":\"workOrder\",\"children\":[{\"name\":\"recordType\",\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"someRecordType\"}]},{\"name\":\"recordId\",\"value\":\"firstText\"},{\"name\":\"type\",\"value\":\"index\"}]}");
 		assertEquals(httpHandlerSpy.outputStrings.get(1),
 				"{\"name\":\"workOrder\",\"children\":[{\"name\":\"recordType\",\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"someRecordType\"}]},{\"name\":\"recordId\",\"value\":\"secondText\"},{\"name\":\"type\",\"value\":\"index\"}]}");
+
+	}
+
+	@Test
+	public void testResponse() {
+		List<String> idsToIndex = new ArrayList<>();
+		idsToIndex.add("firstText");
+		idsToIndex.add("secondText");
+		indexer.indexDataWithRecordTypeAndIdsToIndex("someRecordType", idsToIndex);
+		HttpHandlerSpy httpHandlerSpy = httpHandlerFactorySpy.httpHandlerSpy;
 
 	}
 }
