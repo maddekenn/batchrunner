@@ -1,17 +1,17 @@
 package se.uu.ub.cora.batchrunner.find;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-import se.uu.ub.cora.json.parser.JsonParseException;
+import static org.testng.Assert.assertEquals;
 
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import se.uu.ub.cora.json.parser.JsonParseException;
 
 public class RecordFinderTest {
 	private RecordFinder finder;
-	private	HttpHandlerFactorySpy httpHandlerFactorySpy;
+	private HttpHandlerFactorySpy httpHandlerFactorySpy;
 
 	@BeforeMethod
 	public void setUp() {

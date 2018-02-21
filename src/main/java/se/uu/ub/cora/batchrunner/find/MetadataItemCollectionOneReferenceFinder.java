@@ -8,10 +8,7 @@ import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.json.parser.JsonArray;
 import se.uu.ub.cora.json.parser.JsonObject;
-import se.uu.ub.cora.json.parser.JsonParser;
-import se.uu.ub.cora.json.parser.JsonString;
 import se.uu.ub.cora.json.parser.JsonValue;
-import se.uu.ub.cora.json.parser.org.OrgJsonParser;
 
 public class MetadataItemCollectionOneReferenceFinder extends MetadataFinder implements Finder {
 
@@ -52,33 +49,37 @@ public class MetadataItemCollectionOneReferenceFinder extends MetadataFinder imp
 
 	private int getNumberOfItemReferences(JsonArray children) {
 		int numberOfItemReferences = 0;
-		JsonObject collectionItemReferences = (JsonObject) findChildWithName("collectionItemReferences", children);
-		if(collectionItemReferences != null) {
+		JsonObject collectionItemReferences = (JsonObject) findChildWithName(
+				"collectionItemReferences", children);
+		if (collectionItemReferences != null) {
 			numberOfItemReferences = countNumberOfItemReferences(collectionItemReferences);
 		}
 		return numberOfItemReferences;
 	}
 
-	private void possiblyAddIdToFoundRecords(List<String> ids, String recordId, int numberOfItemReferences) {
+	private void possiblyAddIdToFoundRecords(List<String> ids, String recordId,
+			int numberOfItemReferences) {
 		if (numberOfItemReferences == 1) {
-            ids.add(recordId);
-        }
+			ids.add(recordId);
+		}
 	}
 
 	private int countNumberOfItemReferences(JsonObject objectChild) {
 		int numberOfItemReferences = 0;
 		for (JsonValue itemRefChild : objectChild.getValueAsJsonArray(CHILDREN)) {
-            JsonObject itemRefObjectChild = (JsonObject) itemRefChild;
-			numberOfItemReferences = countItemReferenceIfMatch(numberOfItemReferences, itemRefObjectChild);
-        }
+			JsonObject itemRefObjectChild = (JsonObject) itemRefChild;
+			numberOfItemReferences = countItemReferenceIfMatch(numberOfItemReferences,
+					itemRefObjectChild);
+		}
 		return numberOfItemReferences;
 	}
 
-	private int countItemReferenceIfMatch(int numberOfItemReferences, JsonObject itemRefObjectChild) {
+	private int countItemReferenceIfMatch(int numberOfItemReferences,
+			JsonObject itemRefObjectChild) {
 		String itemRefChildName = extractNameFromObject(itemRefObjectChild);
 		if ("ref".equals(itemRefChildName)) {
-            numberOfItemReferences++;
-        }
+			numberOfItemReferences++;
+		}
 		return numberOfItemReferences;
 	}
 

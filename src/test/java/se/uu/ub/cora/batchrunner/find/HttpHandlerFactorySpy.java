@@ -25,6 +25,7 @@ import java.net.URL;
 
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
+import se.uu.ub.cora.httphandler.HttpMultiPartUploader;
 
 public class HttpHandlerFactorySpy implements HttpHandlerFactory {
 
@@ -55,6 +56,12 @@ public class HttpHandlerFactorySpy implements HttpHandlerFactory {
 	public void setResponseCode(int responseCode) {
 		this.responseCode = responseCode;
 
+	}
+
+	@Override
+	public HttpMultiPartUploader factorHttpMultiPartUploader(String url) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
