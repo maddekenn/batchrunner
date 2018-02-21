@@ -88,4 +88,5 @@ public class MetadataItemCollectionOneReferenceFinder extends MetadataFinder imp
 		this.httpHandlerFactory = httpHandlerFactory;
 
 	}
+
 }

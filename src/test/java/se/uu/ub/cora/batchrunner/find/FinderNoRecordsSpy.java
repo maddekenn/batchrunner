@@ -1,16 +1,13 @@
 package se.uu.ub.cora.batchrunner.find;
 
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+
+import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class FinderNoRecordsSpy implements Finder {
 	boolean findRecordCalled = false;
 	public String url;
-
 
 	@Override
 	public void setUrlString(String url) {
