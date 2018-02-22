@@ -7,7 +7,7 @@ import java.util.List;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class FinderSpy implements Finder {
-	boolean findRecordCalled = false;
+	public boolean findRecordsCalled = false;
 	public String url;
 
 	@Override
@@ -17,7 +17,7 @@ public class FinderSpy implements Finder {
 
 	@Override
 	public Collection<String> findRecords() {
-		findRecordCalled = true;
+		findRecordsCalled = true;
 		String id = "someId";
 		List<String> ids = new ArrayList<>();
 		ids.add(id);

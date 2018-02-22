@@ -52,7 +52,7 @@ public class HttpHandlerSpy implements HttpHandler {
 
 	@Override
 	public int getResponseCode() {
-		return 0;
+		return responseCode;
 	}
 
 	@Override

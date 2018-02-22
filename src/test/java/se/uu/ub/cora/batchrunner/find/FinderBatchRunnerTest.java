@@ -29,7 +29,7 @@ public class FinderBatchRunnerTest {
 
         FinderBatchRunner.main(args);
         FinderSpy finderSpy = (FinderSpy) FinderBatchRunner.finder;
-        assertTrue(finderSpy.findRecordCalled);
+        assertTrue(finderSpy.findRecordsCalled);
         assertEquals(finderSpy.url, "http://localhost:8080/therest/rest/record/recordType");
     }
 
