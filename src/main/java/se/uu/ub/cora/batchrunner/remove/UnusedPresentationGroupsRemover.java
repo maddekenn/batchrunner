@@ -22,6 +22,7 @@ public class UnusedPresentationGroupsRemover implements Remover {
 	public List<String> removeRecordsFoundByFinder() {
 		Collection<String> foundRecords = finder.findRecords();
 		for (String id : foundRecords) {
+			System.out.println(id);
 			HttpHandler httpHandler = httpHandlerFactory.factor(urlString + "/" + id);
 			httpHandler.setRequestMethod("DELETE");
 			Status statusType = Response.Status.fromStatusCode(httpHandler.getResponseCode());

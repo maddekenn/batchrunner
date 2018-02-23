@@ -39,7 +39,7 @@ public class UnusedPresentationGroupFinder extends MetadataFinder implements Fin
 
 	private void possiblyAddPresentationGroupIdToFoundRecords(List<String> ids, JsonValue value) {
 		JsonObject record = ((JsonObject) value).getValueAsJsonObject("record");
-		if (recordIsReferedToFromOtherRecords(record)) {
+		if (!recordIsReferedToFromOtherRecords(record)) {
 			addPresentationGroupIdToFoundRecords(ids, value);
 		}
 	}

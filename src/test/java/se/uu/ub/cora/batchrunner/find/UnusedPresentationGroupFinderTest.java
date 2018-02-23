@@ -25,6 +25,6 @@ public class UnusedPresentationGroupFinderTest {
 		List<String> ids = (List<String>) finder.findRecords();
 		assertEquals(httpHandlerFactorySpy.httpHandlerSpy.requestMethod, "GET");
 		assertEquals(ids.size(), 1);
-		assertEquals(ids.get(0), "collectTermListPGroup");
+		assertEquals(ids.get(0), "presentationGroupWithoutLinksPGroup");
 	}
 }
