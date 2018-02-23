@@ -16,7 +16,6 @@ public class FinderBatchRunner {
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException, InstantiationException {
-		String basePath = args[0];
 		String finderClassName = args[1];
 		String url = args[2];
 		String httpFactoryClassName = args[3];
@@ -31,18 +30,24 @@ public class FinderBatchRunner {
 
 	}
 
-	private static void createFinder(String finderClassName, String url, String httpFactoryClassName) throws NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	private static void createFinder(String finderClassName, String url,
+			String httpFactoryClassName) throws NoSuchMethodException, ClassNotFoundException,
+			InstantiationException, IllegalAccessException, InvocationTargetException {
 		constructFinder(finderClassName);
 		finder.setUrlString(url);
 		setHttpFactoryInFinder(httpFactoryClassName);
 	}
 
-	private static void constructFinder(String finderClassName) throws NoSuchMethodException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	private static void constructFinder(String finderClassName)
+			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
 		Constructor<?> constructor = Class.forName(finderClassName).getConstructor();
 		finder = (Finder) constructor.newInstance();
 	}
 
-	private static void setHttpFactoryInFinder(String httpFactoryClassName) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+	private static void setHttpFactoryInFinder(String httpFactoryClassName)
+			throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
 		Constructor<?> constructor = Class.forName(httpFactoryClassName).getConstructor();
 		HttpHandlerFactory httpFactory = (HttpHandlerFactory) constructor.newInstance();
 		finder.setHttpHandlerFactory(httpFactory);
