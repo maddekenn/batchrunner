@@ -7,12 +7,13 @@ import java.util.List;
 import se.uu.ub.cora.batchrunner.find.Finder;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class PresentationGroupFinderSpy implements Finder {
+public class PresentationsFinderSpy implements Finder {
 	public boolean findRecordsCalled = false;
+	public String urlString;
 
 	@Override
-	public void setUrlString(String url) {
-		// TODO Auto-generated method stub
+	public void setUrlString(String urlString) {
+		this.urlString = urlString;
 
 	}
 
@@ -20,7 +21,7 @@ public class PresentationGroupFinderSpy implements Finder {
 	public Collection<String> findRecords() {
 		findRecordsCalled = true;
 		List<String> ids = new ArrayList<>();
-		ids.add("unusedPresentationPGroup");
+		ids.add("unusedPresentation");
 		return ids;
 	}
 

@@ -9,22 +9,21 @@ import org.testng.annotations.Test;
 
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerSpy;
-import se.uu.ub.cora.batchrunner.remove.UnusedPresentationGroupsRemover;
 
 public class UnusedPresentationGroupsRemoverTest {
-	UnusedPresentationGroupsRemover remover;
+	UnusedPresentationsRemover remover;
 	HttpHandlerFactorySpy httpHandlerFactory;
-	PresentationGroupFinderSpy presentationGroupFinder;
+	PresentationsFinderSpy presentationsFinder;
 	private String urlString;
 
 	@BeforeMethod
 	public void setUp() {
 		httpHandlerFactory = new HttpHandlerFactorySpy();
-		presentationGroupFinder = new PresentationGroupFinderSpy();
+		presentationsFinder = new PresentationsFinderSpy();
 		urlString = "http://localhost:8080/presentationGroup";
 
-		remover = new UnusedPresentationGroupsRemover();
-		remover.setFinder(presentationGroupFinder);
+		remover = new UnusedPresentationsRemover();
+		remover.setFinder(presentationsFinder);
 		remover.setHttpHandlerFactory(httpHandlerFactory);
 		remover.setUrlString(urlString);
 
@@ -37,8 +36,10 @@ public class UnusedPresentationGroupsRemoverTest {
 
 		HttpHandlerSpy httpHandlerSpy = httpHandlerFactory.httpHandlerSpy;
 		assertEquals(httpHandlerSpy.requestMethod, "DELETE");
-		assertEquals(httpHandlerSpy.urlString, urlString + "/unusedPresentationPGroup");
+		assertEquals(httpHandlerSpy.urlString, urlString + "/unusedPresentation");
 		assertEquals(httpHandlerSpy.requestProperties.size(), 0);
+		assertEquals(httpHandlerSpy.urlString,
+				"http://localhost:8080/presentationGroup/unusedPresentation");
 	}
 
 	@Test
@@ -46,6 +47,22 @@ public class UnusedPresentationGroupsRemoverTest {
 		httpHandlerFactory.setResponseCode(401);
 		List<String> removedIds = remover.removeRecordsFoundByFinder();
 		assertEquals(removedIds.size(), 0);
+	}
+
+	@Test
+	private void testRemoveUnusedPresentationVars() {
+		urlString = "http://localhost:8080/presentationVar";
+		remover.setUrlString(urlString);
+
+		List<String> removedIds = remover.removeRecordsFoundByFinder();
+		assertEquals(removedIds.size(), 1);
+
+		HttpHandlerSpy httpHandlerSpy = httpHandlerFactory.httpHandlerSpy;
+		assertEquals(httpHandlerSpy.requestMethod, "DELETE");
+		assertEquals(httpHandlerSpy.urlString, urlString + "/unusedPresentation");
+		assertEquals(httpHandlerSpy.requestProperties.size(), 0);
+		assertEquals(httpHandlerSpy.urlString,
+				"http://localhost:8080/presentationVar/unusedPresentation");
 	}
 
 }

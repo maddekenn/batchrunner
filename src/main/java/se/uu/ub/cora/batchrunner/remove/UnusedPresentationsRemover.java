@@ -11,7 +11,7 @@ import se.uu.ub.cora.batchrunner.find.Finder;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class UnusedPresentationGroupsRemover implements Remover {
+public class UnusedPresentationsRemover implements Remover {
 
 	private HttpHandlerFactory httpHandlerFactory;
 	private String urlString;
