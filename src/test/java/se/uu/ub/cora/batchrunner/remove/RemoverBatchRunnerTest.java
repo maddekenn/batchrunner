@@ -25,7 +25,7 @@ public class RemoverBatchRunnerTest {
 	public void testMainMethod() throws ClassNotFoundException, NoSuchMethodException,
 			InvocationTargetException, InstantiationException, IllegalAccessException {
 		String args[] = new String[] { "se.uu.ub.cora.batchrunner.remove.RemoverSpy",
-				"se.uu.ub.cora.batchrunner.remove.PresentationGroupFinderSpy",
+				"se.uu.ub.cora.batchrunner.remove.PresentationsFinderSpy",
 				"http://localhost:8080/therest/rest/record/presentationGroup",
 				"se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy" };
 
@@ -35,14 +35,14 @@ public class RemoverBatchRunnerTest {
 		assertEquals(removerSpy.urlString,
 				"http://localhost:8080/therest/rest/record/presentationGroup");
 		assertEquals(removerSpy.finder.getClass().getName(),
-				"se.uu.ub.cora.batchrunner.remove.PresentationGroupFinderSpy");
+				"se.uu.ub.cora.batchrunner.remove.PresentationsFinderSpy");
 	}
 
 	@Test
 	public void testMainMethodNoRecordsFound() throws ClassNotFoundException, NoSuchMethodException,
 			InvocationTargetException, InstantiationException, IllegalAccessException {
 		String args[] = new String[] { "se.uu.ub.cora.batchrunner.remove.RemoverNoRecordsFoundSpy",
-				"se.uu.ub.cora.batchrunner.remove.PresentationGroupFinderSpy",
+				"se.uu.ub.cora.batchrunner.remove.PresentationsFinderSpy",
 				"http://localhost:8080/therest/rest/record/presentationGroup",
 				"se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy" };
 

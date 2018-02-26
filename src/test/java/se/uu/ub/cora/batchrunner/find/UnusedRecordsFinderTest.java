@@ -7,13 +7,13 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class UnusedPresentationsFinderTest {
-	private UnusedPresentationsFinder finder;
+public class UnusedRecordsFinderTest {
+	private UnusedRecordsFinder finder;
 	private HttpHandlerFactorySpy httpHandlerFactorySpy;
 
 	@BeforeMethod
 	public void setUp() {
-		finder = new UnusedPresentationsFinder();
+		finder = new UnusedRecordsFinder();
 		httpHandlerFactorySpy = new HttpHandlerFactorySpy();
 		finder.setHttpHandlerFactory(httpHandlerFactorySpy);
 
@@ -54,5 +54,14 @@ public class UnusedPresentationsFinderTest {
 		assertEquals(httpHandlerFactorySpy.httpHandlerSpy.requestMethod, "GET");
 		assertEquals(ids.size(), 1);
 		assertEquals(ids.get(0), "refPresentationRecordLinkPLink");
+	}
+
+	@Test
+	public void testFindAllUnusedMetadataCollectionVars() {
+		finder.setUrlString("http://localhost:8080/metadataCollectionVariable");
+		List<String> ids = (List<String>) finder.findRecords();
+		assertEquals(httpHandlerFactorySpy.httpHandlerSpy.requestMethod, "GET");
+		assertEquals(ids.size(), 1);
+		assertEquals(ids.get(0), "otherIdentifierTypePersonCollectionVar");
 	}
 }

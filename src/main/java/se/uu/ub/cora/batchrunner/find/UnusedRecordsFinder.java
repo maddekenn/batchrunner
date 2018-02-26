@@ -11,7 +11,7 @@ import se.uu.ub.cora.json.parser.JsonArray;
 import se.uu.ub.cora.json.parser.JsonObject;
 import se.uu.ub.cora.json.parser.JsonValue;
 
-public class UnusedPresentationsFinder extends MetadataFinder implements Finder {
+public class UnusedRecordsFinder extends MetadataFinder implements Finder {
 
 	private String urlString;
 	private HttpHandlerFactory httpHandlerFactory;
