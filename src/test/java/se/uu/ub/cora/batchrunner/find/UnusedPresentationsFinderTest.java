@@ -46,4 +46,13 @@ public class UnusedPresentationsFinderTest {
 		assertEquals(ids.get(0), "inputTypeCollectionVarPCollVar");
 		assertEquals(ids.get(1), "uncertainPCollVar");
 	}
+
+	@Test
+	public void testFindAllUnusedPresentationRecordLinks() {
+		finder.setUrlString("http://localhost:8080/presentationRecordLink");
+		List<String> ids = (List<String>) finder.findRecords();
+		assertEquals(httpHandlerFactorySpy.httpHandlerSpy.requestMethod, "GET");
+		assertEquals(ids.size(), 1);
+		assertEquals(ids.get(0), "refPresentationRecordLinkPLink");
+	}
 }
