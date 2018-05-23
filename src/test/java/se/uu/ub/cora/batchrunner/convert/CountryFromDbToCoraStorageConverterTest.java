@@ -27,8 +27,8 @@ import java.util.Map;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import se.uu.ub.cora.bookkeeper.data.DataAttribute;
-import se.uu.ub.cora.bookkeeper.data.DataGroup;
+import se.uu.ub.cora.clientdata.ClientDataAttribute;
+import se.uu.ub.cora.clientdata.ClientDataGroup;
 
 public class CountryFromDbToCoraStorageConverterTest {
 	private Map<String, String> rowFromDb;
@@ -43,19 +43,19 @@ public class CountryFromDbToCoraStorageConverterTest {
 	@Test
 	public void testConvertCountry() {
 		CountryFromDbToCoraStorageConverter countryFromDbToCoraStorageConverter = new CountryFromDbToCoraStorageConverter();
-		DataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
+		ClientDataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
 		assertEquals(countryItem.getNameInData(), "metadata");
-		assertEquals(countryItem.getAttribute("type"), "collectionItem");
+		assertEquals(countryItem.getAttributes().get("type"), "collectionItem");
 
-		DataGroup recordInfo = countryItem.getFirstGroupWithNameInData("recordInfo");
+		ClientDataGroup recordInfo = countryItem.getFirstGroupWithNameInData("recordInfo");
 		assertEquals(recordInfo.getFirstAtomicValueWithNameInData("id"), "seCountryItem");
 		assertCorrectDataDivider(recordInfo);
 
 		assertEquals(countryItem.getFirstAtomicValueWithNameInData("nameInData"), "SE");
 	}
 
-	private void assertCorrectDataDivider(DataGroup recordInfo) {
-		DataGroup dataDivider = recordInfo.getFirstGroupWithNameInData("dataDivider");
+	private void assertCorrectDataDivider(ClientDataGroup recordInfo) {
+		ClientDataGroup dataDivider = recordInfo.getFirstGroupWithNameInData("dataDivider");
 		String linkedRecordId = dataDivider.getFirstAtomicValueWithNameInData("linkedRecordId");
 		assertEquals(linkedRecordId, "bibsys");
 		String linkedRecordType = dataDivider.getFirstAtomicValueWithNameInData("linkedRecordType");
@@ -65,19 +65,20 @@ public class CountryFromDbToCoraStorageConverterTest {
 	@Test
 	public void testConvertCountryExtraDataOnlyIso2() {
 		CountryFromDbToCoraStorageConverter countryFromDbToCoraStorageConverter = new CountryFromDbToCoraStorageConverter();
-		DataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
+		ClientDataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
 
-		DataGroup extraData = countryItem.getFirstGroupWithNameInData("extraData");
+		ClientDataGroup extraData = countryItem.getFirstGroupWithNameInData("extraData");
 		assertCorrectExtraDataPartGroup(extraData, "iso31661Alpha2", "SE");
 		assertEquals(extraData.getAllGroupsWithNameInData("extraDataPart").size(), 1);
 	}
 
-	private void assertCorrectExtraDataPartGroup(DataGroup extraData, String attribute,
+	private void assertCorrectExtraDataPartGroup(ClientDataGroup extraData, String attribute,
 			String value) {
-		DataAttribute dataAttribute = DataAttribute.withNameInDataAndValue("type", attribute);
-		List<DataGroup> extraParts = (List<DataGroup>) extraData
+		ClientDataAttribute dataAttribute = ClientDataAttribute.withNameInDataAndValue("type",
+				attribute);
+		List<ClientDataGroup> extraParts = (List<ClientDataGroup>) extraData
 				.getAllGroupsWithNameInDataAndAttributes("extraDataPart", dataAttribute);
-		DataGroup extraPart = extraParts.get(0);
+		ClientDataGroup extraPart = extraParts.get(0);
 		assertEquals(extraPart.getFirstAtomicValueWithNameInData("value"), value);
 	}
 
@@ -87,9 +88,9 @@ public class CountryFromDbToCoraStorageConverterTest {
 		rowFromDb.put("numericalcode", "752");
 		rowFromDb.put("marccode", "sw");
 		CountryFromDbToCoraStorageConverter countryFromDbToCoraStorageConverter = new CountryFromDbToCoraStorageConverter();
-		DataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
+		ClientDataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
 
-		DataGroup extraData = countryItem.getFirstGroupWithNameInData("extraData");
+		ClientDataGroup extraData = countryItem.getFirstGroupWithNameInData("extraData");
 		assertCorrectExtraDataPartGroup(extraData, "iso31661Alpha2", "SE");
 		assertCorrectExtraDataPartGroup(extraData, "iso31661Alpha3", "SWE");
 		assertCorrectExtraDataPartGroup(extraData, "numericalcode", "752");

@@ -22,6 +22,8 @@
         <httphandler.version>0.2-SNAPSHOT</httphandler.version>
         <spider.version>0.14-SNAPSHOT</spider.version>
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
+        <sqldatabase.version>0.1-SNAPSHOT</sqldatabase.version>
+        <cora-clientdata.version>0.1-SNAPSHOT</cora-clientdata.version>
         <!--<jersey.version>2.23.2</jersey.version>-->
     </properties>
 
@@ -64,6 +66,17 @@
             <version>${spider.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>sqldatabase</artifactId>
+			<version>${sqldatabase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>cora-clientdata</artifactId>
+			<version>${cora-clientdata.version}</version>
+			<scope>compile</scope>
+		</dependency>
         <dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
