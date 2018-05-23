@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 import se.uu.ub.cora.clientdata.ClientDataAttribute;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 
-public class CountryFromDbToCoraStorageConverterTest {
+public class CountryCollectionItemConstructorTest {
 	private Map<String, String> rowFromDb;
 
 	@BeforeMethod
@@ -42,8 +42,8 @@ public class CountryFromDbToCoraStorageConverterTest {
 
 	@Test
 	public void testConvertCountry() {
-		CountryFromDbToCoraStorageConverter countryFromDbToCoraStorageConverter = new CountryFromDbToCoraStorageConverter();
-		ClientDataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
+		CountryCollectionItemConstructor countryItemCounstructor = new CountryCollectionItemConstructor();
+		ClientDataGroup countryItem = countryItemCounstructor.convert(rowFromDb);
 		assertEquals(countryItem.getNameInData(), "metadata");
 		assertEquals(countryItem.getAttributes().get("type"), "collectionItem");
 
@@ -64,7 +64,7 @@ public class CountryFromDbToCoraStorageConverterTest {
 
 	@Test
 	public void testConvertCountryExtraDataOnlyIso2() {
-		CountryFromDbToCoraStorageConverter countryFromDbToCoraStorageConverter = new CountryFromDbToCoraStorageConverter();
+		CountryCollectionItemConstructor countryFromDbToCoraStorageConverter = new CountryCollectionItemConstructor();
 		ClientDataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
 
 		ClientDataGroup extraData = countryItem.getFirstGroupWithNameInData("extraData");
@@ -87,7 +87,7 @@ public class CountryFromDbToCoraStorageConverterTest {
 		rowFromDb.put("alpha3code", "SWE");
 		rowFromDb.put("numericalcode", "752");
 		rowFromDb.put("marccode", "sw");
-		CountryFromDbToCoraStorageConverter countryFromDbToCoraStorageConverter = new CountryFromDbToCoraStorageConverter();
+		CountryCollectionItemConstructor countryFromDbToCoraStorageConverter = new CountryCollectionItemConstructor();
 		ClientDataGroup countryItem = countryFromDbToCoraStorageConverter.convert(rowFromDb);
 
 		ClientDataGroup extraData = countryItem.getFirstGroupWithNameInData("extraData");

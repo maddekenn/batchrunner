@@ -4,34 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import se.uu.ub.cora.bookkeeper.data.DataAtomic;
-import se.uu.ub.cora.bookkeeper.data.DataGroup;
+import se.uu.ub.cora.clientdata.ClientDataAtomic;
+import se.uu.ub.cora.clientdata.ClientDataGroup;
 
 public class TextFromCountryConstructor {
 
 	private Map<String, String> rowFromDb;
 
-	List<DataGroup> constructFromDbRow(Map<String, String> rowFromDb) {
-		List<DataGroup> texts = new ArrayList<>();
+	List<ClientDataGroup> constructFromDbRow(Map<String, String> rowFromDb) {
+		List<ClientDataGroup> texts = new ArrayList<>();
 		this.rowFromDb = rowFromDb;
 		createText(texts);
 		createDefText(texts);
 		return texts;
 	}
 
-	private void createText(List<DataGroup> texts) {
+	private void createText(List<ClientDataGroup> texts) {
 		createAndAddTextWithIdEnding(texts, "Text");
 	}
 
-	private void createAndAddTextWithIdEnding(List<DataGroup> texts, String textIdEnding) {
-		DataGroup text = DataGroup.withNameInData("text");
+	private void createAndAddTextWithIdEnding(List<ClientDataGroup> texts, String textIdEnding) {
+		ClientDataGroup text = ClientDataGroup.withNameInData("text");
 		addRecordInfo(textIdEnding, text);
 		addTextParts(text);
 		texts.add(text);
 	}
 
-	private void addRecordInfo(String textIdEnding, DataGroup text) {
-		DataGroup recordInfo = DataGroup.withNameInData("recordInfo");
+	private void addRecordInfo(String textIdEnding, ClientDataGroup text) {
+		ClientDataGroup recordInfo = ClientDataGroup.withNameInData("recordInfo");
 		String id = constructIdFromCodeWithEnding(textIdEnding);
 		addId(id, recordInfo);
 		addDataDivider(recordInfo);
@@ -43,33 +43,33 @@ public class TextFromCountryConstructor {
 		return code.toLowerCase() + "CountryItem" + ending;
 	}
 
-	private void addId(String id, DataGroup recordInfo) {
-		recordInfo.addChild(DataAtomic.withNameInDataAndValue("id", id));
+	private void addId(String id, ClientDataGroup recordInfo) {
+		recordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", id));
 	}
 
-	private void addDataDivider(DataGroup recordInfo) {
-		DataGroup dataDivider = DataGroup.withNameInData("dataDivider");
-		dataDivider.addChild(DataAtomic.withNameInDataAndValue("linkedRecordType", "system"));
-		dataDivider.addChild(DataAtomic.withNameInDataAndValue("linkedRecordId", "bibsys"));
+	private void addDataDivider(ClientDataGroup recordInfo) {
+		ClientDataGroup dataDivider = ClientDataGroup.withNameInData("dataDivider");
+		dataDivider.addChild(ClientDataAtomic.withNameInDataAndValue("linkedRecordType", "system"));
+		dataDivider.addChild(ClientDataAtomic.withNameInDataAndValue("linkedRecordId", "bibsys"));
 		recordInfo.addChild(dataDivider);
 	}
 
-	private void addTextParts(DataGroup text) {
+	private void addTextParts(ClientDataGroup text) {
 		String textValue = rowFromDb.get("svText");
 		addTextPartUsingValueLangAttributeAndTypeAttribute(textValue, "sv", "default", text);
 		possiblyAddEnglishTextPart(text);
 	}
 
 	private void addTextPartUsingValueLangAttributeAndTypeAttribute(String textValue,
-			String langAttribute, String typeAttribute, DataGroup text) {
-		DataGroup textPart = DataGroup.withNameInData("textPart");
+			String langAttribute, String typeAttribute, ClientDataGroup text) {
+		ClientDataGroup textPart = ClientDataGroup.withNameInData("textPart");
 		textPart.addAttributeByIdWithValue("type", typeAttribute);
 		textPart.addAttributeByIdWithValue("lang", langAttribute);
-		textPart.addChild(DataAtomic.withNameInDataAndValue("text", textValue));
+		textPart.addChild(ClientDataAtomic.withNameInDataAndValue("text", textValue));
 		text.addChild(textPart);
 	}
 
-	private void possiblyAddEnglishTextPart(DataGroup text) {
+	private void possiblyAddEnglishTextPart(ClientDataGroup text) {
 		if (rowFromDb.containsKey("enText")) {
 			String enTextValue = rowFromDb.get("enText");
 			addTextPartUsingValueLangAttributeAndTypeAttribute(enTextValue, "en", "alternative",
@@ -77,7 +77,7 @@ public class TextFromCountryConstructor {
 		}
 	}
 
-	private void createDefText(List<DataGroup> texts) {
+	private void createDefText(List<ClientDataGroup> texts) {
 		createAndAddTextWithIdEnding(texts, "DefText");
 	}
 }

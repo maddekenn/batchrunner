@@ -23,6 +23,7 @@
         <spider.version>0.14-SNAPSHOT</spider.version>
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <sqldatabase.version>0.1-SNAPSHOT</sqldatabase.version>
+        <javaclient.version>0.1-SNAPSHOT</javaclient.version>
         <cora-clientdata.version>0.1-SNAPSHOT</cora-clientdata.version>
         <!--<jersey.version>2.23.2</jersey.version>-->
     </properties>
@@ -70,6 +71,11 @@
 			<groupId>se.uu.ub.cora</groupId>
 			<artifactId>sqldatabase</artifactId>
 			<version>${sqldatabase.version}</version>
+		</dependency>
+		 <dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>javaclient</artifactId>
+			<version>${javaclient.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>se.uu.ub.cora</groupId>

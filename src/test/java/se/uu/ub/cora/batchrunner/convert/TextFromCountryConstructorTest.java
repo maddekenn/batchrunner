@@ -27,8 +27,8 @@ import java.util.Map;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import se.uu.ub.cora.bookkeeper.data.DataAttribute;
-import se.uu.ub.cora.bookkeeper.data.DataGroup;
+import se.uu.ub.cora.clientdata.ClientDataAttribute;
+import se.uu.ub.cora.clientdata.ClientDataGroup;
 
 public class TextFromCountryConstructorTest {
 	private Map<String, String> rowFromDb;
@@ -44,17 +44,17 @@ public class TextFromCountryConstructorTest {
 	@Test
 	public void testConstructTexts() {
 		TextFromCountryConstructor textConstructor = new TextFromCountryConstructor();
-		List<DataGroup> texts = textConstructor.constructFromDbRow(rowFromDb);
+		List<ClientDataGroup> texts = textConstructor.constructFromDbRow(rowFromDb);
 		assertEquals(texts.size(), 2);
 
-		DataGroup text = texts.get(0);
+		ClientDataGroup text = texts.get(0);
 		assertEquals(text.getNameInData(), "text");
 
 		assertCorrectRecordInfo(text, "seCountryItemText");
 		assertCorrectSwedishTextPart(text, "Sverige");
 		assertNoEnglishTextPart(text);
 
-		DataGroup defText = texts.get(1);
+		ClientDataGroup defText = texts.get(1);
 		assertEquals(defText.getNameInData(), "text");
 
 		assertCorrectRecordInfo(defText, "seCountryItemDefText");
@@ -62,31 +62,32 @@ public class TextFromCountryConstructorTest {
 		assertNoEnglishTextPart(defText);
 	}
 
-	private void assertNoEnglishTextPart(DataGroup text) {
-		DataAttribute type = DataAttribute.withNameInDataAndValue("type", "alternative");
-		DataAttribute lang = DataAttribute.withNameInDataAndValue("lang", "en");
-		List<DataGroup> textParts = (List<DataGroup>) text
+	private void assertNoEnglishTextPart(ClientDataGroup text) {
+		ClientDataAttribute type = ClientDataAttribute.withNameInDataAndValue("type",
+				"alternative");
+		ClientDataAttribute lang = ClientDataAttribute.withNameInDataAndValue("lang", "en");
+		List<ClientDataGroup> textParts = (List<ClientDataGroup>) text
 				.getAllGroupsWithNameInDataAndAttributes("textPart", type, lang);
 		assertEquals(textParts.size(), 0);
 	}
 
-	private void assertCorrectSwedishTextPart(DataGroup text, String textValue) {
-		DataAttribute type = DataAttribute.withNameInDataAndValue("type", "default");
-		DataAttribute lang = DataAttribute.withNameInDataAndValue("lang", "sv");
-		List<DataGroup> textParts = (List<DataGroup>) text
+	private void assertCorrectSwedishTextPart(ClientDataGroup text, String textValue) {
+		ClientDataAttribute type = ClientDataAttribute.withNameInDataAndValue("type", "default");
+		ClientDataAttribute lang = ClientDataAttribute.withNameInDataAndValue("lang", "sv");
+		List<ClientDataGroup> textParts = (List<ClientDataGroup>) text
 				.getAllGroupsWithNameInDataAndAttributes("textPart", type, lang);
-		DataGroup svTextPart = textParts.get(0);
+		ClientDataGroup svTextPart = textParts.get(0);
 		assertEquals(svTextPart.getFirstAtomicValueWithNameInData("text"), textValue);
 	}
 
-	private void assertCorrectRecordInfo(DataGroup text, String textId) {
-		DataGroup recordInfo = text.getFirstGroupWithNameInData("recordInfo");
+	private void assertCorrectRecordInfo(ClientDataGroup text, String textId) {
+		ClientDataGroup recordInfo = text.getFirstGroupWithNameInData("recordInfo");
 		assertEquals(recordInfo.getFirstAtomicValueWithNameInData("id"), textId);
 		assertCorrectDataDivider(recordInfo);
 	}
 
-	private void assertCorrectDataDivider(DataGroup recordInfo) {
-		DataGroup dataDivider = recordInfo.getFirstGroupWithNameInData("dataDivider");
+	private void assertCorrectDataDivider(ClientDataGroup recordInfo) {
+		ClientDataGroup dataDivider = recordInfo.getFirstGroupWithNameInData("dataDivider");
 		String linkedRecordId = dataDivider.getFirstAtomicValueWithNameInData("linkedRecordId");
 		assertEquals(linkedRecordId, "bibsys");
 		String linkedRecordType = dataDivider.getFirstAtomicValueWithNameInData("linkedRecordType");
@@ -97,19 +98,20 @@ public class TextFromCountryConstructorTest {
 	public void testConstructTextsWithEnglishParts() {
 		rowFromDb.put("enText", "Sweden");
 		TextFromCountryConstructor textConstructor = new TextFromCountryConstructor();
-		List<DataGroup> texts = textConstructor.constructFromDbRow(rowFromDb);
+		List<ClientDataGroup> texts = textConstructor.constructFromDbRow(rowFromDb);
 		assertEquals(texts.size(), 2);
-		DataGroup text = texts.get(0);
+		ClientDataGroup text = texts.get(0);
 		assertCorrectSwedishTextPart(text, "Sverige");
 		assertCorrectEnglishTextPart(text, "Sweden");
 	}
 
-	private void assertCorrectEnglishTextPart(DataGroup text, String textValue) {
-		DataAttribute type = DataAttribute.withNameInDataAndValue("type", "alternative");
-		DataAttribute lang = DataAttribute.withNameInDataAndValue("lang", "en");
-		List<DataGroup> textParts = (List<DataGroup>) text
+	private void assertCorrectEnglishTextPart(ClientDataGroup text, String textValue) {
+		ClientDataAttribute type = ClientDataAttribute.withNameInDataAndValue("type",
+				"alternative");
+		ClientDataAttribute lang = ClientDataAttribute.withNameInDataAndValue("lang", "en");
+		List<ClientDataGroup> textParts = (List<ClientDataGroup>) text
 				.getAllGroupsWithNameInDataAndAttributes("textPart", type, lang);
-		DataGroup svTextPart = textParts.get(0);
+		ClientDataGroup svTextPart = textParts.get(0);
 		assertEquals(svTextPart.getFirstAtomicValueWithNameInData("text"), textValue);
 	}
 

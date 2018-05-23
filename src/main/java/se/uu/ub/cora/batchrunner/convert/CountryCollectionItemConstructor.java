@@ -23,7 +23,7 @@ import java.util.Map;
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 
-public class CountryFromDbToCoraStorageConverter {
+public class CountryCollectionItemConstructor {
 
 	private Map<String, String> rowFromDb;
 
