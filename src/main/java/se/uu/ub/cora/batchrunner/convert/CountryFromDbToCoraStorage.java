@@ -25,23 +25,42 @@ public class CountryFromDbToCoraStorage {
 
 	public void importFromRowsFromDb(List<Map<String, String>> rowsFromDb) {
 		for (Map<String, String> rowFromDb : rowsFromDb) {
-
-			TextFromCountryConstructor textConstructor = new TextFromCountryConstructor();
-			List<ClientDataGroup> texts = textConstructor.constructFromDbRow(rowFromDb);
-			for (ClientDataGroup text : texts) {
-				DataGroupToJsonConverter converter = DataGroupToJsonConverter
-						.usingJsonFactoryForClientDataGroup(jsonFactory, text);
-				String json = converter.toJson();
-				coraClient.create("coraText", json);
-			}
-
-			CountryCollectionItemConstructor itemConstructor = new CountryCollectionItemConstructor();
-			ClientDataGroup itemDataGroup = itemConstructor.convert(rowFromDb);
-			DataGroupToJsonConverter converter = DataGroupToJsonConverter
-					.usingJsonFactoryForClientDataGroup(jsonFactory, itemDataGroup);
-			String json = converter.toJson();
-			coraClient.create("countryCollectionItem", json);
+			createTexts(rowFromDb);
+			createCountryItem(rowFromDb);
 		}
+	}
+
+	private void createCountryItem(Map<String, String> rowFromDb) {
+		ClientDataGroup itemDataGroup = getConstructedCountryItemToCreate(rowFromDb);
+		DataGroupToJsonConverter converter = DataGroupToJsonConverter
+				.usingJsonFactoryForClientDataGroup(jsonFactory, itemDataGroup);
+		String json = converter.toJson();
+		coraClient.create("countryCollectionItem", json);
+	}
+
+	private ClientDataGroup getConstructedCountryItemToCreate(Map<String, String> rowFromDb) {
+		CountryCollectionItemConstructor itemConstructor = new CountryCollectionItemConstructor();
+		return itemConstructor.convert(rowFromDb);
+	}
+
+	private void createTexts(Map<String, String> rowFromDb) {
+		List<ClientDataGroup> texts = getConstructedTextDataGroupsToCreate(rowFromDb);
+		for (ClientDataGroup text : texts) {
+			createText(text);
+		}
+	}
+
+	private void createText(ClientDataGroup text) {
+		DataGroupToJsonConverter converter = DataGroupToJsonConverter
+				.usingJsonFactoryForClientDataGroup(jsonFactory, text);
+		String json = converter.toJson();
+		coraClient.create("coraText", json);
+	}
+
+	private List<ClientDataGroup> getConstructedTextDataGroupsToCreate(
+			Map<String, String> rowFromDb) {
+		TextFromCountryConstructor textConstructor = new TextFromCountryConstructor();
+		return textConstructor.constructFromDbRow(rowFromDb);
 	}
 
 }
