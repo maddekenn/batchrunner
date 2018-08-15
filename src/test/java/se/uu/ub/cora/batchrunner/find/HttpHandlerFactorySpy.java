@@ -22,6 +22,8 @@ package se.uu.ub.cora.batchrunner.find;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
@@ -32,6 +34,7 @@ public class HttpHandlerFactorySpy implements HttpHandlerFactory {
 	public String urlString;
 	private boolean factorValid = true;
 	public HttpHandlerSpy httpHandlerSpy;
+	public List<HttpHandlerSpy> httpHandlerSpies = new ArrayList<>();
 
 	private int responseCode = 200;
 
@@ -43,6 +46,7 @@ public class HttpHandlerFactorySpy implements HttpHandlerFactory {
 			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 			httpHandlerSpy = HttpHandlerSpy.usingURLConnection(urlConnection);
 			httpHandlerSpy.responseCode = responseCode;
+			httpHandlerSpies.add(httpHandlerSpy);
 			return httpHandlerSpy;
 		} catch (IOException e) {
 			throw new RuntimeException(e);

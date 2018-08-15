@@ -6,11 +6,16 @@ import java.util.List;
 
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class FinderSpy implements Finder {
+public class PGroupFinderSpy implements Finder {
 	public boolean findRecordsCalled = false;
 	public String url;
 	public List<String> ids;
+	public List<String> recordTypeNames;
 	public HttpHandlerFactory httpHandlerFactory;
+
+	public PGroupFinderSpy(List<String> recordTypeNames) {
+		this.recordTypeNames = recordTypeNames;
+	}
 
 	@Override
 	public void setUrlString(String url) {
@@ -31,4 +36,7 @@ public class FinderSpy implements Finder {
 		this.httpHandlerFactory = httpHandlerFactory;
 	}
 
+	public static PGroupFinderSpy usingListOfRecordTypes(List<String> recordTypeNames) {
+		return new PGroupFinderSpy(recordTypeNames);
+	}
 }
