@@ -7,6 +7,7 @@ import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class RecordTypePGroupIdsModifier implements HTTPCaller {
+	private static final String RECORD_INFO = "recordInfo";
 	private static final String PRESENTATION_GROUP_AS_URL_PART = "presentationGroup/";
 	private final String url;
 	private final HttpHandlerFactory httpHandlerFactory;
@@ -39,31 +40,58 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "FormPGroup");
 		formPGroupHttpHandler.setRequestMethod("GET");
 		String pGroupToCopyJson = formPGroupHttpHandler.getResponseText();
-		ClientDataRecord pGroupClientDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(pGroupToCopyJson);
-		ClientDataGroup pGroupClientDataGroup = pGroupClientDataRecord.getClientDataGroup();
+		String jsonToSendToCreate = createJsonForNewPGroupUsingIdAndJsonToCopy(recordTypeId,
+				pGroupToCopyJson);
 
-		ClientDataGroup recordInfoToCopy = pGroupClientDataGroup
-				.getFirstGroupWithNameInData("recordInfo");
-		ClientDataGroup dataDivider = recordInfoToCopy.getFirstGroupWithNameInData("dataDivider");
-		pGroupClientDataGroup.removeFirstChildWithNameInData("recordInfo");
+		createPGroup(jsonToSendToCreate);
 
-		ClientDataGroup newRecordInfo = ClientDataGroup.withNameInData("recordInfo");
-		newRecordInfo
-				.addChild(ClientDataAtomic.withNameInDataAndValue("id", recordTypeId + "PGroup"));
-		newRecordInfo.addChild(dataDivider);
-		pGroupClientDataGroup.addChild(newRecordInfo);
+		// TODO: uppdatera recordtypen med nytt id för presentationFormId
 
-		String jsonToSendToCreate = ConverterHelper.getDataGroupAsJson(pGroupClientDataGroup);
+		createHttpHandlerForPostWithUrlAndJson(url + "recordType/" + recordTypeId,
+				jsonToSendToCreate);
 
-		HttpHandler pGroupCreateHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART);
+	}
+
+	private void createPGroup(String jsonToSendToCreate) {
+		String urlString = url + PRESENTATION_GROUP_AS_URL_PART;
+		createHttpHandlerForPostWithUrlAndJson(urlString, jsonToSendToCreate);
+	}
+
+	private void createHttpHandlerForPostWithUrlAndJson(String urlString,
+			String jsonToSendToCreate) {
+		HttpHandler pGroupCreateHttpHandler = httpHandlerFactory.factor(urlString);
 		pGroupCreateHttpHandler.setRequestMethod("POST");
 		pGroupCreateHttpHandler.setRequestProperty("Accept", "application/vnd.uub.record+json");
 		pGroupCreateHttpHandler.setRequestProperty("Content-Type",
 				"application/vnd.uub.record+json");
 		pGroupCreateHttpHandler.setOutput(jsonToSendToCreate);
+	}
 
+	private String createJsonForNewPGroupUsingIdAndJsonToCopy(String recordTypeId,
+			String pGroupToCopyJson) {
+		ClientDataRecord pGroupClientDataRecord = ConverterHelper
+				.getJsonAsClientDataRecord(pGroupToCopyJson);
+		ClientDataGroup pGroupClientDataGroup = pGroupClientDataRecord.getClientDataGroup();
+
+		ClientDataGroup newRecordInfo = createNewRecordInfoUsingDataGroupAndId(
+				pGroupClientDataGroup, recordTypeId + "PGroup");
+		pGroupClientDataGroup.removeFirstChildWithNameInData(RECORD_INFO);
+		pGroupClientDataGroup.addChild(newRecordInfo);
+
+		String jsonToSendToCreate = ConverterHelper.getDataGroupAsJson(pGroupClientDataGroup);
+		return jsonToSendToCreate;
+	}
+
+	private ClientDataGroup createNewRecordInfoUsingDataGroupAndId(
+			ClientDataGroup pGroupClientDataGroup, String id) {
+		ClientDataGroup recordInfoToCopy = pGroupClientDataGroup
+				.getFirstGroupWithNameInData(RECORD_INFO);
+		ClientDataGroup dataDivider = recordInfoToCopy.getFirstGroupWithNameInData("dataDivider");
+
+		ClientDataGroup newRecordInfo = ClientDataGroup.withNameInData(RECORD_INFO);
+		newRecordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", id));
+		newRecordInfo.addChild(dataDivider);
+		return newRecordInfo;
 	}
 
 	public String getUrl() {

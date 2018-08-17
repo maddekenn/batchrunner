@@ -62,6 +62,17 @@ public class RecordTypePGroupIdsModifierTest {
 				"application/vnd.uub.record+json");
 		assertEquals(httpHandlerForPGroupCreate.outputString, pGroupJsonWithNewRecordInfo);
 
+		HttpHandlerSpy httpHandlerForRecordTypeUpdate = httpHandlerFactory.httpHandlerSpies.get(4);
+		assertEquals(httpHandlerForRecordTypeUpdate.urlString,
+				"http://someTestUrl/recordType/myRecordType");
+		assertEquals(httpHandlerForRecordTypeUpdate.requestMethod, "POST");
+		assertEquals(httpHandlerForRecordTypeUpdate.requestProperties.get("Accept"),
+				"application/vnd.uub.record+json");
+		assertEquals(httpHandlerForRecordTypeUpdate.requestProperties.get("Content-Type"),
+				"application/vnd.uub.record+json");
+		// assertEquals(httpHandlerForRecordTypeUpdate.outputString,
+		// pGroupJsonWithNewRecordInfo);
+
 	}
 
 	private String getExpectedJsonBasedOnFormerPGroupWithNewRecordInfo() {
