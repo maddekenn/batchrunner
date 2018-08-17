@@ -1,6 +1,7 @@
 package se.uu.ub.cora.batchrunner.change;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -45,38 +46,56 @@ public class RecordTypePGroupIdsModifierTest {
 	@Test
 	public void testModifyPGroupsDoesNotExist() {
 		modifier.modifyData("myRecordType");
-		assertHttpHandlerIsCorrectForReadRecordType();
+        HttpHandlerSpy httpHandlerForRecordTypeRead = httpHandlerFactory.httpHandlerSpies.get(0);
 
-		assertHttpHandlerIsCorrectForReadPresentationGroupByIndexAndId(1, "myRecordTypePGroup");
-		assertHttpHandlerIsCorrectForReadPresentationGroupByIndexAndId(2, "myRecordTypeFormPGroup");
+        assertHttpHandlerIsCorrectForReadRecordType("myRecordType");
 
-		String pGroupJsonWithNewRecordInfo = getExpectedJsonBasedOnFormerPGroupWithNewRecordInfo();
+        //FormPGroup
+		assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(1, "myRecordTypePGroup");
+		assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(2, "myRecordTypeFormPGroup");
 
-		HttpHandlerSpy httpHandlerForPGroupCreate = httpHandlerFactory.httpHandlerSpies.get(3);
+        //FormNewPGroup
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(3, "myRecordTypeNewPGroup");
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(4, "myRecordTypeFormNewPGroup");
 
-		assertEquals(httpHandlerForPGroupCreate.urlString, "http://someTestUrl/presentationGroup/");
-		assertEquals(httpHandlerForPGroupCreate.requestMethod, "POST");
-		assertEquals(httpHandlerForPGroupCreate.requestProperties.get("Accept"),
-				"application/vnd.uub.record+json");
-		assertEquals(httpHandlerForPGroupCreate.requestProperties.get("Content-Type"),
-				"application/vnd.uub.record+json");
-		assertEquals(httpHandlerForPGroupCreate.outputString, pGroupJsonWithNewRecordInfo);
+        //ViewPGroup
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(1, "myRecordTypePGroup");
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(2, "myRecordTypeFormPGroup");
 
-		HttpHandlerSpy httpHandlerForRecordTypeUpdate = httpHandlerFactory.httpHandlerSpies.get(4);
-		assertEquals(httpHandlerForRecordTypeUpdate.urlString,
-				"http://someTestUrl/recordType/myRecordType");
-		assertEquals(httpHandlerForRecordTypeUpdate.requestMethod, "POST");
-		assertEquals(httpHandlerForRecordTypeUpdate.requestProperties.get("Accept"),
-				"application/vnd.uub.record+json");
-		assertEquals(httpHandlerForRecordTypeUpdate.requestProperties.get("Content-Type"),
-				"application/vnd.uub.record+json");
-		// assertEquals(httpHandlerForRecordTypeUpdate.outputString,
-		// pGroupJsonWithNewRecordInfo);
+
+        assertHttpHandlerIsCorrectForCreateByIndexAndOutput(3, "http://someTestUrl/presentationGroup/", getExpectedJsonBasedOnFormerPGroupWithNewRecordInfo("myRecordTypePGroup"));
+        String correctRecordTypeJsonAfterUpdate = composeJsonFromUpdatedRecordType(httpHandlerForRecordTypeRead, "myRecordTypePGroup");
+
+        assertHttpHandlerIsCorrectForCreateByIndexAndOutput(4, "http://someTestUrl/recordType/myRecordType", correctRecordTypeJsonAfterUpdate);
 
 	}
 
-	private String getExpectedJsonBasedOnFormerPGroupWithNewRecordInfo() {
-		HttpHandlerSpy httpHandlerForPFormGroupRead = httpHandlerFactory.httpHandlerSpies.get(2);
+    private void assertHttpHandlerIsCorrectForCreateByIndexAndOutput(int index, String url, String output) {
+        HttpHandlerSpy httpHandlerForPGroupCreate = httpHandlerFactory.httpHandlerSpies.get(index);
+
+        assertEquals(httpHandlerForPGroupCreate.urlString, url);
+        assertEquals(httpHandlerForPGroupCreate.requestMethod, "POST");
+        assertEquals(httpHandlerForPGroupCreate.requestProperties.get("Accept"),
+                "application/vnd.uub.record+json");
+        assertEquals(httpHandlerForPGroupCreate.requestProperties.get("Content-Type"),
+                "application/vnd.uub.record+json");
+        assertEquals(httpHandlerForPGroupCreate.outputString, output);
+    }
+
+    private String composeJsonFromUpdatedRecordType(HttpHandlerSpy httpHandlerForRecordTypeRead, String presentationId) {
+        String recordTypeResponse = httpHandlerForRecordTypeRead.getResponseText();
+        ClientDataRecord pGroupAsDataRecord = getPGroupJsonAsClientDataRecord(
+                recordTypeResponse);
+        ClientDataGroup pGroupAsDataGroup = pGroupAsDataRecord.getClientDataGroup();
+
+        ClientDataGroup presentationFormId = pGroupAsDataGroup.getFirstGroupWithNameInData("presentationFormId");
+        presentationFormId.removeFirstChildWithNameInData("linkedRecordId");
+        presentationFormId.addChild(ClientDataAtomic.withNameInDataAndValue("linkedRecordId", presentationId));
+        return getDataGroupAsJson(pGroupAsDataGroup);
+    }
+
+    private String getExpectedJsonBasedOnFormerPGroupWithNewRecordInfo(String id) {
+		HttpHandlerSpy httpHandlerForPFormGroupRead = httpHandlerFactory.httpHandlerSpies.get(3);
 
 		String readPresentationGroup = httpHandlerForPFormGroupRead.getResponseText();
 
@@ -89,7 +108,7 @@ public class RecordTypePGroupIdsModifierTest {
 		pGroupAsDataGroup.removeFirstChildWithNameInData("recordInfo");
 
 		ClientDataGroup newRecordInfo = ClientDataGroup.withNameInData("recordInfo");
-		newRecordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", "myRecordTypePGroup"));
+        newRecordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", id));
 		newRecordInfo.addChild(dataDivider);
 		pGroupAsDataGroup.addChild(newRecordInfo);
 
@@ -97,20 +116,20 @@ public class RecordTypePGroupIdsModifierTest {
 		return pGroupJsonWithNewRecordInfo;
 	}
 
-	private void assertHttpHandlerIsCorrectForReadPresentationGroupByIndexAndId(int index,
-			String id) {
+	private void assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(int index,
+                                                                     String id) {
 		HttpHandlerSpy httpHandlerForPGroupRead = httpHandlerFactory.httpHandlerSpies.get(index);
 		assertEquals(httpHandlerForPGroupRead.urlString,
 				"http://someTestUrl/presentationGroup/" + id);
 		assertEquals(httpHandlerForPGroupRead.requestMethod, "GET");
 	}
 
-	private void assertHttpHandlerIsCorrectForReadRecordType() {
+	private void assertHttpHandlerIsCorrectForReadRecordType(String recordTypeId) {
 		HttpHandlerSpy httpHandlerForRecordTypeRead = httpHandlerFactory.httpHandlerSpies.get(0);
 
 		assertEquals(httpHandlerForRecordTypeRead.requestMethod, "GET");
 		assertEquals(httpHandlerForRecordTypeRead.urlString,
-				"http://someTestUrl/recordType/myRecordType");
+				"http://someTestUrl/recordType/"+recordTypeId);
 	}
 
 	private String getDataGroupAsJson(ClientDataGroup dataGroup) {
@@ -135,4 +154,40 @@ public class RecordTypePGroupIdsModifierTest {
 		JsonValue jsonValue = jsonParser.parseString(responseText);
 		return (JsonObject) jsonValue;
 	}
+
+    @Test
+    public void testModifyPGroupsWhenPGroupDoesExist() {
+        modifier.modifyData("myOtherRecordType");
+        HttpHandlerSpy httpHandlerForRecordTypeRead = httpHandlerFactory.httpHandlerSpies.get(0);
+
+        assertHttpHandlerIsCorrectForReadRecordType("myOtherRecordType");
+
+        //FormPGroup
+        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(1, "myOtherRecordTypePGroup");
+
+        HttpHandlerSpy httpHandlerForPGroupDelete = httpHandlerFactory.httpHandlerSpies.get(2);
+        String url = "http://someTestUrl/presentationGroup/" + "myOtherRecordTypePGroup";
+        assertEquals(httpHandlerForPGroupDelete.urlString, url);
+        assertEquals(httpHandlerForPGroupDelete.requestMethod, "DELETE");
+        assertTrue(httpHandlerForPGroupDelete.deleteWasCalled);
+
+        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(3, "myOtherRecordTypeFormPGroup");
+
+        //FormNewPGroup
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(3, "myRecordTypeNewPGroup");
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(4, "myRecordTypeFormNewPGroup");
+
+        //ViewPGroup
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(1, "myRecordTypePGroup");
+//        assertHttpHandlerIsCorrectForReadPGroupByIndexAndId(2, "myRecordTypeFormPGroup");
+
+
+        assertHttpHandlerIsCorrectForCreateByIndexAndOutput(4, "http://someTestUrl/presentationGroup/", getExpectedJsonBasedOnFormerPGroupWithNewRecordInfo("myOtherRecordTypePGroup"));
+        String correctRecordTypeJsonAfterUpdate = composeJsonFromUpdatedRecordType(httpHandlerForRecordTypeRead, "myOtherRecordTypePGroup");
+//
+        assertHttpHandlerIsCorrectForCreateByIndexAndOutput(5, "http://someTestUrl/recordType/myOtherRecordType", correctRecordTypeJsonAfterUpdate);
+
+    }
+
+    //TODO: hantera också de fall när FormPGroup osv inte finns
 }

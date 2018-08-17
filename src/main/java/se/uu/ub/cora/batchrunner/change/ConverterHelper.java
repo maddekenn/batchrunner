@@ -28,7 +28,7 @@ public class ConverterHelper {
 		return converter.toInstance();
 	}
 
-	public static JsonObject createJsonObjectFromResponseText(String responseText) {
+	private static JsonObject createJsonObjectFromResponseText(String responseText) {
 		JsonParser jsonParser = new OrgJsonParser();
 		JsonValue jsonValue = jsonParser.parseString(responseText);
 		return (JsonObject) jsonValue;
