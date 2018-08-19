@@ -5,7 +5,6 @@ import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-import se.uu.ub.cora.json.parser.JsonObject;
 
 public class RecordTypePGroupIdsModifier implements HTTPCaller {
 	private static final String RECORD_INFO = "recordInfo";
@@ -28,18 +27,19 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 	// presentationgruppsnamnen
 	@Override
 	public void modifyData(String recordTypeId) {
-        String recordTypeJson = readRecordType(recordTypeId);
+		String recordTypeJson = readRecordType(recordTypeId);
 
-        HttpHandler pGroupHttpHandler = httpHandlerFactory
+		HttpHandler pGroupHttpHandler = httpHandlerFactory
 				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "PGroup");
 		pGroupHttpHandler.setRequestMethod("GET");
+		if (pGroupHttpHandler.getResponseCode() == 200) {
 
-        // TODO: om record not found exception = allt ok, annars ta bort
-		// om det inte går att ta bort, logga ut namn på pGroup
-        HttpHandler pGroupDeleteHttpHandler = httpHandlerFactory.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "PGroup");
-        pGroupDeleteHttpHandler.setRequestMethod("DELETE");
-        pGroupDeleteHttpHandler.getResponseCode();
+			// TODO: om record not found exception = allt ok, annars ta bort
+			// om det inte går att ta bort, logga ut namn på pGroup
 
+			// TODO: kolla om det finns en delete action, annars ta inte bort
+			deletePresentationGroup(recordTypeId);
+		}
 		HttpHandler formPGroupHttpHandler = httpHandlerFactory
 				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "FormPGroup");
 		formPGroupHttpHandler.setRequestMethod("GET");
@@ -49,30 +49,40 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 
 		createPGroup(jsonToSendToCreate);
 
-        String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeId, recordTypeJson);
+		String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeId, recordTypeJson);
 
-        createHttpHandlerForPostWithUrlAndJson(url + "recordType/" + recordTypeId,
-                updatedRecordTypeJson);
+		createHttpHandlerForPostWithUrlAndJson(url + "recordType/" + recordTypeId,
+				updatedRecordTypeJson);
 
 	}
 
-    private String readRecordType(String recordTypeId) {
-        HttpHandler httpHandler = httpHandlerFactory.factor(url + "recordType/" + recordTypeId);
-        httpHandler.setRequestMethod("GET");
-        return httpHandler.getResponseText();
-    }
+	private void deletePresentationGroup(String recordTypeId) {
+		HttpHandler pGroupDeleteHttpHandler = httpHandlerFactory
+				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "PGroup");
+		pGroupDeleteHttpHandler.setRequestMethod("DELETE");
+		pGroupDeleteHttpHandler.getResponseCode();
+	}
 
-    private String getUpdatedRecordTypeAsJson(String recordTypeId, String recordTypeJson) {
-        ClientDataRecord recordTypeDataRecord = ConverterHelper.getJsonAsClientDataRecord(recordTypeJson);
-        ClientDataGroup recordTypeDataGroup = recordTypeDataRecord.getClientDataGroup();
-        ClientDataGroup presentationFormId = recordTypeDataGroup.getFirstGroupWithNameInData("presentationFormId");
-        presentationFormId.removeFirstChildWithNameInData("linkedRecordId");
-        presentationFormId.addChild(ClientDataAtomic.withNameInDataAndValue("linkedRecordId", recordTypeId+"PGroup"));
+	private String readRecordType(String recordTypeId) {
+		HttpHandler httpHandler = httpHandlerFactory.factor(url + "recordType/" + recordTypeId);
+		httpHandler.setRequestMethod("GET");
+		return httpHandler.getResponseText();
+	}
 
-        return ConverterHelper.getDataGroupAsJson(recordTypeDataGroup);
-    }
+	private String getUpdatedRecordTypeAsJson(String recordTypeId, String recordTypeJson) {
+		ClientDataRecord recordTypeDataRecord = ConverterHelper
+				.getJsonAsClientDataRecord(recordTypeJson);
+		ClientDataGroup recordTypeDataGroup = recordTypeDataRecord.getClientDataGroup();
+		ClientDataGroup presentationFormId = recordTypeDataGroup
+				.getFirstGroupWithNameInData("presentationFormId");
+		presentationFormId.removeFirstChildWithNameInData("linkedRecordId");
+		presentationFormId.addChild(
+				ClientDataAtomic.withNameInDataAndValue("linkedRecordId", recordTypeId + "PGroup"));
 
-    private void createPGroup(String jsonToSendToCreate) {
+		return ConverterHelper.getDataGroupAsJson(recordTypeDataGroup);
+	}
+
+	private void createPGroup(String jsonToSendToCreate) {
 		String urlString = url + PRESENTATION_GROUP_AS_URL_PART;
 		createHttpHandlerForPostWithUrlAndJson(urlString, jsonToSendToCreate);
 	}
