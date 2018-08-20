@@ -6,6 +6,9 @@ import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RecordTypePGroupIdsModifier implements HTTPCaller {
 	private static final String RECORD_INFO = "recordInfo";
 	private static final String PRESENTATION_GROUP_AS_URL_PART = "presentationGroup/";
@@ -29,31 +32,50 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 	public void modifyData(String recordTypeId) {
 		String recordTypeJson = readRecordType(recordTypeId);
 
-		HttpHandler pGroupHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "PGroup");
-		pGroupHttpHandler.setRequestMethod("GET");
-		if (pGroupHttpHandler.getResponseCode() == 200) {
+		String[] newPGroupEndings = {"PGroup", "NewPGroup", "OutputPGroup"};
+		String[] oldPGroupEndings = {"FormPGroup", "FormNewPGroup", "ViewPGroup"};
 
-			// TODO: om record not found exception = allt ok, annars ta bort
-			// om det inte går att ta bort, logga ut namn på pGroup
+		String newPGroupEnding = "PGroup";
+		String oldPGroupEnding = "FormPGroup";
 
-			// TODO: kolla om det finns en delete action, annars ta inte bort
-			deletePresentationGroup(recordTypeId);
+		//kopiera alla tre
+		List<String> jsonToCreateList = new ArrayList<>();
+		for(int i=0; i< newPGroupEndings.length; i++){
+
+			jsonToCreateList.add(copyOldPGroupToNew(recordTypeId, newPGroupEndings[i], oldPGroupEndings[i]));
 		}
-		HttpHandler formPGroupHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "FormPGroup");
-		formPGroupHttpHandler.setRequestMethod("GET");
-		String pGroupToCopyJson = formPGroupHttpHandler.getResponseText();
-		String jsonToSendToCreate = createJsonForNewPGroupUsingIdAndJsonToCopy(recordTypeId,
-				pGroupToCopyJson);
 
-		createPGroup(jsonToSendToCreate);
+
+		//skapa nya för alla tre
+
+		for(String jsonToSendToCreate : jsonToCreateList) {
+			createPGroup(jsonToSendToCreate);
+		}
 
 		String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeId, recordTypeJson);
 
 		createHttpHandlerForPostWithUrlAndJson(url + "recordType/" + recordTypeId,
 				updatedRecordTypeJson);
 
+	}
+
+	private String copyOldPGroupToNew(String recordTypeId, String newPGroupEnding, String oldPGroupEnding) {
+		HttpHandler pGroupHttpHandler = httpHandlerFactory
+				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + newPGroupEnding);
+		pGroupHttpHandler.setRequestMethod("GET");
+		HttpHandler formPGroupHttpHandler = httpHandlerFactory
+				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + oldPGroupEnding);
+		formPGroupHttpHandler.setRequestMethod("GET");
+		String pGroupToCopyJson = formPGroupHttpHandler.getResponseText();
+		DataGroupCopier copier = DataGroupCopier.usingNewId(recordTypeId+"PGroup");
+		String jsonToSendToCreate = copier.copyDataGroupAsJson(pGroupToCopyJson);
+
+		//deletea alla tre
+		if (pGroupHttpHandler.getResponseCode() == 200) {
+
+			deletePresentationGroup(recordTypeId);
+		}
+		return jsonToSendToCreate;
 	}
 
 	private void deletePresentationGroup(String recordTypeId) {
@@ -97,32 +119,32 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 		pGroupCreateHttpHandler.setOutput(jsonToSendToCreate);
 	}
 
-	private String createJsonForNewPGroupUsingIdAndJsonToCopy(String recordTypeId,
-			String pGroupToCopyJson) {
-		ClientDataRecord pGroupClientDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(pGroupToCopyJson);
-		ClientDataGroup pGroupClientDataGroup = pGroupClientDataRecord.getClientDataGroup();
+//	private String createJsonForNewPGroupUsingIdAndJsonToCopy(String recordTypeId,
+//			String pGroupToCopyJson) {
+//		ClientDataRecord pGroupClientDataRecord = ConverterHelper
+//				.getJsonAsClientDataRecord(pGroupToCopyJson);
+//		ClientDataGroup pGroupClientDataGroup = pGroupClientDataRecord.getClientDataGroup();
+//
+//		ClientDataGroup newRecordInfo = createNewRecordInfoUsingDataGroupAndId(
+//				pGroupClientDataGroup, recordTypeId + "PGroup");
+//		pGroupClientDataGroup.removeFirstChildWithNameInData(RECORD_INFO);
+//		pGroupClientDataGroup.addChild(newRecordInfo);
+//
+//		String jsonToSendToCreate = ConverterHelper.getDataGroupAsJson(pGroupClientDataGroup);
+//		return jsonToSendToCreate;
+//	}
 
-		ClientDataGroup newRecordInfo = createNewRecordInfoUsingDataGroupAndId(
-				pGroupClientDataGroup, recordTypeId + "PGroup");
-		pGroupClientDataGroup.removeFirstChildWithNameInData(RECORD_INFO);
-		pGroupClientDataGroup.addChild(newRecordInfo);
-
-		String jsonToSendToCreate = ConverterHelper.getDataGroupAsJson(pGroupClientDataGroup);
-		return jsonToSendToCreate;
-	}
-
-	private ClientDataGroup createNewRecordInfoUsingDataGroupAndId(
-			ClientDataGroup pGroupClientDataGroup, String id) {
-		ClientDataGroup recordInfoToCopy = pGroupClientDataGroup
-				.getFirstGroupWithNameInData(RECORD_INFO);
-		ClientDataGroup dataDivider = recordInfoToCopy.getFirstGroupWithNameInData("dataDivider");
-
-		ClientDataGroup newRecordInfo = ClientDataGroup.withNameInData(RECORD_INFO);
-		newRecordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", id));
-		newRecordInfo.addChild(dataDivider);
-		return newRecordInfo;
-	}
+//	private ClientDataGroup createNewRecordInfoUsingDataGroupAndId(
+//			ClientDataGroup pGroupClientDataGroup, String id) {
+//		ClientDataGroup recordInfoToCopy = pGroupClientDataGroup
+//				.getFirstGroupWithNameInData(RECORD_INFO);
+//		ClientDataGroup dataDivider = recordInfoToCopy.getFirstGroupWithNameInData("dataDivider");
+//
+//		ClientDataGroup newRecordInfo = ClientDataGroup.withNameInData(RECORD_INFO);
+//		newRecordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", id));
+//		newRecordInfo.addChild(dataDivider);
+//		return newRecordInfo;
+//	}
 
 	public String getUrl() {
 		return url;
