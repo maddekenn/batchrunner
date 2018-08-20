@@ -1,19 +1,23 @@
 package se.uu.ub.cora.batchrunner.change;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RecordTypePGroupIdsModifier implements HTTPCaller {
-	private static final String RECORD_INFO = "recordInfo";
 	private static final String PRESENTATION_GROUP_AS_URL_PART = "presentationGroup/";
 	private final String url;
 	private final HttpHandlerFactory httpHandlerFactory;
+	private PresentationObject formPresentation;
+	private PresentationObject formNewPresentation;
+	private PresentationObject viewPresentation;
+
+	List<String> pGroupsNotAllowedToRemove = new ArrayList<>();
 
 	public RecordTypePGroupIdsModifier(String url, HttpHandlerFactory httpHandlerFactory) {
 
@@ -32,57 +36,61 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 	public void modifyData(String recordTypeId) {
 		String recordTypeJson = readRecordType(recordTypeId);
 
-		String[] newPGroupEndings = {"PGroup", "NewPGroup", "OutputPGroup"};
-		String[] oldPGroupEndings = {"FormPGroup", "FormNewPGroup", "ViewPGroup"};
+		formPresentation = new PresentationObject(recordTypeId + "FormPGroup",
+				recordTypeId + "PGroup", "presentationFormId");
+		formNewPresentation = new PresentationObject(recordTypeId + "FormNewPGroup",
+				recordTypeId + "NewPGroup", "newPresentationFormId");
+		viewPresentation = new PresentationObject(recordTypeId + "ViewPGroup",
+				recordTypeId + "OutputPGroup", "presentationViewId");
 
-		String newPGroupEnding = "PGroup";
-		String oldPGroupEnding = "FormPGroup";
+		String[] newPGroupEndings = { "PGroup", "NewPGroup", "OutputPGroup" };
+		String[] oldPGroupEndings = { "FormPGroup", "FormNewPGroup", "ViewPGroup" };
 
-		//kopiera alla tre
+		for (
+
+		String newPGroupEnding : newPGroupEndings) {
+			int responseCode = deletePresentationGroup(recordTypeId, newPGroupEnding);
+			if (responseCode == 405) {
+				pGroupsNotAllowedToRemove.add(recordTypeId + newPGroupEnding);
+			}
+		}
+		// kopiera alla tre
 		List<String> jsonToCreateList = new ArrayList<>();
-		for(int i=0; i< newPGroupEndings.length; i++){
-
-			jsonToCreateList.add(copyOldPGroupToNew(recordTypeId, newPGroupEndings[i], oldPGroupEndings[i]));
+		for (int i = 0; i < newPGroupEndings.length; i++) {
+			if (!pGroupsNotAllowedToRemove.contains(recordTypeId + newPGroupEndings[i])) {
+				jsonToCreateList.add(
+						copyOldPGroupToNew(recordTypeId, newPGroupEndings[i], oldPGroupEndings[i]));
+			}
 		}
 
-
-		//skapa nya för alla tre
-
-		for(String jsonToSendToCreate : jsonToCreateList) {
+		// skapa nya för alla tre
+		for (String jsonToSendToCreate : jsonToCreateList) {
 			createPGroup(jsonToSendToCreate);
 		}
 
-		String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeId, recordTypeJson);
+		String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeJson);
 
 		createHttpHandlerForPostWithUrlAndJson(url + "recordType/" + recordTypeId,
 				updatedRecordTypeJson);
 
 	}
 
-	private String copyOldPGroupToNew(String recordTypeId, String newPGroupEnding, String oldPGroupEnding) {
-		HttpHandler pGroupHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + newPGroupEnding);
-		pGroupHttpHandler.setRequestMethod("GET");
+	private String copyOldPGroupToNew(String recordTypeId, String newPGroupEnding,
+			String oldPGroupEnding) {
 		HttpHandler formPGroupHttpHandler = httpHandlerFactory
 				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + oldPGroupEnding);
 		formPGroupHttpHandler.setRequestMethod("GET");
 		String pGroupToCopyJson = formPGroupHttpHandler.getResponseText();
-		DataGroupCopier copier = DataGroupCopier.usingNewId(recordTypeId+"PGroup");
-		String jsonToSendToCreate = copier.copyDataGroupAsJson(pGroupToCopyJson);
+		DataGroupCopier copier = DataGroupCopier.usingNewId(recordTypeId + newPGroupEnding);
+		return copier.copyDataGroupAsJson(pGroupToCopyJson);
 
-		//deletea alla tre
-		if (pGroupHttpHandler.getResponseCode() == 200) {
-
-			deletePresentationGroup(recordTypeId);
-		}
-		return jsonToSendToCreate;
 	}
 
-	private void deletePresentationGroup(String recordTypeId) {
+	private int deletePresentationGroup(String recordTypeId, String pGroupEnding) {
 		HttpHandler pGroupDeleteHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + "PGroup");
+				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + pGroupEnding);
 		pGroupDeleteHttpHandler.setRequestMethod("DELETE");
-		pGroupDeleteHttpHandler.getResponseCode();
+		return pGroupDeleteHttpHandler.getResponseCode();
 	}
 
 	private String readRecordType(String recordTypeId) {
@@ -91,17 +99,26 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 		return httpHandler.getResponseText();
 	}
 
-	private String getUpdatedRecordTypeAsJson(String recordTypeId, String recordTypeJson) {
+	private String getUpdatedRecordTypeAsJson(String recordTypeJson) {
 		ClientDataRecord recordTypeDataRecord = ConverterHelper
 				.getJsonAsClientDataRecord(recordTypeJson);
 		ClientDataGroup recordTypeDataGroup = recordTypeDataRecord.getClientDataGroup();
-		ClientDataGroup presentationFormId = recordTypeDataGroup
-				.getFirstGroupWithNameInData("presentationFormId");
-		presentationFormId.removeFirstChildWithNameInData("linkedRecordId");
-		presentationFormId.addChild(
-				ClientDataAtomic.withNameInDataAndValue("linkedRecordId", recordTypeId + "PGroup"));
+		updateLinkUsingDataGroupAndPresentation(formPresentation, recordTypeDataGroup);
+		updateLinkUsingDataGroupAndPresentation(formNewPresentation, recordTypeDataGroup);
+		updateLinkUsingDataGroupAndPresentation(viewPresentation, recordTypeDataGroup);
 
 		return ConverterHelper.getDataGroupAsJson(recordTypeDataGroup);
+	}
+
+	private void updateLinkUsingDataGroupAndPresentation(PresentationObject presentationObject,
+			ClientDataGroup recordTypeDataGroup) {
+		if (!pGroupsNotAllowedToRemove.contains(presentationObject.newPGroupId)) {
+			ClientDataGroup presentationFormId = recordTypeDataGroup
+					.getFirstGroupWithNameInData(presentationObject.presentationId);
+			presentationFormId.removeFirstChildWithNameInData("linkedRecordId");
+			presentationFormId.addChild(ClientDataAtomic.withNameInDataAndValue("linkedRecordId",
+					presentationObject.newPGroupId));
+		}
 	}
 
 	private void createPGroup(String jsonToSendToCreate) {
@@ -118,33 +135,6 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 				"application/vnd.uub.record+json");
 		pGroupCreateHttpHandler.setOutput(jsonToSendToCreate);
 	}
-
-//	private String createJsonForNewPGroupUsingIdAndJsonToCopy(String recordTypeId,
-//			String pGroupToCopyJson) {
-//		ClientDataRecord pGroupClientDataRecord = ConverterHelper
-//				.getJsonAsClientDataRecord(pGroupToCopyJson);
-//		ClientDataGroup pGroupClientDataGroup = pGroupClientDataRecord.getClientDataGroup();
-//
-//		ClientDataGroup newRecordInfo = createNewRecordInfoUsingDataGroupAndId(
-//				pGroupClientDataGroup, recordTypeId + "PGroup");
-//		pGroupClientDataGroup.removeFirstChildWithNameInData(RECORD_INFO);
-//		pGroupClientDataGroup.addChild(newRecordInfo);
-//
-//		String jsonToSendToCreate = ConverterHelper.getDataGroupAsJson(pGroupClientDataGroup);
-//		return jsonToSendToCreate;
-//	}
-
-//	private ClientDataGroup createNewRecordInfoUsingDataGroupAndId(
-//			ClientDataGroup pGroupClientDataGroup, String id) {
-//		ClientDataGroup recordInfoToCopy = pGroupClientDataGroup
-//				.getFirstGroupWithNameInData(RECORD_INFO);
-//		ClientDataGroup dataDivider = recordInfoToCopy.getFirstGroupWithNameInData("dataDivider");
-//
-//		ClientDataGroup newRecordInfo = ClientDataGroup.withNameInData(RECORD_INFO);
-//		newRecordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", id));
-//		newRecordInfo.addChild(dataDivider);
-//		return newRecordInfo;
-//	}
 
 	public String getUrl() {
 		return url;
