@@ -18,11 +18,10 @@
  */
 package se.uu.ub.cora.batchrunner.change;
 
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-
+import java.util.List;
 
 //TODO: better name
 public interface HTTPCaller {
 
-    void modifyData(String recordTypeId);
+	List<String> modifyData(String recordTypeId);
 }

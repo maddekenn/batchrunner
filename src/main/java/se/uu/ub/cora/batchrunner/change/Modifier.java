@@ -1,5 +1,7 @@
 package se.uu.ub.cora.batchrunner.change;
 
+import java.util.List;
+
 public interface Modifier {
-    void modifyData(String recordTypeId);
+	List<String> modifyData(String recordTypeId);
 }
