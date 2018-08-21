@@ -1,5 +1,6 @@
 package se.uu.ub.cora.batchrunner.change;
 
+import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class RecordTypePGroupIdsModifier implements HTTPCaller {
+public class RecordTypePGroupIdsModifier implements HTTPCaller, Modifier {
 	private static final String PRESENTATION_GROUP_AS_URL_PART = "presentationGroup/";
 	private final String url;
 	private final HttpHandlerFactory httpHandlerFactory;
@@ -18,9 +19,9 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 	private PresentationObject viewPresentation;
 
 	List<String> pGroupsNotAllowedToRemove = new ArrayList<>();
+	List<PresentationObject> presentations = new ArrayList<>();
 
 	public RecordTypePGroupIdsModifier(String url, HttpHandlerFactory httpHandlerFactory) {
-
 		this.url = url;
 		this.httpHandlerFactory = httpHandlerFactory;
 	}
@@ -30,8 +31,6 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 		return new RecordTypePGroupIdsModifier(url, httpHandlerFactory);
 	}
 
-	// TODO: grupper ska bara kopieras om recordTypen har de autogenerereade
-	// presentationgruppsnamnen
 	@Override
 	public void modifyData(String recordTypeId) {
 		String recordTypeJson = readRecordType(recordTypeId);
@@ -43,30 +42,13 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 		viewPresentation = new PresentationObject(recordTypeId + "ViewPGroup",
 				recordTypeId + "OutputPGroup", "presentationViewId");
 
-		String[] newPGroupEndings = { "PGroup", "NewPGroup", "OutputPGroup" };
-		String[] oldPGroupEndings = { "FormPGroup", "FormNewPGroup", "ViewPGroup" };
+		presentations.add(formPresentation);
+		presentations.add(formNewPresentation);
+		presentations.add(viewPresentation);
 
-		for (
+		possiblyDeletePresentations();
 
-		String newPGroupEnding : newPGroupEndings) {
-			int responseCode = deletePresentationGroup(recordTypeId, newPGroupEnding);
-			if (responseCode == 405) {
-				pGroupsNotAllowedToRemove.add(recordTypeId + newPGroupEnding);
-			}
-		}
-		// kopiera alla tre
-		List<String> jsonToCreateList = new ArrayList<>();
-		for (int i = 0; i < newPGroupEndings.length; i++) {
-			if (!pGroupsNotAllowedToRemove.contains(recordTypeId + newPGroupEndings[i])) {
-				jsonToCreateList.add(
-						copyOldPGroupToNew(recordTypeId, newPGroupEndings[i], oldPGroupEndings[i]));
-			}
-		}
-
-		// skapa nya för alla tre
-		for (String jsonToSendToCreate : jsonToCreateList) {
-			createPGroup(jsonToSendToCreate);
-		}
+		possiblyCreateNewPresentations();
 
 		String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeJson);
 
@@ -75,20 +57,43 @@ public class RecordTypePGroupIdsModifier implements HTTPCaller {
 
 	}
 
-	private String copyOldPGroupToNew(String recordTypeId, String newPGroupEnding,
-			String oldPGroupEnding) {
+	private void possiblyDeletePresentations() {
+		for(PresentationObject presentation : presentations){
+			int responseCode = deletePresentationGroup(presentation.newPGroupId);
+			if (responseCode == 405) {
+				pGroupsNotAllowedToRemove.add(presentation.newPGroupId);
+			}
+		}
+	}
+
+	private void possiblyCreateNewPresentations() {
+		List<String> jsonToCreateList = new ArrayList<>();
+		for(PresentationObject presentation : presentations){
+			if (!pGroupsNotAllowedToRemove.contains(presentation.newPGroupId)) {
+				jsonToCreateList.add(
+						copyOldPGroupToNew(presentation.newPGroupId, presentation.oldPGroupId));
+			}
+    	}
+
+		for (String jsonToSendToCreate : jsonToCreateList) {
+			createPGroup(jsonToSendToCreate);
+		}
+	}
+
+	private String copyOldPGroupToNew(String newPGroupEnding,
+									  String oldPGroupEnding) {
 		HttpHandler formPGroupHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + oldPGroupEnding);
+				.factor(url + PRESENTATION_GROUP_AS_URL_PART +  oldPGroupEnding);
 		formPGroupHttpHandler.setRequestMethod("GET");
 		String pGroupToCopyJson = formPGroupHttpHandler.getResponseText();
-		DataGroupCopier copier = DataGroupCopier.usingNewId(recordTypeId + newPGroupEnding);
+		DataGroupCopier copier = DataGroupCopier.usingNewId(newPGroupEnding);
 		return copier.copyDataGroupAsJson(pGroupToCopyJson);
 
 	}
 
-	private int deletePresentationGroup(String recordTypeId, String pGroupEnding) {
+	private int deletePresentationGroup(String pGroupEnding) {
 		HttpHandler pGroupDeleteHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + recordTypeId + pGroupEnding);
+				.factor(url + PRESENTATION_GROUP_AS_URL_PART + pGroupEnding);
 		pGroupDeleteHttpHandler.setRequestMethod("DELETE");
 		return pGroupDeleteHttpHandler.getResponseCode();
 	}

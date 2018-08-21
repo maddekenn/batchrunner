@@ -6,7 +6,7 @@ import java.util.Collections;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class FinderNoRecordsSpy implements Finder {
-	boolean findRecordCalled = false;
+	public boolean findRecordCalled = false;
 	public String url;
 
 	@Override
