@@ -114,7 +114,7 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 		updateLinkUsingDataGroupAndPresentation(formNewPresentation, recordTypeDataGroup);
 		updateLinkUsingDataGroupAndPresentation(viewPresentation, recordTypeDataGroup);
 
-		return ConverterHelper.getDataGroupAsJson(recordTypeDataGroup);
+		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(recordTypeDataGroup, null);
 	}
 
 	private void updateLinkUsingDataGroupAndPresentation(PresentationObject presentationObject,

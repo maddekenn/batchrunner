@@ -3,7 +3,7 @@ package se.uu.ub.cora.batchrunner.change;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverter;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
@@ -34,11 +34,12 @@ public class ConverterHelper {
 		return (JsonObject) jsonValue;
 	}
 
-	public static String getDataGroupAsJson(ClientDataGroup dataGroup) {
-		DataToJsonConverterFactoryImp jsonConverterFactory = new DataToJsonConverterFactoryImp();
+	public static String getDataGroupAsJsonUsingConverterFactory(ClientDataGroup dataGroup,
+			DataToJsonConverterFactory jsonConverterFactory) {
 		JsonBuilderFactory factory = new OrgJsonBuilderFactoryAdapter();
 		DataToJsonConverter forClientDataElement = jsonConverterFactory
 				.createForClientDataElement(factory, dataGroup);
 		return forClientDataElement.toJson();
 	}
+
 }
