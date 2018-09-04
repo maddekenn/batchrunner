@@ -6,6 +6,8 @@ import java.util.List;
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
@@ -88,8 +90,9 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 				.factor(url + PRESENTATION_GROUP_AS_URL_PART + oldPGroupEnding);
 		formPGroupHttpHandler.setRequestMethod("GET");
 		String pGroupToCopyJson = formPGroupHttpHandler.getResponseText();
-		DataGroupCopier copier = DataGroupCopier.usingNewId(newPGroupEnding);
-		return copier.copyDataGroupAsJson(pGroupToCopyJson);
+		DataGroupJsonCopier copier = new DataGroupJsonCopier();
+		return copier.copyDataGroupAsJsonExcludeLinksUsingJsonAndNewId(pGroupToCopyJson,
+				newPGroupEnding);
 
 	}
 
@@ -113,8 +116,10 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 		updateLinkUsingDataGroupAndPresentation(formPresentation, recordTypeDataGroup);
 		updateLinkUsingDataGroupAndPresentation(formNewPresentation, recordTypeDataGroup);
 		updateLinkUsingDataGroupAndPresentation(viewPresentation, recordTypeDataGroup);
+		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonWithoutActionLinksForLinksConverterFactory();
 
-		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(recordTypeDataGroup, null);
+		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(recordTypeDataGroup,
+				jsonConverterFactory);
 	}
 
 	private void updateLinkUsingDataGroupAndPresentation(PresentationObject presentationObject,
@@ -142,7 +147,7 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 				"application/vnd.uub.record+json");
 		pGroupCreateHttpHandler.setOutput(jsonToSendToCreate);
 		int responseCode = pGroupCreateHttpHandler.getResponseCode();
-		if (responseCode != 200) {
+		if (responseCode != 201 && responseCode != 200) {
 			errorMessages
 					.add(String.valueOf(responseCode) + " " + pGroupCreateHttpHandler.getErrorText()
 							+ " Error creating: " + jsonToSendToCreate);

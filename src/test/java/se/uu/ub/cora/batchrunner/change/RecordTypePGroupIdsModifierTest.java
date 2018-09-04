@@ -12,7 +12,8 @@ import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverter;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
@@ -159,7 +160,7 @@ public class RecordTypePGroupIdsModifierTest {
 	}
 
 	private String getDataGroupAsJson(ClientDataGroup dataGroup) {
-		DataToJsonConverterFactoryImp jsonConverterFactory = new DataToJsonConverterFactoryImp();
+		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonWithoutActionLinksForLinksConverterFactory();
 		JsonBuilderFactory factory = new OrgJsonBuilderFactoryAdapter();
 		DataToJsonConverter forClientDataElement = jsonConverterFactory
 				.createForClientDataElement(factory, dataGroup);

@@ -32,11 +32,12 @@ public class PGroupsChangerBatchRunner {
 
 		List<String> errors = new ArrayList<>();
 		createModifier(modifierClassName, url, httpFactoryClassName);
-		for (String recordType : records) {
-			System.out.println("starting recordtype " + recordType);
-			List<String> errorMessages = modifier.modifyData(recordType);
-			errors.addAll(errorMessages);
-		}
+		// for (String recordType : records) {
+		// System.out.println("starting recordtype " + recordType);
+		// List<String> errorMessages = modifier.modifyData(recordType);
+		// errors.addAll(errorMessages);
+		// }
+		List<String> errorMessages = modifier.modifyData(records.iterator().next());
 
 		System.out.println("done");
 		errors.forEach(System.out::println);

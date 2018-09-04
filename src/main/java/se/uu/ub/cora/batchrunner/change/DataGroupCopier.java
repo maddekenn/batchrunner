@@ -1,62 +1,49 @@
 package se.uu.ub.cora.batchrunner.change;
 
-import se.uu.ub.cora.clientdata.ClientDataAtomic;
-import se.uu.ub.cora.clientdata.ClientDataGroup;
-import se.uu.ub.cora.clientdata.ClientDataRecord;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
+import se.uu.ub.cora.httphandler.HttpHandler;
+import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class DataGroupCopier implements DataCopier {
-	private static final String RECORD_INFO = "recordInfo";
-	String newId;
 
-	private DataGroupCopier(String newId) {
-		this.newId = newId;
+	private final String url;
+	private final HttpHandlerFactory httpHandlerFactory;
+	DataGroupJsonCopier jsonCopier;
+
+	private DataGroupCopier(String url, HttpHandlerFactory httpHandlerFactory) {
+		this.url = url;
+		this.httpHandlerFactory = httpHandlerFactory;
 	}
 
-	public static DataGroupCopier usingNewId(String newId) {
-		return new DataGroupCopier(newId);
+	public static DataGroupCopier usingURLAndHttpHandlerFactory(String url,
+			HttpHandlerFactory httpHandlerFactory) {
+		return new DataGroupCopier(url, httpHandlerFactory);
 	}
 
 	@Override
-	public String copyDataGroupAsJson(String jsonRecord) {
-		ClientDataGroup pGroupClientDataGroup = getJsonAsDataGroup(jsonRecord);
-		DataToJsonConverterFactoryImp jsonConverterFactory = new DataToJsonConverterFactoryImp();
-		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(pGroupClientDataGroup,
-				jsonConverterFactory);
+	public String copyTypeFromIdToNewId(String type, String id, String newId) {
+		String readJson = readGroup(type, id);
+		jsonCopier = new DataGroupJsonCopier();
+		return "";
+	}
+
+	private String readGroup(String type, String groupId) {
+		HttpHandler httpHandler = httpHandlerFactory.factor(url + type + "/" + groupId);
+		httpHandler.setRequestMethod("GET");
+		return httpHandler.getResponseText();
+		// return
+		// copier.copyDataGroupAsJsonExcludeLinksUsingJsonAndNewId(pGroupToCopyJson,
+		// newPGroupEnding);
 
 	}
 
-	private ClientDataGroup getJsonAsDataGroup(String jsonRecord) {
-		ClientDataRecord pGroupClientDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(jsonRecord);
-		ClientDataGroup pGroupClientDataGroup = pGroupClientDataRecord.getClientDataGroup();
-
-		ClientDataGroup newRecordInfo = createNewRecordInfoUsingDataGroupAndId(
-				pGroupClientDataGroup);
-		pGroupClientDataGroup.removeFirstChildWithNameInData(RECORD_INFO);
-		pGroupClientDataGroup.addChild(newRecordInfo);
-		return pGroupClientDataGroup;
+	@Override
+	public HttpHandlerFactory getHttpHandler() {
+		return httpHandlerFactory;
 	}
 
-	private ClientDataGroup createNewRecordInfoUsingDataGroupAndId(
-			ClientDataGroup pGroupClientDataGroup) {
-		ClientDataGroup recordInfoToCopy = pGroupClientDataGroup
-				.getFirstGroupWithNameInData(RECORD_INFO);
-		ClientDataGroup dataDivider = recordInfoToCopy.getFirstGroupWithNameInData("dataDivider");
-
-		ClientDataGroup newRecordInfo = ClientDataGroup.withNameInData(RECORD_INFO);
-		newRecordInfo.addChild(ClientDataAtomic.withNameInDataAndValue("id", newId));
-		newRecordInfo.addChild(dataDivider);
-		return newRecordInfo;
+	@Override
+	public String getUrl() {
+		return url;
 	}
 
-	public String copyDataGroupAsJsonExcludeLinks(String jsonRecord) {
-		ClientDataGroup pGroupClientDataGroup = getJsonAsDataGroup(jsonRecord);
-		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonWithoutActionLinksForLinksConverterFactory();
-		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(pGroupClientDataGroup,
-				jsonConverterFactory);
-
-	}
 }
