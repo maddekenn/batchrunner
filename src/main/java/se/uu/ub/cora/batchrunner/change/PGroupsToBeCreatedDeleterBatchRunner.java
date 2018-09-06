@@ -9,13 +9,13 @@ import java.util.List;
 import se.uu.ub.cora.batchrunner.find.Finder;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class PGroupsInRecordTypeChangerBatchRunner {
+public class PGroupsToBeCreatedDeleterBatchRunner {
 
 	protected static Deleter deleter;
 
 	protected static Finder finder;
 
-	private PGroupsInRecordTypeChangerBatchRunner() {
+	private PGroupsToBeCreatedDeleterBatchRunner() {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,

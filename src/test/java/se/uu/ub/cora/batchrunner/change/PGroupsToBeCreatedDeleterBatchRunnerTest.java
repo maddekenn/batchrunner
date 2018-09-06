@@ -12,12 +12,12 @@ import org.testng.annotations.Test;
 import se.uu.ub.cora.batchrunner.find.FinderSpy;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 
-public class PGroupsInRecordTypeChangerBatchRunnerTest {
+public class PGroupsToBeCreatedDeleterBatchRunnerTest {
 
 	@Test
 	public void testConstructorIsPrivate() throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException, InstantiationException {
-		Constructor<PGroupsInRecordTypeChangerBatchRunner> constructor = PGroupsInRecordTypeChangerBatchRunner.class
+		Constructor<PGroupsToBeCreatedDeleterBatchRunner> constructor = PGroupsToBeCreatedDeleterBatchRunner.class
 				.getDeclaredConstructor();
 		assertTrue(Modifier.isPrivate(constructor.getModifiers()));
 		constructor.setAccessible(true);
@@ -32,9 +32,9 @@ public class PGroupsInRecordTypeChangerBatchRunnerTest {
 				"se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy",
 				"se.uu.ub.cora.batchrunner.find.FinderSpy" };
 
-		PGroupsInRecordTypeChangerBatchRunner.main(args);
-		FinderSpy finderSpy = (FinderSpy) PGroupsInRecordTypeChangerBatchRunner.finder;
-		DeleterSpy deleterSpy = (DeleterSpy) PGroupsInRecordTypeChangerBatchRunner.deleter;
+		PGroupsToBeCreatedDeleterBatchRunner.main(args);
+		FinderSpy finderSpy = (FinderSpy) PGroupsToBeCreatedDeleterBatchRunner.finder;
+		DeleterSpy deleterSpy = (DeleterSpy) PGroupsToBeCreatedDeleterBatchRunner.deleter;
 
 		assertTrue(finderSpy.findRecordsCalled);
 

@@ -4,50 +4,67 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.Finder;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class PGroupsChangerBatchRunner {
+public class DataGroupCopierBatchRunner {
 
+	protected static DataCopier dataCopier;
+	static List<String> errors = new ArrayList<>();
+	private static List<List<String>> presentationNames;
 	protected static Finder finder;
 
-	protected static Modifier modifier;
-
-	private PGroupsChangerBatchRunner() {
+	private DataGroupCopierBatchRunner() {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException, InstantiationException {
-		String finderClassName = args[0];
+		String dataCopierClassName = args[0];
 		String url = args[1];
 		String httpFactoryClassName = args[2];
-		String modifierClassName = args[3];
+		String finderClassName = args[3];
 
-		createFinder(finderClassName, url + "recordType", httpFactoryClassName);
+		setUpNameOfPresentations();
 
+		createFinder(finderClassName, url, httpFactoryClassName);
+		createDataGroupCopier(dataCopierClassName, url, httpFactoryClassName);
 		Collection<String> records = finder.findRecords();
+		for (String recordType : records) {
+			createPresentationsForRecordType(recordType);
+		}
 
-		List<String> errors = new ArrayList<>();
-		createModifier(modifierClassName, url, httpFactoryClassName);
-		// for (String recordType : records) {
-		// System.out.println("starting recordtype " + recordType);
-		// List<String> errorMessages = modifier.modifyData(recordType);
-		// errors.addAll(errorMessages);
-		// }
-		List<String> errorMessages = modifier.modifyData(records.iterator().next());
+		System.out.println("done ");
+	}
 
-		System.out.println("done");
-		errors.forEach(System.out::println);
+	private static void setUpNameOfPresentations() {
+		List<String> form = Arrays.asList("FormPGroup", "PGroup");
+		List<String> newForm = Arrays.asList("FormNewPGroup", "NewPGroup");
+		List<String> view = Arrays.asList("ViewPGroup", "OutputPGroup");
+
+		presentationNames = Arrays.asList(form, newForm, view);
+	}
+
+	private static void createPresentationsForRecordType(String recordType) {
+		System.out.println("starting recordtype " + recordType);
+		for (List<String> presentation : presentationNames) {
+			String error = dataCopier.copyTypeFromIdToNewId("presentationGroup",
+					recordType + presentation.get(0), recordType + presentation.get(1));
+			if (!error.startsWith("20")) {
+				System.out.println(error);
+			}
+
+		}
 	}
 
 	private static void createFinder(String finderClassName, String url,
 			String httpFactoryClassName) throws NoSuchMethodException, ClassNotFoundException,
 			InstantiationException, IllegalAccessException, InvocationTargetException {
 		constructFinder(finderClassName);
-		finder.setUrlString(url);
+		finder.setUrlString(url + "recordType");
 		setHttpFactoryInFinder(httpFactoryClassName);
 	}
 
@@ -72,7 +89,7 @@ public class PGroupsChangerBatchRunner {
 		return (HttpHandlerFactory) constructor.newInstance();
 	}
 
-	private static void createModifier(String modifierClassName, String url,
+	private static void createDataGroupCopier(String modifierClassName, String url,
 			String httpFactoryClassName) throws NoSuchMethodException, ClassNotFoundException,
 			IllegalAccessException, InvocationTargetException, InstantiationException {
 		Class<?>[] cArg = new Class[2];
@@ -81,7 +98,7 @@ public class PGroupsChangerBatchRunner {
 		Method constructor = Class.forName(modifierClassName)
 				.getMethod("usingURLAndHttpHandlerFactory", cArg);
 		HttpHandlerFactory httpHandlerFactory = createHttpHandlerFactory(httpFactoryClassName);
-		modifier = (Modifier) constructor.invoke(null, url, httpHandlerFactory);
+		dataCopier = (DataCopier) constructor.invoke(null, url, httpHandlerFactory);
 	}
 
 }

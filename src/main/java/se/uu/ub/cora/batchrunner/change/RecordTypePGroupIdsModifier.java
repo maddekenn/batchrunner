@@ -12,7 +12,7 @@ import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class RecordTypePGroupIdsModifier implements Modifier {
-	private static final String PRESENTATION_GROUP_AS_URL_PART = "presentationGroup/";
+	private static final String LINKED_RECORD_ID = "linkedRecordId";
 	private final String url;
 	private final HttpHandlerFactory httpHandlerFactory;
 	private PresentationObject formPresentation;
@@ -37,76 +37,44 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 	public List<String> modifyData(String recordTypeId) {
 		String recordTypeJson = readRecordType(recordTypeId);
 
-		formPresentation = new PresentationObject(recordTypeId + "FormPGroup",
-				recordTypeId + "PGroup", "presentationFormId");
-		formNewPresentation = new PresentationObject(recordTypeId + "FormNewPGroup",
-				recordTypeId + "NewPGroup", "newPresentationFormId");
-		viewPresentation = new PresentationObject(recordTypeId + "ViewPGroup",
-				recordTypeId + "OutputPGroup", "presentationViewId");
+		setIdsOfOldAndNewPresentations(recordTypeId);
 
-		presentations.add(formPresentation);
-		presentations.add(formNewPresentation);
-		presentations.add(viewPresentation);
-
-		possiblyDeletePresentations();
-
-		possiblyCreateNewPresentations();
-
-		String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeJson);
-
-		createHttpHandlerForPostWithUrlAndJson(url + "recordType/" + recordTypeId,
-				updatedRecordTypeJson);
-
+		String presentationFormId = getPresentationFormId(recordTypeJson);
+		if ((recordTypeId + "FormPGroup").equals(presentationFormId)) {
+			String updatedRecordTypeJson = getUpdatedRecordTypeAsJson(recordTypeJson);
+			createHttpHandlerForPostWithUrlAndJson(url + "recordType/" + recordTypeId,
+					updatedRecordTypeJson);
+		} else {
+			errorMessages.add(recordTypeId + " does not have default id for presentationFormId");
+		}
 		return errorMessages;
 
 	}
 
-	private void possiblyDeletePresentations() {
-		for (PresentationObject presentation : presentations) {
-			int responseCode = deletePresentationGroup(presentation.newPGroupId);
-			if (responseCode == 405) {
-				pGroupsNotAllowedToRemove.add(presentation.newPGroupId);
-			}
-		}
-	}
-
-	private void possiblyCreateNewPresentations() {
-		List<String> jsonToCreateList = new ArrayList<>();
-		for (PresentationObject presentation : presentations) {
-			if (!pGroupsNotAllowedToRemove.contains(presentation.newPGroupId)) {
-				jsonToCreateList.add(
-						copyOldPGroupToNew(presentation.newPGroupId, presentation.oldPGroupId));
-			}
-		}
-
-		for (String jsonToSendToCreate : jsonToCreateList) {
-			int responseCode = createPGroup(jsonToSendToCreate);
-
-		}
-	}
-
-	private String copyOldPGroupToNew(String newPGroupEnding, String oldPGroupEnding) {
-		HttpHandler formPGroupHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + oldPGroupEnding);
-		formPGroupHttpHandler.setRequestMethod("GET");
-		String pGroupToCopyJson = formPGroupHttpHandler.getResponseText();
-		DataGroupJsonCopier copier = new DataGroupJsonCopier();
-		return copier.copyDataGroupAsJsonExcludeLinksUsingJsonAndNewId(pGroupToCopyJson,
-				newPGroupEnding);
-
-	}
-
-	private int deletePresentationGroup(String pGroupEnding) {
-		HttpHandler pGroupDeleteHttpHandler = httpHandlerFactory
-				.factor(url + PRESENTATION_GROUP_AS_URL_PART + pGroupEnding);
-		pGroupDeleteHttpHandler.setRequestMethod("DELETE");
-		return pGroupDeleteHttpHandler.getResponseCode();
+	private String getPresentationFormId(String recordTypeJson) {
+		ClientDataRecord recordTypeDataRecord = ConverterHelper
+				.getJsonAsClientDataRecord(recordTypeJson);
+		ClientDataGroup recordTypeDataGroup = recordTypeDataRecord.getClientDataGroup();
+		ClientDataGroup presentationForm = recordTypeDataGroup
+				.getFirstGroupWithNameInData("presentationFormId");
+		String presentationFormId = presentationForm
+				.getFirstAtomicValueWithNameInData(LINKED_RECORD_ID);
+		return presentationFormId;
 	}
 
 	private String readRecordType(String recordTypeId) {
 		HttpHandler httpHandler = httpHandlerFactory.factor(url + "recordType/" + recordTypeId);
 		httpHandler.setRequestMethod("GET");
 		return httpHandler.getResponseText();
+	}
+
+	private void setIdsOfOldAndNewPresentations(String recordTypeId) {
+		formPresentation = new PresentationObject(recordTypeId + "FormPGroup",
+				recordTypeId + "PGroup", "presentationFormId");
+		formNewPresentation = new PresentationObject(recordTypeId + "FormNewPGroup",
+				recordTypeId + "NewPGroup", "newPresentationFormId");
+		viewPresentation = new PresentationObject(recordTypeId + "ViewPGroup",
+				recordTypeId + "OutputPGroup", "presentationViewId");
 	}
 
 	private String getUpdatedRecordTypeAsJson(String recordTypeJson) {
@@ -124,33 +92,23 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 
 	private void updateLinkUsingDataGroupAndPresentation(PresentationObject presentationObject,
 			ClientDataGroup recordTypeDataGroup) {
-		if (!pGroupsNotAllowedToRemove.contains(presentationObject.newPGroupId)) {
-			ClientDataGroup presentationFormId = recordTypeDataGroup
-					.getFirstGroupWithNameInData(presentationObject.presentationId);
-			presentationFormId.removeFirstChildWithNameInData("linkedRecordId");
-			presentationFormId.addChild(ClientDataAtomic.withNameInDataAndValue("linkedRecordId",
-					presentationObject.newPGroupId));
-		}
+		ClientDataGroup presentationFormId = recordTypeDataGroup
+				.getFirstGroupWithNameInData(presentationObject.presentationId);
+		presentationFormId.removeFirstChildWithNameInData(LINKED_RECORD_ID);
+		presentationFormId.addChild(ClientDataAtomic.withNameInDataAndValue(LINKED_RECORD_ID,
+				presentationObject.newPGroupId));
 	}
 
-	private int createPGroup(String jsonToSendToCreate) {
-		String urlString = url + PRESENTATION_GROUP_AS_URL_PART;
-		return createHttpHandlerForPostWithUrlAndJson(urlString, jsonToSendToCreate);
-	}
-
-	private int createHttpHandlerForPostWithUrlAndJson(String urlString,
-			String jsonToSendToCreate) {
-		HttpHandler pGroupCreateHttpHandler = httpHandlerFactory.factor(urlString);
-		pGroupCreateHttpHandler.setRequestMethod("POST");
-		pGroupCreateHttpHandler.setRequestProperty("Accept", "application/vnd.uub.record+json");
-		pGroupCreateHttpHandler.setRequestProperty("Content-Type",
-				"application/vnd.uub.record+json");
-		pGroupCreateHttpHandler.setOutput(jsonToSendToCreate);
-		int responseCode = pGroupCreateHttpHandler.getResponseCode();
-		if (responseCode != 201 && responseCode != 200) {
-			errorMessages
-					.add(String.valueOf(responseCode) + " " + pGroupCreateHttpHandler.getErrorText()
-							+ " Error creating: " + jsonToSendToCreate);
+	private int createHttpHandlerForPostWithUrlAndJson(String urlString, String jsonToSend) {
+		HttpHandler httpHandler = httpHandlerFactory.factor(urlString);
+		httpHandler.setRequestMethod("POST");
+		httpHandler.setRequestProperty("Accept", "application/vnd.uub.record+json");
+		httpHandler.setRequestProperty("Content-Type", "application/vnd.uub.record+json");
+		httpHandler.setOutput(jsonToSend);
+		int responseCode = httpHandler.getResponseCode();
+		if (responseCode != 200) {
+			errorMessages.add(String.valueOf(responseCode) + " " + httpHandler.getErrorText()
+					+ " Error creating: " + jsonToSend);
 		}
 		return responseCode;
 	}
