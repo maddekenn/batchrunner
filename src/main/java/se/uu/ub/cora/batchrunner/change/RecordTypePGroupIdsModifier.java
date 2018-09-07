@@ -35,6 +35,7 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 
 	@Override
 	public List<String> modifyData(String recordTypeId) {
+		errorMessages = new ArrayList<>();
 		String recordTypeJson = readRecordType(recordTypeId);
 
 		setIdsOfOldAndNewPresentations(recordTypeId);
@@ -57,9 +58,7 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 		ClientDataGroup recordTypeDataGroup = recordTypeDataRecord.getClientDataGroup();
 		ClientDataGroup presentationForm = recordTypeDataGroup
 				.getFirstGroupWithNameInData("presentationFormId");
-		String presentationFormId = presentationForm
-				.getFirstAtomicValueWithNameInData(LINKED_RECORD_ID);
-		return presentationFormId;
+		return presentationForm.getFirstAtomicValueWithNameInData(LINKED_RECORD_ID);
 	}
 
 	private String readRecordType(String recordTypeId) {

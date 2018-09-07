@@ -33,17 +33,21 @@ public class PGroupsToBeCreatedDeleterBatchRunner {
 		List<String> errors = new ArrayList<>();
 		Collection<String> records = finder.findRecords();
 		for (String recordType : records) {
-			System.out.println("starting recordtype " + recordType);
-			List<String> groupsToDelete = new ArrayList<>();
-			groupsToDelete.add(recordType + "PGroup");
-			groupsToDelete.add(recordType + "NewPGroup");
-			groupsToDelete.add(recordType + "OutputPGroup");
+			List<String> groupsToDelete = createListOfGroupsToBeDeleted(recordType);
 			List<String> errorMessages = deleter.deletePGroups(groupsToDelete);
 			errors.addAll(errorMessages);
 		}
 
 		System.out.println("done");
 		errors.forEach(System.out::println);
+	}
+
+	private static List<String> createListOfGroupsToBeDeleted(String recordType) {
+		List<String> groupsToDelete = new ArrayList<>();
+		groupsToDelete.add(recordType + "PGroup");
+		groupsToDelete.add(recordType + "NewPGroup");
+		groupsToDelete.add(recordType + "OutputPGroup");
+		return groupsToDelete;
 	}
 
 	private static void constructDeleter(String deleterClassName)
