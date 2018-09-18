@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerSpy;
 
-public class DataGroupCopierTest {
+public class DataRecordCopierTest {
 
 	private String url;
 	private HttpHandlerFactorySpy httpHandlerFactory;
@@ -22,15 +22,15 @@ public class DataGroupCopierTest {
 
 	@Test
 	public void init() {
-		DataCopier copier = DataGroupCopier.usingURLAndHttpHandlerFactory(url, httpHandlerFactory);
+		DataCopier copier = DataRecordCopier.usingURLAndHttpHandlerFactory(url, httpHandlerFactory);
 		assertTrue(copier.getHttpHandler() instanceof HttpHandlerFactorySpy);
 		assertEquals(copier.getUrl(), url);
 
 	}
 
 	@Test
-	public void testCopyOkOnCreate() {
-		DataGroupCopier copier = DataGroupCopier.usingURLAndHttpHandlerFactory(url,
+	public void testCopyTypeFromIdToIdOkOnCreate() {
+		DataRecordCopier copier = DataRecordCopier.usingURLAndHttpHandlerFactory(url,
 				httpHandlerFactory);
 		String id = "myRecordTypeFormPGroup";
 		String newId = "myRecordTypePGroup";
@@ -68,9 +68,9 @@ public class DataGroupCopierTest {
 	}
 
 	@Test
-	public void testCopyNotOkOnCreate() {
+	public void testCopyTypeFromIdToIdNotOkOnCreate() {
 		httpHandlerFactory.setResponseCode(409);
-		DataGroupCopier copier = DataGroupCopier.usingURLAndHttpHandlerFactory(url,
+		DataRecordCopier copier = DataRecordCopier.usingURLAndHttpHandlerFactory(url,
 				httpHandlerFactory);
 		String id = "myRecordTypeFormPGroup";
 		String newId = "myRecordTypePGroup";
@@ -88,9 +88,9 @@ public class DataGroupCopierTest {
 	}
 
 	@Test
-	public void testCopyNotOkOnRead() {
+	public void testCopyTypeFromIdToIdNotOkOnRead() {
 		httpHandlerFactory.setResponseCode(404);
-		DataGroupCopier copier = DataGroupCopier.usingURLAndHttpHandlerFactory(url,
+		DataRecordCopier copier = DataRecordCopier.usingURLAndHttpHandlerFactory(url,
 				httpHandlerFactory);
 		String id = "myRecordTypeFormPGroup";
 		String newId = "myRecordTypePGroup";

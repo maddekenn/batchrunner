@@ -4,20 +4,20 @@ import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.spider.record.storage.RecordNotFoundException;
 
-public class DataGroupCopier implements DataCopier {
+public class DataRecordCopier implements DataCopier {
 
 	private final String url;
 	private final HttpHandlerFactory httpHandlerFactory;
 	DataGroupJsonCopier jsonCopier;
 
-	private DataGroupCopier(String url, HttpHandlerFactory httpHandlerFactory) {
+	private DataRecordCopier(String url, HttpHandlerFactory httpHandlerFactory) {
 		this.url = url;
 		this.httpHandlerFactory = httpHandlerFactory;
 	}
 
-	public static DataGroupCopier usingURLAndHttpHandlerFactory(String url,
+	public static DataRecordCopier usingURLAndHttpHandlerFactory(String url,
 			HttpHandlerFactory httpHandlerFactory) {
-		return new DataGroupCopier(url, httpHandlerFactory);
+		return new DataRecordCopier(url, httpHandlerFactory);
 	}
 
 	@Override
