@@ -30,6 +30,7 @@ public class DataRecordCopierTest {
 
 	@Test
 	public void testCopyTypeFromIdToIdOkOnCreate() {
+		httpHandlerFactory.setResponseCode(201);
 		DataRecordCopier copier = DataRecordCopier.usingURLAndHttpHandlerFactory(url,
 				httpHandlerFactory);
 		String id = "myRecordTypeFormPGroup";
@@ -40,7 +41,7 @@ public class DataRecordCopierTest {
 				"myRecordTypeFormPGroup");
 		assertTrue(copier.jsonCopier instanceof DataGroupJsonCopier);
 		String expectedJson = "{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"metadataGroup\"},{\"name\":\"linkedRecordId\",\"value\":\"myRecordTypeGroup\"}],\"name\":\"presentationOf\"},{\"children\":[{\"repeatId\":\"3\",\"children\":[{\"repeatId\":\"0\",\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"coraText\"},{\"name\":\"linkedRecordId\",\"value\":\"formOfProjectGrantCollectionVarText\"}],\"name\":\"ref\",\"attributes\":{\"type\":\"text\"}}],\"name\":\"refGroup\"}],\"name\":\"childReference\"},{\"repeatId\":\"0\",\"children\":[{\"repeatId\":\"0\",\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"presentationCollectionVar\"},{\"name\":\"linkedRecordId\",\"value\":\"formOfProjectGrantPCollVar\"}],\"name\":\"ref\",\"attributes\":{\"type\":\"presentation\"}}],\"name\":\"refGroup\"}],\"name\":\"childReference\"},{\"repeatId\":\"4\",\"children\":[{\"repeatId\":\"0\",\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"coraText\"},{\"name\":\"linkedRecordId\",\"value\":\"projectTitlesGroupText\"}],\"name\":\"ref\",\"attributes\":{\"type\":\"text\"}}],\"name\":\"refGroup\"}],\"name\":\"childReference\"},{\"repeatId\":\"1\",\"children\":[{\"repeatId\":\"0\",\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"presentationGroup\"},{\"name\":\"linkedRecordId\",\"value\":\"projectTitlesPGroup\"}],\"name\":\"ref\",\"attributes\":{\"type\":\"presentation\"}}],\"name\":\"refGroup\"}],\"name\":\"childReference\"}],\"name\":\"childReferences\"},{\"name\":\"mode\",\"value\":\"input\"},{\"children\":[{\"name\":\"id\",\"value\":\"myRecordTypePGroup\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"system\"},{\"name\":\"linkedRecordId\",\"value\":\"diva\"}],\"name\":\"dataDivider\"}],\"name\":\"recordInfo\"}],\"name\":\"presentation\",\"attributes\":{\"type\":\"pGroup\"}}";
-		assertEquals(newJson, "200 Ok creating: " + expectedJson);
+		assertEquals(newJson, "201 Ok creating: " + expectedJson);
 
 		assertHttpHandlerIsCorrectForCreateByIndexAndOutput(1, url + "presentationGroup",
 				expectedJson);
@@ -95,7 +96,8 @@ public class DataRecordCopierTest {
 		String id = "myRecordTypeFormPGroup";
 		String newId = "myRecordTypePGroup";
 		String newJson = copier.copyTypeFromIdToNewId("presentationGroup", id, newId);
-		assertEquals(newJson, "404 Unable to read dataGroup myRecordTypeFormPGroup");
+		assertEquals(newJson,
+				"404 Unable to read record with type: presentationGroup and id: myRecordTypeFormPGroup myRecordTypeFormPGroup");
 	}
 
 }
