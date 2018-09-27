@@ -32,8 +32,7 @@ public class HttpHandlerHelper {
 	public String createRecord(String type, String newJson) {
 		HttpHandler httpHandler = createHttpHandlerForPostWithUrlAndJson(url + type);
 		httpHandler.setOutput(newJson);
-		int responseCode = httpHandler.getResponseCode();
-		return constructMessage(newJson, httpHandler, responseCode);
+		return constructMessage(newJson, httpHandler);
 	}
 
 	private HttpHandler createHttpHandlerForPostWithUrlAndJson(String urlString) {
@@ -45,12 +44,13 @@ public class HttpHandlerHelper {
 
 	}
 
-	private String constructMessage(String newJson, HttpHandler httpHandler, int responseCode) {
-		if (responseCode != 201) {
+	private String constructMessage(String newJson, HttpHandler httpHandler) {
+		int responseCode = httpHandler.getResponseCode();
+		if (responseCode != 201 && responseCode != 200) {
 			return String.valueOf(responseCode) + " " + httpHandler.getErrorText()
 					+ " Error creating: " + newJson;
 		}
-		return String.valueOf(responseCode) + " Ok creating: " + newJson;
+		return String.valueOf(responseCode) + " Ok: " + newJson;
 	}
 
 	HttpHandlerFactory getHttpHandler() {
@@ -59,6 +59,13 @@ public class HttpHandlerHelper {
 
 	public String getUrl() {
 		return url;
+	}
+
+	public String updateRecord(String type, String recordId, String newJson) {
+		HttpHandler httpHandler = createHttpHandlerForPostWithUrlAndJson(
+				url + type + "/" + recordId);
+		httpHandler.setOutput(newJson);
+		return constructMessage(newJson, httpHandler);
 	}
 
 }

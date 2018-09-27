@@ -65,7 +65,7 @@ public class HttpHandlerHelperTest {
 		assertEquals(httpHandlerSpy.requestProperties.get("Content-Type"),
 				"application/vnd.uub.record+json");
 		assertEquals(httpHandlerSpy.outputString, "some Json");
-		assertEquals(messageFromCreate, "201 Ok creating: some Json");
+		assertEquals(messageFromCreate, "201 Ok: some Json");
 
 	}
 
@@ -78,6 +78,28 @@ public class HttpHandlerHelperTest {
 		String messageFromCreate = helper.createRecord("someType", someJson);
 
 		assertEquals(messageFromCreate, "409 some error text from spy Error creating: some Json");
+
+	}
+
+	@Test
+	public void testUpdateRecord() {
+		httpHandlerFactory.setResponseCode(200);
+		HttpHandlerHelper helper = HttpHandlerHelper.usingURLAndHttpHandlerFactory(url,
+				httpHandlerFactory);
+		String someJson = "some Json";
+		String recordId = "someRecordId";
+		String messageFromCreate = helper.updateRecord("someType", recordId, someJson);
+
+		HttpHandlerSpy httpHandlerSpy = httpHandlerFactory.httpHandlerSpies.get(0);
+
+		assertEquals(httpHandlerSpy.requestMethod, "POST");
+		assertEquals(httpHandlerSpy.urlString, "http://someTestUrl/someType/someRecordId");
+		assertEquals(httpHandlerSpy.requestProperties.get("Accept"),
+				"application/vnd.uub.record+json");
+		assertEquals(httpHandlerSpy.requestProperties.get("Content-Type"),
+				"application/vnd.uub.record+json");
+		assertEquals(httpHandlerSpy.outputString, "some Json");
+		assertEquals(messageFromCreate, "200 Ok: some Json");
 
 	}
 
