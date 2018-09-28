@@ -8,7 +8,7 @@ import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class DataDividerUpdater {
+public class DataDividerUpdater implements DataUpdater {
 
 	private String url;
 	private HttpHandlerFactory httpHandlerFactory;
@@ -31,7 +31,8 @@ public class DataDividerUpdater {
 		return url;
 	}
 
-	public void updateDataDividerInRecordUsingTypeIdAndNewDivider(String type, String recordId,
+	@Override
+	public String updateDataDividerInRecordUsingTypeIdAndNewDivider(String type, String recordId,
 			String newDataDivider) {
 		HttpHandlerHelper httpHandlerHelper = HttpHandlerHelper.usingURLAndHttpHandlerFactory(url,
 				httpHandlerFactory);
@@ -39,7 +40,7 @@ public class DataDividerUpdater {
 		ClientDataGroup dataGroup = changeDataDividerInRecord(newDataDivider, readRecord);
 		String newJson = getDataGroupAsJson(dataGroup);
 
-		httpHandlerHelper.updateRecord(type, recordId, newJson);
+		return httpHandlerHelper.updateRecord(type, recordId, newJson);
 	}
 
 	private String getDataGroupAsJson(ClientDataGroup dataGroup) {

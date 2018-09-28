@@ -37,10 +37,12 @@ public class DataDividerUpdaterTest {
 
 	@Test
 	public void testUpdateDataDivider() {
-		DataDividerUpdater updater = DataDividerUpdater.usingURLAndHttpHandlerFactory(url,
+		DataUpdater updater = DataDividerUpdater.usingURLAndHttpHandlerFactory(url,
 				httpHandlerFactory);
-		updater.updateDataDividerInRecordUsingTypeIdAndNewDivider("someRecordType", "someRecordId",
-				"newDataDivider");
+		String message = updater.updateDataDividerInRecordUsingTypeIdAndNewDivider("someRecordType",
+				"someRecordId", "newDataDivider");
+
+		assertTrue(message.startsWith("200 Ok:"));
 
 		HttpHandlerSpy httpHandlerReadSpy = httpHandlerFactory.httpHandlerSpies.get(0);
 		assertEquals(httpHandlerReadSpy.requestMethod, "GET");
