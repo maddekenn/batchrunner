@@ -31,7 +31,7 @@ public class DataDividerUpdaterTest {
 	public void init() {
 		DataDividerUpdater updater = DataDividerUpdater.usingURLAndHttpHandlerFactory(url,
 				httpHandlerFactory);
-		assertTrue(updater.getHttpHandler() instanceof HttpHandlerFactorySpy);
+		assertTrue(updater.getHttpHandlerFactory() instanceof HttpHandlerFactorySpy);
 		assertEquals(updater.getUrl(), url);
 	}
 

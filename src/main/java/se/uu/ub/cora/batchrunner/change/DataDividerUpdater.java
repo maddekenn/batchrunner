@@ -23,10 +23,6 @@ public class DataDividerUpdater implements DataUpdater {
 		return new DataDividerUpdater(url, httpHandlerFactory);
 	}
 
-	HttpHandlerFactory getHttpHandler() {
-		return httpHandlerFactory;
-	}
-
 	public String getUrl() {
 		return url;
 	}
@@ -72,4 +68,8 @@ public class DataDividerUpdater implements DataUpdater {
 				ClientDataAtomic.withNameInDataAndValue("linkedRecordId", newDataDivider));
 	}
 
+	@Override
+	public HttpHandlerFactory getHttpHandlerFactory() {
+		return httpHandlerFactory;
+	}
 }
