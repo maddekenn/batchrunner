@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
+import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class DataUpdaterSpy implements DataUpdater {
@@ -29,15 +30,15 @@ public class DataUpdaterSpy implements DataUpdater {
 		return null;
 	}
 
-	@Override
-	public HttpHandlerFactory getHttpHandlerFactory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public static DataUpdaterSpy usingURLAndHttpHandlerFactory(String url,
 			HttpHandlerFactory httpHandlerFactory) {
 		return new DataUpdaterSpy(url, httpHandlerFactory);
+	}
+
+	@Override
+	public CoraClientFactory getCoraClientFactory() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

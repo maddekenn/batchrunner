@@ -7,7 +7,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
-import se.uu.ub.cora.batchrunner.find.HttpHandlerSpy;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
@@ -20,40 +19,38 @@ public class DataDividerUpdaterTest {
 
 	private String url;
 	private HttpHandlerFactorySpy httpHandlerFactory;
+	private CoraClientFactorySpy coraClientFactory;
+	private CoraClientConfigSpy coraClientConfig;
 
 	@BeforeMethod
 	public void setUp() {
 		httpHandlerFactory = new HttpHandlerFactorySpy();
+		coraClientConfig = new CoraClientConfigSpy("someUserId", "someAppToken",
+				"someAppTokenVerifierUrl", "someCoraUrl");
+		coraClientFactory = new CoraClientFactorySpy();
 		url = "http://someTestUrl/";
 	}
 
 	@Test
 	public void init() {
-		DataDividerUpdater updater = DataDividerUpdater.usingURLAndHttpHandlerFactory(url,
-				httpHandlerFactory);
-		assertTrue(updater.getHttpHandlerFactory() instanceof HttpHandlerFactorySpy);
-		assertEquals(updater.getUrl(), url);
+		DataDividerUpdater updater = DataDividerUpdater
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
+		assertTrue(updater.getCoraClientFactory() instanceof CoraClientFactorySpy);
 	}
 
 	@Test
 	public void testUpdateDataDivider() {
-		DataUpdater updater = DataDividerUpdater.usingURLAndHttpHandlerFactory(url,
-				httpHandlerFactory);
-		String message = updater.updateDataDividerInRecordUsingTypeIdAndNewDivider("someRecordType",
-				"someRecordId", "newDataDivider");
+		DataDividerUpdater updater = DataDividerUpdater
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
 
-		assertTrue(message.startsWith("200 Ok:"));
+		String updatedRecord = updater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
+				"someRecordType", "someRecordId", "newDataDivider");
 
-		HttpHandlerSpy httpHandlerReadSpy = httpHandlerFactory.httpHandlerSpies.get(0);
-		assertEquals(httpHandlerReadSpy.requestMethod, "GET");
-		assertTrue(httpHandlerReadSpy.urlString.endsWith("/someRecordType/someRecordId"));
+		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
+		assertEquals(coraClientSpy.recordType, "someRecordType");
+		assertEquals(coraClientSpy.recordId, "someRecordId");
 
-		HttpHandlerSpy httpHandlerUpdateSpy = httpHandlerFactory.httpHandlerSpies.get(1);
-		assertEquals(httpHandlerUpdateSpy.requestMethod, "POST");
-		assertTrue(httpHandlerUpdateSpy.urlString.endsWith("/someRecordType/someRecordId"));
-
-		String outputString = httpHandlerUpdateSpy.outputString;
-		String dataDivider = extractDataDividerFromUpdatedJson(outputString);
+		String dataDivider = extractDataDividerFromUpdatedJson(updatedRecord);
 		assertEquals(dataDivider, "newDataDivider");
 
 	}

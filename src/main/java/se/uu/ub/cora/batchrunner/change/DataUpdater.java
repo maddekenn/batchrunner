@@ -1,12 +1,14 @@
 package se.uu.ub.cora.batchrunner.change;
 
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
+import se.uu.ub.cora.client.CoraClientFactory;
 
 public interface DataUpdater {
 
 	String updateDataDividerInRecordUsingTypeIdAndNewDivider(String type, String recordId,
 			String newDataDivider);
 
-	HttpHandlerFactory getHttpHandlerFactory();
+	// HttpHandlerFactory getHttpHandlerFactory();
+
+	CoraClientFactory getCoraClientFactory();
 
 }

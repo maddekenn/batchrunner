@@ -1,26 +1,47 @@
+/*
+ * Copyright 2018 Uppsala University Library
+ *
+ * This file is part of Cora.
+ *
+ *     Cora is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Cora is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Cora.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.uu.ub.cora.batchrunner.change;
 
-import se.uu.ub.cora.batchrunner.HttpHandlerHelper;
+import se.uu.ub.cora.client.CoraClient;
+import se.uu.ub.cora.client.CoraClientConfig;
+import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class DataDividerUpdater implements DataUpdater {
 
 	private String url;
-	private HttpHandlerFactory httpHandlerFactory;
+	private CoraClientFactory coraClientFactory;
+	private CoraClientConfig coraClientConfig;
 
-	private DataDividerUpdater(String url, HttpHandlerFactory httpHandlerFactory) {
-		this.url = url;
-		this.httpHandlerFactory = httpHandlerFactory;
+	public DataDividerUpdater(CoraClientFactory coraClientFactory,
+			CoraClientConfig coraClientConfig) {
+		this.coraClientFactory = coraClientFactory;
+		this.coraClientConfig = coraClientConfig;
 	}
 
-	public static DataDividerUpdater usingURLAndHttpHandlerFactory(String url,
-			HttpHandlerFactory httpHandlerFactory) {
-		return new DataDividerUpdater(url, httpHandlerFactory);
+	public static DataDividerUpdater usingCoraClientFactoryAndClientConfig(
+			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
+		return new DataDividerUpdater(coraClientFactory, coraClientConfig);
 	}
 
 	public String getUrl() {
@@ -30,13 +51,12 @@ public class DataDividerUpdater implements DataUpdater {
 	@Override
 	public String updateDataDividerInRecordUsingTypeIdAndNewDivider(String type, String recordId,
 			String newDataDivider) {
-		HttpHandlerHelper httpHandlerHelper = HttpHandlerHelper.usingURLAndHttpHandlerFactory(url,
-				httpHandlerFactory);
-		String readRecord = httpHandlerHelper.readRecord(type, recordId);
+		CoraClient coraClient = coraClientFactory.factor(coraClientConfig.userId,
+				coraClientConfig.appToken);
+		String readRecord = coraClient.read(type, recordId);
 		ClientDataGroup dataGroup = changeDataDividerInRecord(newDataDivider, readRecord);
 		String newJson = getDataGroupAsJson(dataGroup);
-
-		return httpHandlerHelper.updateRecord(type, recordId, newJson);
+		return coraClient.update(type, recordId, newJson);
 	}
 
 	private String getDataGroupAsJson(ClientDataGroup dataGroup) {
@@ -69,7 +89,7 @@ public class DataDividerUpdater implements DataUpdater {
 	}
 
 	@Override
-	public HttpHandlerFactory getHttpHandlerFactory() {
-		return httpHandlerFactory;
+	public CoraClientFactory getCoraClientFactory() {
+		return coraClientFactory;
 	}
 }

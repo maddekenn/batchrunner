@@ -1,3 +1,21 @@
+/*
+ * Copyright 2018 Uppsala University Library
+ *
+ * This file is part of Cora.
+ *
+ *     Cora is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Cora is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Cora.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.uu.ub.cora.batchrunner.change;
 
 import static org.testng.Assert.assertEquals;
@@ -11,6 +29,7 @@ import org.testng.annotations.Test;
 
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerSpy;
+import se.uu.ub.cora.client.CoraClientConfig;
 
 public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 
@@ -25,10 +44,38 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 	}
 
 	@Test
+	public void testInit() throws ClassNotFoundException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, InstantiationException {
+		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
+				"http://localhost:8080/therest/rest/record/",
+				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
+				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
+				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider" };
+
+		CompleteLanguageDataDividerChangerBatchRunner.main(args);
+		DataUpdaterSpy dataUpdater = (DataUpdaterSpy) CompleteLanguageDataDividerChangerBatchRunner.dataUpdater;
+		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.coraClientFactory;
+
+		assertTrue(coraClientFactory instanceof CoraClientFactorySpy);
+		// assertEquals(coraClientFactory.getAppTokenVerifierUrl(),
+		// "appTokenVerifierUrl");
+		// assertEquals(coraClientFactory.getBaseUrl(),
+		// "http://localhost:8080/therest/rest/record/");
+
+		CoraClientConfig coraClientConfig = CompleteLanguageDataDividerChangerBatchRunner.coraClientConfig;
+		assertEquals(coraClientConfig.userId, args[0]);
+		assertEquals(coraClientConfig.appToken, args[1]);
+		assertEquals(coraClientConfig.appTokenVerifierUrl, args[2]);
+		assertEquals(coraClientConfig.coraUrl, args[3]);
+
+	}
+
+	@Test
 	public void testMainMethod() throws ClassNotFoundException, NoSuchMethodException,
 			InvocationTargetException, InstantiationException, IllegalAccessException {
-		String args[] = new String[] { "se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
+		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
 				"http://localhost:8080/therest/rest/record/",
+				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
 				"se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy",
 				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider" };
 
