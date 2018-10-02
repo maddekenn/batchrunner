@@ -6,7 +6,6 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
@@ -17,18 +16,14 @@ import se.uu.ub.cora.json.parser.org.OrgJsonParser;
 
 public class DataDividerUpdaterTest {
 
-	private String url;
-	private HttpHandlerFactorySpy httpHandlerFactory;
 	private CoraClientFactorySpy coraClientFactory;
 	private CoraClientConfigSpy coraClientConfig;
 
 	@BeforeMethod
 	public void setUp() {
-		httpHandlerFactory = new HttpHandlerFactorySpy();
 		coraClientConfig = new CoraClientConfigSpy("someUserId", "someAppToken",
 				"someAppTokenVerifierUrl", "someCoraUrl");
 		coraClientFactory = new CoraClientFactorySpy("someUserId", "someAppToken");
-		url = "http://someTestUrl/";
 	}
 
 	@Test

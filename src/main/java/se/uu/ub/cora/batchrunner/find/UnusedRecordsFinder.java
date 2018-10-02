@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import se.uu.ub.cora.client.CoraClientConfig;
+import se.uu.ub.cora.client.CoraClientFactory;
+import se.uu.ub.cora.clientdata.RecordIdentifier;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.json.parser.JsonArray;
@@ -68,6 +71,19 @@ public class UnusedRecordsFinder extends MetadataFinder implements Finder {
 	@Override
 	public void setHttpHandlerFactory(HttpHandlerFactory httpHandlerFactory) {
 		this.httpHandlerFactory = httpHandlerFactory;
+	}
+
+	@Override
+	public List<RecordIdentifier> findRecordsUsingRecordIdentifier(
+			RecordIdentifier recordIdentifier) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Finder usingCoraClientFactoryAndClientConfig(CoraClientFactory coraClientFactory,
+			CoraClientConfig coraClientConfig) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

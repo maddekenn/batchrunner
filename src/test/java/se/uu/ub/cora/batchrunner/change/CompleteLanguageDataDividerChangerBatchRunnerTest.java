@@ -27,6 +27,7 @@ import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.find.FinderSpy;
 import se.uu.ub.cora.client.CoraClientConfig;
 
 public class CompleteLanguageDataDividerChangerBatchRunnerTest {
@@ -48,7 +49,8 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 				"http://localhost:8080/therest/rest/record/",
 				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
 				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
-				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider" };
+				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider",
+				"metadataItemCollection", "completeLanguageCollection" };
 
 		CompleteLanguageDataDividerChangerBatchRunner.main(args);
 		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.coraClientFactory;
@@ -72,10 +74,17 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 				"http://localhost:8080/therest/rest/record/",
 				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
 				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
-				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider" };
+				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider",
+				"metadataItemCollection", "completeLanguageCollection" };
 
 		CompleteLanguageDataDividerChangerBatchRunner.main(args);
 
+		FinderSpy finder = (FinderSpy) CompleteLanguageDataDividerChangerBatchRunner.finder;
+		CoraClientConfig coraClientConfig = finder.coraClientConfig;
+		assertEquals(coraClientConfig.userId, args[0]);
+		assertEquals(coraClientConfig.appToken, args[1]);
+		assertEquals(coraClientConfig.appTokenVerifierUrl, args[2]);
+		assertEquals(coraClientConfig.coraUrl, args[3]);
 		DataUpdaterSpy dataUpdater = (DataUpdaterSpy) CompleteLanguageDataDividerChangerBatchRunner.dataUpdater;
 		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.coraClientFactory;
 
@@ -94,6 +103,7 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 
 		assertEquals(dataUpdater.dataDividers.size(), 2);
 		assertEquals(dataUpdater.dataDividers.get(0), "someNewDataDivider");
+
 	}
 
 }

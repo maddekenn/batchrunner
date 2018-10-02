@@ -23,17 +23,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.uu.ub.cora.batchrunner.find.Finder;
 import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
+import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public class CompleteLanguageDataDividerChangerBatchRunner {
+	protected static Finder finder;
 	protected static DataUpdater dataUpdater;
 	protected static CoraClientFactory coraClientFactory;
-	protected static HttpHandlerFactory httpHandlerFactory;
 	protected static CoraClientConfig coraClientConfig;
 	static List<String> errors = new ArrayList<>();
 
@@ -48,13 +49,14 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		String finderClassName = args[6];
 		String newDataDivider = args[7];
 
-		coraClientConfig = createCoraClientConfig(args);
-
+		createCoraClientConfig(args);
 		createCoraClientFactory(httpFactoryClassName);
+		createFinder(finderClassName);
 		CoraClient coraClient = coraClientFactory.factor(coraClientConfig.userId,
 				coraClientConfig.appToken);
 
-		createDataUpdater(dataUpdaterClassName, url);
+		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
+		List<RecordIdentifier> refs = finder.findRecordsUsingRecordIdentifier(recordIdentifier);
 
 		String readRecord = coraClient.read("metadataItemCollection", "completeLanguageCollection");
 
@@ -64,10 +66,12 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		ClientDataGroup collectionItemReferences = clientDataGroup
 				.getFirstGroupWithNameInData("collectionItemReferences");
 
-		List<ClientDataGroup> refs = collectionItemReferences.getAllGroupsWithNameInData("ref");
-		for (ClientDataGroup ref : refs) {
-			String itemId = ref.getFirstAtomicValueWithNameInData("linkedRecordId");
-			String itemType = ref.getFirstAtomicValueWithNameInData("linkedRecordType");
+		createDataUpdater(dataUpdaterClassName, url);
+		// List<ClientDataGroup> refs =
+		// collectionItemReferences.getAllGroupsWithNameInData("ref");
+		for (RecordIdentifier ref : refs) {
+			String itemId = ref.id;
+			String itemType = ref.type;
 			String response = dataUpdater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
 					itemType, itemId, newDataDivider);
 			System.out.println("recordId :" + itemId + " response" + response);
@@ -76,17 +80,17 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		System.out.println("done ");
 	}
 
-	private static CoraClientConfig createCoraClientConfig(String[] args) {
+	private static void createCoraClientConfig(String[] args) {
 		String userId = args[0];
 		String appToken = args[1];
 		String appTokenVerifierUrl = args[2];
 		String coraUrl = args[3];
-		return new CoraClientConfig(userId, appToken, appTokenVerifierUrl, coraUrl);
+		coraClientConfig = new CoraClientConfig(userId, appToken, appTokenVerifierUrl, coraUrl);
 	}
 
 	private static void createCoraClientFactory(String httpFactoryClassName)
-			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+			throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException,
+			InvocationTargetException {
 		Class<?>[] cArg = new Class[2];
 		cArg[0] = String.class;
 		cArg[1] = String.class;
@@ -95,6 +99,17 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		coraClientFactory = (CoraClientFactory) constructor.invoke(null,
 				coraClientConfig.appTokenVerifierUrl, coraClientConfig.coraUrl);
 
+	}
+
+	private static void createFinder(String finderClassName)
+			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		Class<?>[] cArg = new Class[2];
+		cArg[0] = CoraClientFactory.class;
+		cArg[1] = CoraClientConfig.class;
+		Method constructor = Class.forName(finderClassName)
+				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
+		finder = (Finder) constructor.invoke(null, coraClientFactory, coraClientConfig);
 	}
 
 	private static void createDataUpdater(String updaterClassName, String url)
