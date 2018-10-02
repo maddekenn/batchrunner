@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
+import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientFactory;
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class DataUpdaterSpy implements DataUpdater {
 
@@ -14,10 +14,12 @@ public class DataUpdaterSpy implements DataUpdater {
 	public List<String> types = new ArrayList<>();
 	public List<String> recordIds = new ArrayList<>();
 	public List<String> dataDividers = new ArrayList<>();
+	public CoraClientFactory coraClientFactory;
+	public CoraClientConfig coraClientConfig;
 
-	public DataUpdaterSpy(String url, HttpHandlerFactory httpHandlerFactory) {
-		this.url = url;
-		this.httpHandlerFactory = (HttpHandlerFactorySpy) httpHandlerFactory;
+	public DataUpdaterSpy(CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
+		this.coraClientFactory = coraClientFactory;
+		this.coraClientConfig = coraClientConfig;
 	}
 
 	@Override
@@ -30,9 +32,9 @@ public class DataUpdaterSpy implements DataUpdater {
 		return null;
 	}
 
-	public static DataUpdaterSpy usingURLAndHttpHandlerFactory(String url,
-			HttpHandlerFactory httpHandlerFactory) {
-		return new DataUpdaterSpy(url, httpHandlerFactory);
+	public static DataUpdaterSpy usingCoraClientFactoryAndClientConfig(
+			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
+		return new DataUpdaterSpy(coraClientFactory, coraClientConfig);
 	}
 
 	@Override

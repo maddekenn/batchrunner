@@ -18,17 +18,14 @@
  */
 package se.uu.ub.cora.batchrunner.change;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.uu.ub.cora.batchrunner.HttpHandlerHelper;
 import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientFactory;
-import se.uu.ub.cora.client.CoraClientFactoryImp;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
@@ -39,9 +36,6 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 	protected static HttpHandlerFactory httpHandlerFactory;
 	protected static CoraClientConfig coraClientConfig;
 	static List<String> errors = new ArrayList<>();
-
-	// private static List<List<String>> presentationNames;
-	// protected static Finder finder;
 
 	private CompleteLanguageDataDividerChangerBatchRunner() {
 	}
@@ -55,19 +49,13 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		String newDataDivider = args[7];
 
 		coraClientConfig = createCoraClientConfig(args);
-		coraClientFactory = CoraClientFactoryImp.usingAppTokenVerifierUrlAndBaseUrl(
-				coraClientConfig.appTokenVerifierUrl, coraClientConfig.coraUrl);
 
+		createCoraClientFactory(httpFactoryClassName);
 		CoraClient coraClient = coraClientFactory.factor(coraClientConfig.userId,
 				coraClientConfig.appToken);
 
-		createHttpHandlerFactory(httpFactoryClassName);
 		createDataUpdater(dataUpdaterClassName, url);
 
-		HttpHandlerHelper httpHandlerHelper = HttpHandlerHelper.usingURLAndHttpHandlerFactory(url,
-				httpHandlerFactory);
-		// String readRecord = httpHandlerHelper.readRecord("metadataItemCollection",
-		// "completeLanguageCollection");
 		String readRecord = coraClient.read("metadataItemCollection", "completeLanguageCollection");
 
 		ClientDataRecord jsonAsClientDataRecord = ConverterHelper
@@ -96,22 +84,28 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		return new CoraClientConfig(userId, appToken, appTokenVerifierUrl, coraUrl);
 	}
 
-	private static void createHttpHandlerFactory(String httpFactoryClassName)
+	private static void createCoraClientFactory(String httpFactoryClassName)
 			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
-		Constructor<?> constructor = Class.forName(httpFactoryClassName).getConstructor();
-		httpHandlerFactory = (HttpHandlerFactory) constructor.newInstance();
+		Class<?>[] cArg = new Class[2];
+		cArg[0] = String.class;
+		cArg[1] = String.class;
+		Method constructor = Class.forName(httpFactoryClassName)
+				.getMethod("usingAppTokenVerifierUrlAndBaseUrl", cArg);
+		coraClientFactory = (CoraClientFactory) constructor.invoke(null,
+				coraClientConfig.appTokenVerifierUrl, coraClientConfig.coraUrl);
+
 	}
 
 	private static void createDataUpdater(String updaterClassName, String url)
 			throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException,
 			InvocationTargetException {
 		Class<?>[] cArg = new Class[2];
-		cArg[0] = String.class;
-		cArg[1] = HttpHandlerFactory.class;
+		cArg[0] = CoraClientFactory.class;
+		cArg[1] = CoraClientConfig.class;
 		Method constructor = Class.forName(updaterClassName)
-				.getMethod("usingURLAndHttpHandlerFactory", cArg);
-		dataUpdater = (DataUpdater) constructor.invoke(null, url, httpHandlerFactory);
+				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
+		dataUpdater = (DataUpdater) constructor.invoke(null, coraClientFactory, coraClientConfig);
 	}
 
 }

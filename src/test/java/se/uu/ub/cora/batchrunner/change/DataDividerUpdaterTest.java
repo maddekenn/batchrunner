@@ -27,7 +27,7 @@ public class DataDividerUpdaterTest {
 		httpHandlerFactory = new HttpHandlerFactorySpy();
 		coraClientConfig = new CoraClientConfigSpy("someUserId", "someAppToken",
 				"someAppTokenVerifierUrl", "someCoraUrl");
-		coraClientFactory = new CoraClientFactorySpy();
+		coraClientFactory = new CoraClientFactorySpy("someUserId", "someAppToken");
 		url = "http://someTestUrl/";
 	}
 

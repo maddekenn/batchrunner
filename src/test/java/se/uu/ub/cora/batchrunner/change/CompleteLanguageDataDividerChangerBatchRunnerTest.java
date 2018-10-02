@@ -27,8 +27,6 @@ import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
 
-import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
-import se.uu.ub.cora.batchrunner.find.HttpHandlerSpy;
 import se.uu.ub.cora.client.CoraClientConfig;
 
 public class CompleteLanguageDataDividerChangerBatchRunnerTest {
@@ -53,14 +51,11 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider" };
 
 		CompleteLanguageDataDividerChangerBatchRunner.main(args);
-		DataUpdaterSpy dataUpdater = (DataUpdaterSpy) CompleteLanguageDataDividerChangerBatchRunner.dataUpdater;
 		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.coraClientFactory;
 
 		assertTrue(coraClientFactory instanceof CoraClientFactorySpy);
-		// assertEquals(coraClientFactory.getAppTokenVerifierUrl(),
-		// "appTokenVerifierUrl");
-		// assertEquals(coraClientFactory.getBaseUrl(),
-		// "http://localhost:8080/therest/rest/record/");
+		assertEquals(coraClientFactory.appTokenVerifierUrl, "appTokenVerifierUrl");
+		assertEquals(coraClientFactory.baseUrl, "http://localhost:8080/therest/rest/record/");
 
 		CoraClientConfig coraClientConfig = CompleteLanguageDataDividerChangerBatchRunner.coraClientConfig;
 		assertEquals(coraClientConfig.userId, args[0]);
@@ -76,18 +71,18 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
 				"http://localhost:8080/therest/rest/record/",
 				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
-				"se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy",
+				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
 				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider" };
 
 		CompleteLanguageDataDividerChangerBatchRunner.main(args);
 
 		DataUpdaterSpy dataUpdater = (DataUpdaterSpy) CompleteLanguageDataDividerChangerBatchRunner.dataUpdater;
-		HttpHandlerFactorySpy httpHandlerFactory = (HttpHandlerFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.httpHandlerFactory;
+		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.coraClientFactory;
 
-		HttpHandlerSpy httpHandlerReadItemCollection = httpHandlerFactory.httpHandlerSpies.get(0);
-		assertEquals(httpHandlerReadItemCollection.requestMethod, "GET");
-		assertTrue(httpHandlerReadItemCollection.urlString
-				.endsWith("/metadataItemCollection/completeLanguageCollection"));
+		CoraClientSpy coraClientReadCollectionSpy = coraClientFactory.factoredClientSpies.get(0);
+
+		assertEquals(coraClientReadCollectionSpy.recordType, "metadataItemCollection");
+		assertEquals(coraClientReadCollectionSpy.recordId, "completeLanguageCollection");
 
 		assertEquals(dataUpdater.types.size(), 2);
 		assertEquals(dataUpdater.types.get(1), "genericCollectionItem");
@@ -99,26 +94,6 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 
 		assertEquals(dataUpdater.dataDividers.size(), 2);
 		assertEquals(dataUpdater.dataDividers.get(0), "someNewDataDivider");
-		assertEquals(dataUpdater.dataDividers.get(1), "someNewDataDivider");
-		// assertTrue(httpHandlerUpdateItem.urlString
-		// .endsWith("/metadataItemCollection/completeLanguageCollection"));
-
-		// FinderSpy finderSpy = (FinderSpy) DataGroupCopierBatchRunner.finder;
-		// assertTrue(finderSpy.findRecordsCalled);
-		// assertEquals(finderSpy.url,
-		// "http://localhost:8080/therest/rest/record/recordType");
-
-		DataUpdaterSpy dataUpdaterSpy = (DataUpdaterSpy) CompleteLanguageDataDividerChangerBatchRunner.dataUpdater;
-		// assertEquals(dataUpdaterSpy.types.get(0), "presentationGroup");
-		// assertEquals(dataCopierSpy.ids.get(0), "someIdFormPGroup");
-		// assertEquals(dataCopierSpy.newIds.get(0), "someIdPGroup");
-		// assertEquals(dataCopierSpy.types.get(1), "presentationGroup");
-		// assertEquals(dataCopierSpy.ids.get(1), "someIdFormNewPGroup");
-		// assertEquals(dataCopierSpy.newIds.get(1), "someIdNewPGroup");
-		// assertEquals(dataCopierSpy.types.get(2), "presentationGroup");
-		// assertEquals(dataCopierSpy.ids.get(2), "someIdViewPGroup");
-		// assertEquals(dataCopierSpy.newIds.get(2), "someIdOutputPGroup");
-
 	}
 
 }
