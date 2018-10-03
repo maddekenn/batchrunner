@@ -43,7 +43,7 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 	}
 
 	@Test
-	public void testInit() throws ClassNotFoundException, NoSuchMethodException,
+	public void testMainMethod() throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException, InstantiationException {
 		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
 				"http://localhost:8080/therest/rest/record/",
@@ -59,39 +59,14 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 		assertEquals(coraClientFactory.appTokenVerifierUrl, "appTokenVerifierUrl");
 		assertEquals(coraClientFactory.baseUrl, "http://localhost:8080/therest/rest/record/");
 
-		CoraClientConfig coraClientConfig = CompleteLanguageDataDividerChangerBatchRunner.coraClientConfig;
-		assertEquals(coraClientConfig.userId, args[0]);
-		assertEquals(coraClientConfig.appToken, args[1]);
-		assertEquals(coraClientConfig.appTokenVerifierUrl, args[2]);
-		assertEquals(coraClientConfig.coraUrl, args[3]);
-
-	}
-
-	@Test
-	public void testMainMethod() throws ClassNotFoundException, NoSuchMethodException,
-			InvocationTargetException, InstantiationException, IllegalAccessException {
-		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
-				"http://localhost:8080/therest/rest/record/",
-				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
-				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
-				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider",
-				"metadataItemCollection", "completeLanguageCollection" };
-
-		CompleteLanguageDataDividerChangerBatchRunner.main(args);
-
 		FinderSpy finder = (FinderSpy) CompleteLanguageDataDividerChangerBatchRunner.finder;
 		CoraClientConfig coraClientConfig = finder.coraClientConfig;
 		assertEquals(coraClientConfig.userId, args[0]);
 		assertEquals(coraClientConfig.appToken, args[1]);
 		assertEquals(coraClientConfig.appTokenVerifierUrl, args[2]);
 		assertEquals(coraClientConfig.coraUrl, args[3]);
+
 		DataUpdaterSpy dataUpdater = (DataUpdaterSpy) CompleteLanguageDataDividerChangerBatchRunner.dataUpdater;
-		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.coraClientFactory;
-
-		CoraClientSpy coraClientReadCollectionSpy = coraClientFactory.factoredClientSpies.get(0);
-
-		assertEquals(coraClientReadCollectionSpy.recordType, "metadataItemCollection");
-		assertEquals(coraClientReadCollectionSpy.recordId, "completeLanguageCollection");
 
 		assertEquals(dataUpdater.types.size(), 2);
 		assertEquals(dataUpdater.types.get(1), "genericCollectionItem");

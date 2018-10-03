@@ -24,11 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.Finder;
-import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientFactory;
-import se.uu.ub.cora.clientdata.ClientDataGroup;
-import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public class CompleteLanguageDataDividerChangerBatchRunner {
@@ -52,23 +49,11 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		createCoraClientConfig(args);
 		createCoraClientFactory(httpFactoryClassName);
 		createFinder(finderClassName);
-		CoraClient coraClient = coraClientFactory.factor(coraClientConfig.userId,
-				coraClientConfig.appToken);
 
 		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
 		List<RecordIdentifier> refs = finder.findRecordsUsingRecordIdentifier(recordIdentifier);
 
-		String readRecord = coraClient.read("metadataItemCollection", "completeLanguageCollection");
-
-		ClientDataRecord jsonAsClientDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(readRecord);
-		ClientDataGroup clientDataGroup = jsonAsClientDataRecord.getClientDataGroup();
-		ClientDataGroup collectionItemReferences = clientDataGroup
-				.getFirstGroupWithNameInData("collectionItemReferences");
-
 		createDataUpdater(dataUpdaterClassName, url);
-		// List<ClientDataGroup> refs =
-		// collectionItemReferences.getAllGroupsWithNameInData("ref");
 		for (RecordIdentifier ref : refs) {
 			String itemId = ref.id;
 			String itemType = ref.type;

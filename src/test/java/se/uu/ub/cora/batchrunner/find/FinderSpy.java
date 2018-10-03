@@ -18,6 +18,9 @@ public class FinderSpy implements Finder {
 	public CoraClientConfig coraClientConfig;
 	public RecordIdentifier recordIdentifier;
 
+	public FinderSpy() {
+	}
+
 	public FinderSpy(CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
 		this.coraClientFactory = coraClientFactory;
 		this.coraClientConfig = coraClientConfig;
