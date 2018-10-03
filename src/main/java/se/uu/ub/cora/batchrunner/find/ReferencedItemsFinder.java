@@ -1,7 +1,6 @@
 package se.uu.ub.cora.batchrunner.find;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import se.uu.ub.cora.batchrunner.change.ConverterHelper;
@@ -13,7 +12,7 @@ import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class ReferencedItemsFinder implements Finder {
+public class ReferencedItemsFinder implements RecordFinder {
 
 	private CoraClientFactory coraClientFactory;
 	private CoraClientConfig coraClientConfig;
@@ -24,30 +23,14 @@ public class ReferencedItemsFinder implements Finder {
 		this.coraClientConfig = coraClientConfig;
 	}
 
-	public static Finder usingURLAndHttpHandlerFactory(String url,
+	public static RecordFinder usingURLAndHttpHandlerFactory(String url,
 			HttpHandlerFactory httpHandlerFactorySpy) {
 		return null;
 	}
 
-	public static Finder usingCoraClientFactoryAndClientConfig(CoraClientFactory coraClientFactory,
-			CoraClientConfig coraClientConfig) {
+	public static RecordFinder usingCoraClientFactoryAndClientConfig(
+			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
 		return new ReferencedItemsFinder(coraClientFactory, coraClientConfig);
-	}
-
-	@Override
-	public void setUrlString(String url) {
-
-	}
-
-	@Override
-	public Collection<String> findRecords() {
-		return null;
-	}
-
-	@Override
-	public void setHttpHandlerFactory(HttpHandlerFactory httpHandlerFactorySpy) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

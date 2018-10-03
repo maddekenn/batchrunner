@@ -13,7 +13,7 @@ import se.uu.ub.cora.batchrunner.change.CoraClientSpy;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public class ReferencedItemsFinderTest {
-	private Finder finder;
+	private RecordFinder finder;
 	private CoraClientFactorySpy coraClientFactory;
 	private CoraClientConfigSpy coraClientConfig;
 

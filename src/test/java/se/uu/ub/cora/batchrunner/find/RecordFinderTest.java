@@ -10,12 +10,12 @@ import org.testng.annotations.Test;
 import se.uu.ub.cora.json.parser.JsonParseException;
 
 public class RecordFinderTest {
-	private RecordFinder finder;
+	private RecordFinderImp finder;
 	private HttpHandlerFactorySpy httpHandlerFactorySpy;
 
 	@BeforeMethod
 	public void setUp() {
-		finder = new RecordFinder();
+		finder = new RecordFinderImp();
 		httpHandlerFactorySpy = new HttpHandlerFactorySpy();
 		finder.setHttpHandlerFactory(httpHandlerFactorySpy);
 

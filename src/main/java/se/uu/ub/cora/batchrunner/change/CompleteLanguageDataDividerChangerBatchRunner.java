@@ -23,13 +23,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.uu.ub.cora.batchrunner.find.Finder;
+import se.uu.ub.cora.batchrunner.find.RecordFinder;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public class CompleteLanguageDataDividerChangerBatchRunner {
-	protected static Finder finder;
+	protected static RecordFinder finder;
 	protected static DataUpdater dataUpdater;
 	protected static CoraClientFactory coraClientFactory;
 	protected static CoraClientConfig coraClientConfig;
@@ -94,7 +94,7 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 		cArg[1] = CoraClientConfig.class;
 		Method constructor = Class.forName(finderClassName)
 				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
-		finder = (Finder) constructor.invoke(null, coraClientFactory, coraClientConfig);
+		finder = (RecordFinder) constructor.invoke(null, coraClientFactory, coraClientConfig);
 	}
 
 	private static void createDataUpdater(String updaterClassName, String url)

@@ -27,7 +27,7 @@ import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
 
-import se.uu.ub.cora.batchrunner.find.FinderSpy;
+import se.uu.ub.cora.batchrunner.find.RecordFinderSpy;
 import se.uu.ub.cora.client.CoraClientConfig;
 
 public class CompleteLanguageDataDividerChangerBatchRunnerTest {
@@ -49,7 +49,7 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 				"http://localhost:8080/therest/rest/record/",
 				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
 				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
-				"se.uu.ub.cora.batchrunner.find.FinderSpy", "someNewDataDivider",
+				"se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "someNewDataDivider",
 				"metadataItemCollection", "completeLanguageCollection" };
 
 		CompleteLanguageDataDividerChangerBatchRunner.main(args);
@@ -59,7 +59,7 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 		assertEquals(coraClientFactory.appTokenVerifierUrl, "appTokenVerifierUrl");
 		assertEquals(coraClientFactory.baseUrl, "http://localhost:8080/therest/rest/record/");
 
-		FinderSpy finder = (FinderSpy) CompleteLanguageDataDividerChangerBatchRunner.finder;
+		RecordFinderSpy finder = (RecordFinderSpy) CompleteLanguageDataDividerChangerBatchRunner.finder;
 		CoraClientConfig coraClientConfig = finder.coraClientConfig;
 		assertEquals(coraClientConfig.userId, args[0]);
 		assertEquals(coraClientConfig.appToken, args[1]);

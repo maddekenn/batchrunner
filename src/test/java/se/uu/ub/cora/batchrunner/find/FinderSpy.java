@@ -45,16 +45,6 @@ public class FinderSpy implements Finder {
 		this.httpHandlerFactory = httpHandlerFactory;
 	}
 
-	@Override
-	public List<RecordIdentifier> findRecordsUsingRecordIdentifier(
-			RecordIdentifier recordIdentifier) {
-		this.recordIdentifier = recordIdentifier;
-		List<RecordIdentifier> recordIdentifiers = new ArrayList<>();
-		recordIdentifiers.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "svItem"));
-		recordIdentifiers.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "enItem"));
-		return recordIdentifiers;
-	}
-
 	public static Finder usingCoraClientFactoryAndClientConfig(CoraClientFactory coraClientFactory,
 			CoraClientConfig coraClientConfig) {
 		return new FinderSpy(coraClientFactory, coraClientConfig);

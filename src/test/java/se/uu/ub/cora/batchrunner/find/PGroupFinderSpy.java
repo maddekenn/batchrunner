@@ -6,7 +6,6 @@ import java.util.List;
 
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientFactory;
-import se.uu.ub.cora.clientdata.RecordIdentifier;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class PGroupFinderSpy implements Finder {
@@ -41,13 +40,6 @@ public class PGroupFinderSpy implements Finder {
 
 	public static PGroupFinderSpy usingListOfRecordTypes(List<String> recordTypeNames) {
 		return new PGroupFinderSpy(recordTypeNames);
-	}
-
-	@Override
-	public List<RecordIdentifier> findRecordsUsingRecordIdentifier(
-			RecordIdentifier recordIdentifier) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public Finder usingCoraClientFactoryAndClientConfig(CoraClientFactory coraClientFactory,
