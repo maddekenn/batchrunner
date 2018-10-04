@@ -46,5 +46,16 @@ public class TextsConnectedToItemCollectionFinderTest {
 		assertEquals(coraClientReadItemSpy2.recordId, "enItem");
 
 		assertEquals(items.size(), 4);
+		assertCorrectRecordIdentifier(items, "svItemText", 0);
+		assertCorrectRecordIdentifier(items, "svItemDefText", 1);
+		assertCorrectRecordIdentifier(items, "enItemText", 2);
+		assertCorrectRecordIdentifier(items, "enItemDefText", 3);
+	}
+
+	private void assertCorrectRecordIdentifier(List<RecordIdentifier> items, String itemId,
+			int index) {
+		RecordIdentifier firstItemIdentifier = items.get(index);
+		assertEquals(firstItemIdentifier.type, "coraText");
+		assertEquals(firstItemIdentifier.id, itemId);
 	}
 }

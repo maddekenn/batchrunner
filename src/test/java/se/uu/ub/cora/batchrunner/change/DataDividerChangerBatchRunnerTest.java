@@ -30,12 +30,12 @@ import org.testng.annotations.Test;
 import se.uu.ub.cora.batchrunner.find.RecordFinderSpy;
 import se.uu.ub.cora.client.CoraClientConfig;
 
-public class CompleteLanguageDataDividerChangerBatchRunnerTest {
+public class DataDividerChangerBatchRunnerTest {
 
 	@Test
 	public void testConstructorIsPrivate() throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException, InstantiationException {
-		Constructor<CompleteLanguageDataDividerChangerBatchRunner> constructor = CompleteLanguageDataDividerChangerBatchRunner.class
+		Constructor<DataDividerChangerBatchRunner> constructor = DataDividerChangerBatchRunner.class
 				.getDeclaredConstructor();
 		assertTrue(Modifier.isPrivate(constructor.getModifiers()));
 		constructor.setAccessible(true);
@@ -52,21 +52,21 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 				"se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "someNewDataDivider",
 				"metadataItemCollection", "completeLanguageCollection" };
 
-		CompleteLanguageDataDividerChangerBatchRunner.main(args);
-		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) CompleteLanguageDataDividerChangerBatchRunner.coraClientFactory;
+		DataDividerChangerBatchRunner.main(args);
+		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) DataDividerChangerBatchRunner.coraClientFactory;
 
 		assertTrue(coraClientFactory instanceof CoraClientFactorySpy);
 		assertEquals(coraClientFactory.appTokenVerifierUrl, "appTokenVerifierUrl");
 		assertEquals(coraClientFactory.baseUrl, "http://localhost:8080/therest/rest/record/");
 
-		RecordFinderSpy finder = (RecordFinderSpy) CompleteLanguageDataDividerChangerBatchRunner.finder;
+		RecordFinderSpy finder = (RecordFinderSpy) DataDividerChangerBatchRunner.finder;
 		CoraClientConfig coraClientConfig = finder.coraClientConfig;
 		assertEquals(coraClientConfig.userId, args[0]);
 		assertEquals(coraClientConfig.appToken, args[1]);
 		assertEquals(coraClientConfig.appTokenVerifierUrl, args[2]);
 		assertEquals(coraClientConfig.coraUrl, args[3]);
 
-		DataUpdaterSpy dataUpdater = (DataUpdaterSpy) CompleteLanguageDataDividerChangerBatchRunner.dataUpdater;
+		DataUpdaterSpy dataUpdater = (DataUpdaterSpy) DataDividerChangerBatchRunner.dataUpdater;
 
 		assertEquals(dataUpdater.types.size(), 2);
 		assertEquals(dataUpdater.types.get(1), "genericCollectionItem");
@@ -79,6 +79,20 @@ public class CompleteLanguageDataDividerChangerBatchRunnerTest {
 		assertEquals(dataUpdater.dataDividers.size(), 2);
 		assertEquals(dataUpdater.dataDividers.get(0), "someNewDataDivider");
 
+	}
+
+	@Test
+	public void testMainMethodErrorInUpdate() throws ClassNotFoundException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, InstantiationException {
+		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
+				"http://localhost:8080/therest/rest/record/",
+				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
+				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
+				"se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "someNewDataDivider",
+				"metadataItemCollection", "errorInItemCollection" };
+
+		DataDividerChangerBatchRunner.main(args);
+		assertEquals(DataDividerChangerBatchRunner.errors.get(0), "Error from DataUpdaterSpy");
 	}
 
 }

@@ -6,6 +6,7 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
@@ -39,11 +40,11 @@ public class DataDividerUpdaterTest {
 				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
 
 		String updatedRecord = updater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
-				"someRecordType", "someRecordId", "newDataDivider");
+				"metadataItemCollection", "languageCollection", "newDataDivider");
 
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientSpy.recordType, "someRecordType");
-		assertEquals(coraClientSpy.recordId, "someRecordId");
+		assertEquals(coraClientSpy.recordType, "metadataItemCollection");
+		assertEquals(coraClientSpy.recordId, "languageCollection");
 
 		String dataDivider = extractDataDividerFromUpdatedJson(updatedRecord);
 		assertEquals(dataDivider, "newDataDivider");
@@ -67,5 +68,13 @@ public class DataDividerUpdaterTest {
 				.forJsonObjectUsingConverterFactory((JsonObject) jsonValue, converterFactory);
 
 		return (ClientDataGroup) dataGroupConverter.toInstance();
+	}
+
+	@Test(expectedExceptions = CoraClientException.class)
+	public void testUpdateDataDividerUpdateException() {
+		DataDividerUpdater updater = DataDividerUpdater
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
+		updater.updateDataDividerInRecordUsingTypeIdAndNewDivider("someRecordType",
+				"someNonWorkingRecordId", "newDataDivider");
 	}
 }

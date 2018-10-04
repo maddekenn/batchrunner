@@ -25,17 +25,18 @@ import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.RecordFinder;
 import se.uu.ub.cora.client.CoraClientConfig;
+import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
-public class CompleteLanguageDataDividerChangerBatchRunner {
+public class DataDividerChangerBatchRunner {
 	protected static RecordFinder finder;
 	protected static DataUpdater dataUpdater;
 	protected static CoraClientFactory coraClientFactory;
 	protected static CoraClientConfig coraClientConfig;
 	static List<String> errors = new ArrayList<>();
 
-	private CompleteLanguageDataDividerChangerBatchRunner() {
+	private DataDividerChangerBatchRunner() {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
@@ -55,14 +56,20 @@ public class CompleteLanguageDataDividerChangerBatchRunner {
 
 		createDataUpdater(dataUpdaterClassName, url);
 		for (RecordIdentifier ref : refs) {
-			String itemId = ref.id;
-			String itemType = ref.type;
+			tryToUpdateRecord(newDataDivider, ref.type, ref.id);
+		}
+		errors.forEach(System.out::println);
+		System.out.println("done ");
+	}
+
+	private static void tryToUpdateRecord(String newDataDivider, String itemType, String itemId) {
+		try {
 			String response = dataUpdater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
 					itemType, itemId, newDataDivider);
 			System.out.println("recordId :" + itemId + " response" + response);
+		} catch (CoraClientException e) {
+			errors.add(e.getMessage());
 		}
-
-		System.out.println("done ");
 	}
 
 	private static void createCoraClientConfig(String[] args) {

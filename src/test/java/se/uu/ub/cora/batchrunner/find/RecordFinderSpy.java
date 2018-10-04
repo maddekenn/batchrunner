@@ -32,6 +32,10 @@ public class RecordFinderSpy implements RecordFinder {
 		List<RecordIdentifier> recordIdentifiers = new ArrayList<>();
 		recordIdentifiers.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "svItem"));
 		recordIdentifiers.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "enItem"));
+		if ("errorInItemCollection".equals(recordIdentifier.id)) {
+			recordIdentifiers
+					.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "errorItem"));
+		}
 		return recordIdentifiers;
 	}
 

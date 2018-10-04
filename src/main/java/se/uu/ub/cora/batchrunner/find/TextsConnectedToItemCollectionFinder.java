@@ -25,19 +25,31 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 	@Override
 	public List<RecordIdentifier> findRecordsUsingRecordIdentifier(
 			RecordIdentifier recordIdentifier) {
-		RecordFinder itemFinder = ReferencedItemsFinder
-				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
-		List<RecordIdentifier> items = itemFinder
-				.findRecordsUsingRecordIdentifier(recordIdentifier);
+		List<RecordIdentifier> items = findItems(recordIdentifier);
+		return createRecordIdentifiersForTextsForItems(items);
 
+	}
+
+	private List<RecordIdentifier> createRecordIdentifiersForTextsForItems(
+			List<RecordIdentifier> items) {
 		List<RecordIdentifier> result = new ArrayList<>();
 		for (RecordIdentifier item : items) {
-			String readItem = readItemUsingRecordIdentifier(item);
-			addText(result, readItem);
-			addDefText(result, readItem);
+			createRecordIdentifierForTextsForItem(result, item);
 		}
-
 		return result;
+	}
+
+	private void createRecordIdentifierForTextsForItem(List<RecordIdentifier> result,
+			RecordIdentifier item) {
+		String readItem = readItemUsingRecordIdentifier(item);
+		addText(result, readItem);
+		addDefText(result, readItem);
+	}
+
+	private List<RecordIdentifier> findItems(RecordIdentifier recordIdentifier) {
+		RecordFinder itemFinder = ReferencedItemsFinder
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
+		return itemFinder.findRecordsUsingRecordIdentifier(recordIdentifier);
 	}
 
 	private void addDefText(List<RecordIdentifier> result, String readItem) {
@@ -55,8 +67,7 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 		String itemType = item.type;
 		CoraClient coraClient = coraClientFactory.factor(coraClientConfig.userId,
 				coraClientConfig.appToken);
-		String readItem = coraClient.read(itemType, itemId);
-		return readItem;
+		return coraClient.read(itemType, itemId);
 	}
 
 	private RecordIdentifier getTextAsRecordIdentifier(String readItem, String textNameInData) {
@@ -64,8 +75,7 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 		ClientDataGroup textIdGroup = dataGroup.getFirstGroupWithNameInData(textNameInData);
 		String textType = textIdGroup.getFirstAtomicValueWithNameInData("linkedRecordType");
 		String textId = textIdGroup.getFirstAtomicValueWithNameInData("linkedRecordId");
-		RecordIdentifier itemIdentifier = RecordIdentifier.usingTypeAndId(textType, textId);
-		return itemIdentifier;
+		return RecordIdentifier.usingTypeAndId(textType, textId);
 	}
 
 	private ClientDataGroup getJsonAsClientDataGroup(String json) {
@@ -75,7 +85,6 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 
 	public static RecordFinder usingCoraClientFactoryAndClientConfig(
 			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
-		// TODO Auto-generated method stub
 		return new TextsConnectedToItemCollectionFinder(coraClientFactory, coraClientConfig);
 	}
 

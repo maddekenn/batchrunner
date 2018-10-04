@@ -5,6 +5,7 @@ import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.client.CoraClientConfig;
+import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
 
 public class DataUpdaterSpy implements DataUpdater {
@@ -28,7 +29,9 @@ public class DataUpdaterSpy implements DataUpdater {
 		types.add(type);
 		recordIds.add(recordId);
 		dataDividers.add(newDataDivider);
-		// TODO Auto-generated method stub
+		if ("errorItem".equals(recordId)) {
+			throw new CoraClientException("Error from DataUpdaterSpy");
+		}
 		return null;
 	}
 

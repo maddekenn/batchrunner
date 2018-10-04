@@ -20,6 +20,7 @@ package se.uu.ub.cora.batchrunner.change;
 
 import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.client.CoraClientConfig;
+import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
@@ -56,7 +57,12 @@ public class DataDividerUpdater implements DataUpdater {
 		String readRecord = coraClient.read(type, recordId);
 		ClientDataGroup dataGroup = changeDataDividerInRecord(newDataDivider, readRecord);
 		String newJson = getDataGroupAsJson(dataGroup);
-		return coraClient.update(type, recordId, newJson);
+		try {
+			return coraClient.update(type, recordId, newJson);
+		} catch (Exception e) {
+			throw new CoraClientException(
+					"Unable to update json: " + newJson + " Error: " + e.getMessage());
+		}
 	}
 
 	private String getDataGroupAsJson(ClientDataGroup dataGroup) {
