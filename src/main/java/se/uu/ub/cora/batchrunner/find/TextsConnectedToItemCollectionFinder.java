@@ -23,7 +23,7 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 	}
 
 	@Override
-	public List<RecordIdentifier> findRecordsUsingRecordIdentifier(
+	public List<RecordIdentifier> findRecordsRelatedToRecordIdentifier(
 			RecordIdentifier recordIdentifier) {
 		List<RecordIdentifier> items = findItems(recordIdentifier);
 		return createRecordIdentifiersForTextsForItems(items);
@@ -47,9 +47,9 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 	}
 
 	private List<RecordIdentifier> findItems(RecordIdentifier recordIdentifier) {
-		RecordFinder itemFinder = ReferencedItemsFinder
+		RecordFinder itemFinder = CollectionWithReferencesFinder
 				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
-		return itemFinder.findRecordsUsingRecordIdentifier(recordIdentifier);
+		return itemFinder.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 	}
 
 	private void addDefText(List<RecordIdentifier> result, String readItem) {

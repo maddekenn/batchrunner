@@ -10,34 +10,31 @@ import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class ReferencedItemsFinder implements RecordFinder {
+public class CollectionWithReferencesFinder implements RecordFinder {
 
 	private CoraClientFactory coraClientFactory;
 	private CoraClientConfig coraClientConfig;
+	private CoraClient coraClient;
 
-	public ReferencedItemsFinder(CoraClientFactory coraClientFactory,
+	public CollectionWithReferencesFinder(CoraClientFactory coraClientFactory,
 			CoraClientConfig coraClientConfig) {
 		this.coraClientFactory = coraClientFactory;
 		this.coraClientConfig = coraClientConfig;
 	}
 
-	public static RecordFinder usingURLAndHttpHandlerFactory(String url,
-			HttpHandlerFactory httpHandlerFactorySpy) {
-		return null;
-	}
-
 	public static RecordFinder usingCoraClientFactoryAndClientConfig(
 			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
-		return new ReferencedItemsFinder(coraClientFactory, coraClientConfig);
+		return new CollectionWithReferencesFinder(coraClientFactory, coraClientConfig);
 	}
 
 	@Override
-	public List<RecordIdentifier> findRecordsUsingRecordIdentifier(
+	public List<RecordIdentifier> findRecordsRelatedToRecordIdentifier(
 			RecordIdentifier recordIdentifier) {
+		coraClient = coraClientFactory.factor(coraClientConfig.userId, coraClientConfig.appToken);
 		List<RecordIdentifier> foundRecords = new ArrayList<>();
-		List<ClientDataGroup> refs = getAllRefsFromCollection(recordIdentifier);
+		ClientDataRecord clientDataRecord = readRecordUsingRecordIdentifier(recordIdentifier);
+		List<ClientDataGroup> refs = getAllRefsFromCollection(clientDataRecord);
 		for (ClientDataGroup ref : refs) {
 			String itemType = ref.getFirstAtomicValueWithNameInData("linkedRecordType");
 			String itemId = ref.getFirstAtomicValueWithNameInData("linkedRecordId");
@@ -46,8 +43,7 @@ public class ReferencedItemsFinder implements RecordFinder {
 		return foundRecords;
 	}
 
-	private List<ClientDataGroup> getAllRefsFromCollection(RecordIdentifier recordIdentifier) {
-		ClientDataRecord clientDataRecord = readRecordUsingRecordIdentifier(recordIdentifier);
+	private List<ClientDataGroup> getAllRefsFromCollection(ClientDataRecord clientDataRecord) {
 		ClientDataGroup clientDataGroup = clientDataRecord.getClientDataGroup();
 		ClientDataGroup collectionItemReferences = clientDataGroup
 				.getFirstGroupWithNameInData("collectionItemReferences");
@@ -55,8 +51,6 @@ public class ReferencedItemsFinder implements RecordFinder {
 	}
 
 	private ClientDataRecord readRecordUsingRecordIdentifier(RecordIdentifier recordIdentifier) {
-		CoraClient coraClient = coraClientFactory.factor(coraClientConfig.userId,
-				coraClientConfig.appToken);
 		String readRecord = coraClient.read(recordIdentifier.type, recordIdentifier.id);
 		return ConverterHelper.getJsonAsClientDataRecord(readRecord);
 	}

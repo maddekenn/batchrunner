@@ -12,7 +12,7 @@ import se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy;
 import se.uu.ub.cora.batchrunner.change.CoraClientSpy;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
-public class ReferencedItemsFinderTest {
+public class CollectionWithReferencesFinderTest {
 	private RecordFinder finder;
 	private CoraClientFactorySpy coraClientFactory;
 	private CoraClientConfigSpy coraClientConfig;
@@ -26,13 +26,14 @@ public class ReferencedItemsFinderTest {
 
 	@Test
 	public void testFindItemsForACollection() {
-		finder = ReferencedItemsFinder.usingCoraClientFactoryAndClientConfig(coraClientFactory,
-				coraClientConfig);
+		finder = CollectionWithReferencesFinder
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
 
 		RecordIdentifier recordIdentifier = RecordIdentifier
 				.usingTypeAndId("metadataItemCollection", "completeLanguageCollection");
 
-		List<RecordIdentifier> items = finder.findRecordsUsingRecordIdentifier(recordIdentifier);
+		List<RecordIdentifier> items = finder
+				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
 		assertEquals(coraClientSpy.recordType, "metadataItemCollection");
 		assertEquals(coraClientSpy.recordId, "completeLanguageCollection");

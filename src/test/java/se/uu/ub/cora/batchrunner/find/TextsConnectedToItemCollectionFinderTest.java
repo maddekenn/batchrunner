@@ -32,7 +32,7 @@ public class TextsConnectedToItemCollectionFinderTest {
 		RecordIdentifier recordIdentifier = RecordIdentifier
 				.usingTypeAndId("metadataItemCollection", "completeLanguageCollection");
 
-		List<RecordIdentifier> items = finder.findRecordsUsingRecordIdentifier(recordIdentifier);
+		List<RecordIdentifier> items = finder.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 		CoraClientSpy coraClientReadCollectionSpy = coraClientFactory.factoredClientSpies.get(0);
 		assertEquals(coraClientReadCollectionSpy.recordType, "metadataItemCollection");
 		assertEquals(coraClientReadCollectionSpy.recordId, "completeLanguageCollection");

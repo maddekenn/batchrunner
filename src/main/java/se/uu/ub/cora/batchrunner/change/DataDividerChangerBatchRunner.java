@@ -52,7 +52,7 @@ public class DataDividerChangerBatchRunner {
 		createFinder(finderClassName);
 
 		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
-		List<RecordIdentifier> refs = finder.findRecordsUsingRecordIdentifier(recordIdentifier);
+		List<RecordIdentifier> refs = finder.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 
 		createDataUpdater(dataUpdaterClassName, url);
 		for (RecordIdentifier ref : refs) {

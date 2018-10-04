@@ -6,6 +6,6 @@ import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public interface RecordFinder {
 
-	List<RecordIdentifier> findRecordsUsingRecordIdentifier(RecordIdentifier recordIdentifier);
+	List<RecordIdentifier> findRecordsRelatedToRecordIdentifier(RecordIdentifier recordIdentifier);
 
 }
