@@ -19,7 +19,7 @@
 
     <properties>
         <json.version>0.3-SNAPSHOT</json.version>
-        <httphandler.version>0.2-SNAPSHOT</httphandler.version>
+        <httphandler.version>0.3-SNAPSHOT</httphandler.version>
         <spider.version>0.14-SNAPSHOT</spider.version>
         <cora-clientdata.version>0.1-SNAPSHOT</cora-clientdata.version>
         <javaclient.version>0.1-SNAPSHOT</javaclient.version>
@@ -27,20 +27,20 @@
         <!--<jersey.version>2.23.2</jersey.version>-->
     </properties>
 
-    <repositories>
-        <repository>
-            <id>maven-public</id>
-            <name>LSU Nexus Repository</name>
-            <url>http://epc.ub.uu.se/nexus/repository/maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <updatePolicy>daily</updatePolicy>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+<!--     <repositories> -->
+<!--         <repository> -->
+<!--             <id>maven-public</id> -->
+<!--             <name>LSU Nexus Repository</name> -->
+<!--             <url>http://epc.ub.uu.se/nexus/repository/maven-public/</url> -->
+<!--             <releases> -->
+<!--                 <enabled>true</enabled> -->
+<!--             </releases> -->
+<!--             <snapshots> -->
+<!--                 <updatePolicy>daily</updatePolicy> -->
+<!--                 <enabled>true</enabled> -->
+<!--             </snapshots> -->
+<!--         </repository> -->
+<!--     </repositories> -->
 
     <dependencies>
         <dependency>

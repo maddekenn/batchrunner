@@ -38,11 +38,13 @@ public class CollectionWithReferencesFinderTest {
 		assertEquals(coraClientSpy.recordType, "metadataItemCollection");
 		assertEquals(coraClientSpy.recordId, "completeLanguageCollection");
 
-		assertEquals(items.size(), 2);
-		assertEquals(items.get(0).type, "genericCollectionItem");
-		assertEquals(items.get(0).id, "svItem");
+		assertEquals(items.size(), 3);
+		assertEquals(items.get(0).type, "metadataItemCollection");
+		assertEquals(items.get(0).id, "completeLanguageCollection");
 		assertEquals(items.get(1).type, "genericCollectionItem");
-		assertEquals(items.get(1).id, "enItem");
+		assertEquals(items.get(1).id, "svItem");
+		assertEquals(items.get(2).type, "genericCollectionItem");
+		assertEquals(items.get(2).id, "enItem");
 
 	}
 }

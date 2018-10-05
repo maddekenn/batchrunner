@@ -33,6 +33,9 @@ public class CollectionWithReferencesFinder implements RecordFinder {
 			RecordIdentifier recordIdentifier) {
 		coraClient = coraClientFactory.factor(coraClientConfig.userId, coraClientConfig.appToken);
 		List<RecordIdentifier> foundRecords = new ArrayList<>();
+		foundRecords
+				.add(RecordIdentifier.usingTypeAndId(recordIdentifier.type, recordIdentifier.id));
+
 		ClientDataRecord clientDataRecord = readRecordUsingRecordIdentifier(recordIdentifier);
 		List<ClientDataGroup> refs = getAllRefsFromCollection(clientDataRecord);
 		for (ClientDataGroup ref : refs) {

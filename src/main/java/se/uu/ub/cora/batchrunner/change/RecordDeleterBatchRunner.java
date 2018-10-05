@@ -29,42 +29,41 @@ import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
-public class DataDividerChangerBatchRunner {
+public class RecordDeleterBatchRunner {
 	protected static RecordFinder finder;
-	protected static DataUpdater dataUpdater;
+	protected static RecordDeleter recordDeleter;
 	protected static CoraClientFactory coraClientFactory;
 	protected static CoraClientConfig coraClientConfig;
 	static List<String> errors = new ArrayList<>();
 
-	private DataDividerChangerBatchRunner() {
+	private RecordDeleterBatchRunner() {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException, InstantiationException {
-		String dataUpdaterClassName = args[4];
+		String url = args[3];
+		String recordDeleterClassName = args[4];
 		String httpFactoryClassName = args[5];
 		String finderClassName = args[6];
-		String newDataDivider = args[7];
 
 		createCoraClientConfig(args);
 		createCoraClientFactory(httpFactoryClassName);
 		createFinder(finderClassName);
 
-		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
+		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[7], args[8]);
 		List<RecordIdentifier> refs = finder.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 
-		createDataUpdater(dataUpdaterClassName);
+		createRecordDeleter(recordDeleterClassName);
 		for (RecordIdentifier ref : refs) {
-			tryToUpdateRecord(newDataDivider, ref.type, ref.id);
+			tryToDeleteRecord(ref.type, ref.id);
 		}
 		errors.forEach(System.out::println);
 		System.out.println("done ");
 	}
 
-	private static void tryToUpdateRecord(String newDataDivider, String itemType, String itemId) {
+	private static void tryToDeleteRecord(String itemType, String itemId) {
 		try {
-			String response = dataUpdater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
-					itemType, itemId, newDataDivider);
+			String response = recordDeleter.deleteRecordByTypeAndId(itemType, itemId);
 			System.out.println("recordId :" + itemId + " response" + response);
 		} catch (CoraClientException e) {
 			errors.add(e.getMessage());
@@ -103,14 +102,16 @@ public class DataDividerChangerBatchRunner {
 		finder = (RecordFinder) constructor.invoke(null, coraClientFactory, coraClientConfig);
 	}
 
-	private static void createDataUpdater(String updaterClassName) throws NoSuchMethodException,
-			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
+	private static void createRecordDeleter(String deleterClassName)
+			throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException,
+			InvocationTargetException {
 		Class<?>[] cArg = new Class[2];
 		cArg[0] = CoraClientFactory.class;
 		cArg[1] = CoraClientConfig.class;
-		Method constructor = Class.forName(updaterClassName)
+		Method constructor = Class.forName(deleterClassName)
 				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
-		dataUpdater = (DataUpdater) constructor.invoke(null, coraClientFactory, coraClientConfig);
+		recordDeleter = (RecordDeleter) constructor.invoke(null, coraClientFactory,
+				coraClientConfig);
 	}
 
 }

@@ -41,4 +41,11 @@ public class CoraClientSpy implements CoraClient {
 		return json;
 	}
 
+	@Override
+	public String delete(String recordType, String recordId) {
+		this.recordType = recordType;
+		this.recordId = recordId;
+		return "OK";
+	}
+
 }

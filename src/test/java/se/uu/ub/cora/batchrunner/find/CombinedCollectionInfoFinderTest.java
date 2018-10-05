@@ -12,8 +12,8 @@ import se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy;
 import se.uu.ub.cora.batchrunner.change.CoraClientSpy;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
-public class TextsConnectedToItemCollectionFinderTest {
-	private RecordFinder finder;
+public class CombinedCollectionInfoFinderTest {
+	private RecordFinder combinedFinder;
 	private CoraClientFactorySpy coraClientFactory;
 	private CoraClientConfigSpy coraClientConfig;
 
@@ -26,13 +26,13 @@ public class TextsConnectedToItemCollectionFinderTest {
 
 	@Test
 	public void testInit() {
-		finder = TextsConnectedToItemCollectionFinder
+		combinedFinder = CombinedCollectionInfoFinder
 				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
 
 		RecordIdentifier recordIdentifier = RecordIdentifier
 				.usingTypeAndId("metadataItemCollection", "completeLanguageCollection");
 
-		List<RecordIdentifier> items = finder
+		List<RecordIdentifier> items = combinedFinder
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 		CoraClientSpy coraClientReadCollectionSpy = coraClientFactory.factoredClientSpies.get(0);
 		assertEquals(coraClientReadCollectionSpy.recordType, "metadataItemCollection");
@@ -46,11 +46,24 @@ public class TextsConnectedToItemCollectionFinderTest {
 		assertEquals(coraClientReadItemSpy2.recordType, "genericCollectionItem");
 		assertEquals(coraClientReadItemSpy2.recordId, "enItem");
 
-		assertEquals(items.size(), 4);
-		assertCorrectRecordIdentifier(items, "svItemText", 0);
-		assertCorrectRecordIdentifier(items, "svItemDefText", 1);
-		assertCorrectRecordIdentifier(items, "enItemText", 2);
-		assertCorrectRecordIdentifier(items, "enItemDefText", 3);
+		assertEquals(items.size(), 9);
+		RecordIdentifier firstItemIdentifier = items.get(0);
+		assertEquals(firstItemIdentifier.type, "metadataItemCollection");
+		assertEquals(firstItemIdentifier.id, "completeLanguageCollection");
+		RecordIdentifier secondItemIdentifier = items.get(1);
+		assertEquals(secondItemIdentifier.type, "genericCollectionItem");
+		assertEquals(secondItemIdentifier.id, "svItem");
+		RecordIdentifier thirdItemIdentifier = items.get(2);
+		assertEquals(thirdItemIdentifier.type, "genericCollectionItem");
+		assertEquals(thirdItemIdentifier.id, "enItem");
+
+		assertCorrectRecordIdentifier(items, "languageCollectionText", 3);
+		assertCorrectRecordIdentifier(items, "languageCollectionDefText", 4);
+		assertCorrectRecordIdentifier(items, "svItemText", 5);
+		assertCorrectRecordIdentifier(items, "svItemDefText", 6);
+		assertCorrectRecordIdentifier(items, "enItemText", 7);
+		assertCorrectRecordIdentifier(items, "enItemDefText", 8);
+
 	}
 
 	private void assertCorrectRecordIdentifier(List<RecordIdentifier> items, String itemId,
