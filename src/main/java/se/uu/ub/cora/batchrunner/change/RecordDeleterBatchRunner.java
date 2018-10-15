@@ -41,7 +41,6 @@ public class RecordDeleterBatchRunner {
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException, InstantiationException {
-		String url = args[3];
 		String recordDeleterClassName = args[4];
 		String httpFactoryClassName = args[5];
 		String finderClassName = args[6];
@@ -102,9 +101,8 @@ public class RecordDeleterBatchRunner {
 		finder = (RecordFinder) constructor.invoke(null, coraClientFactory, coraClientConfig);
 	}
 
-	private static void createRecordDeleter(String deleterClassName)
-			throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException,
-			InvocationTargetException {
+	private static void createRecordDeleter(String deleterClassName) throws NoSuchMethodException,
+			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] cArg = new Class[2];
 		cArg[0] = CoraClientFactory.class;
 		cArg[1] = CoraClientConfig.class;

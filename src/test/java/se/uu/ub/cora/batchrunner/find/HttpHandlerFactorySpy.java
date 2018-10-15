@@ -32,7 +32,6 @@ import se.uu.ub.cora.httphandler.HttpMultiPartUploader;
 public class HttpHandlerFactorySpy implements HttpHandlerFactory {
 
 	public String urlString;
-	private boolean factorValid = true;
 	public HttpHandlerSpy httpHandlerSpy;
 	public List<HttpHandlerSpy> httpHandlerSpies = new ArrayList<>();
 
@@ -51,10 +50,6 @@ public class HttpHandlerFactorySpy implements HttpHandlerFactory {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public void changeFactoryToFactorInvalidHttpHandlers() {
-		factorValid = false;
 	}
 
 	public void setResponseCode(int responseCode) {

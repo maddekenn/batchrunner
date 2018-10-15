@@ -40,6 +40,6 @@ public class RecordFinderTest {
 	@Test(expectedExceptions = JsonParseException.class)
 	public void testFindAllOfNonExistingRecordType() {
 		finder.setUrlString("http://localhost:8080/nonExisting");
-		List<String> ids = (List<String>) finder.findRecords();
+		finder.findRecords();
 	}
 }

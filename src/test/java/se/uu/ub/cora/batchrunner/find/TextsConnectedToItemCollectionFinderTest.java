@@ -46,11 +46,13 @@ public class TextsConnectedToItemCollectionFinderTest {
 		assertEquals(coraClientReadItemSpy2.recordType, "genericCollectionItem");
 		assertEquals(coraClientReadItemSpy2.recordId, "enItem");
 
-		assertEquals(items.size(), 4);
-		assertCorrectRecordIdentifier(items, "svItemText", 0);
-		assertCorrectRecordIdentifier(items, "svItemDefText", 1);
-		assertCorrectRecordIdentifier(items, "enItemText", 2);
-		assertCorrectRecordIdentifier(items, "enItemDefText", 3);
+		assertEquals(items.size(), 6);
+		assertCorrectRecordIdentifier(items, "languageCollectionText", 0);
+		assertCorrectRecordIdentifier(items, "languageCollectionDefText", 1);
+		assertCorrectRecordIdentifier(items, "svItemText", 2);
+		assertCorrectRecordIdentifier(items, "svItemDefText", 3);
+		assertCorrectRecordIdentifier(items, "enItemText", 4);
+		assertCorrectRecordIdentifier(items, "enItemDefText", 5);
 	}
 
 	private void assertCorrectRecordIdentifier(List<RecordIdentifier> items, String itemId,
