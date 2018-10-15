@@ -27,6 +27,7 @@ import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
 import se.uu.ub.cora.batchrunner.find.RecordFinderSpy;
 import se.uu.ub.cora.client.CoraClientConfig;
 
@@ -48,7 +49,7 @@ public class DataDividerChangerBatchRunnerTest {
 		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
 				"http://localhost:8080/therest/rest/record/",
 				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
-				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
+				"se.uu.ub.cora.batchrunner.CoraClientFactorySpy",
 				"se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "someNewDataDivider",
 				"metadataItemCollection", "completeLanguageCollection" };
 
@@ -87,7 +88,7 @@ public class DataDividerChangerBatchRunnerTest {
 		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
 				"http://localhost:8080/therest/rest/record/",
 				"se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
-				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
+				"se.uu.ub.cora.batchrunner.CoraClientFactorySpy",
 				"se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "someNewDataDivider",
 				"metadataItemCollection", "errorInItemCollection" };
 

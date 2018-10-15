@@ -24,7 +24,7 @@ public class MetadataFinder {
         return dataList.getValueAsJsonArray("data");
     }
 
-    protected String getIdFromRecordInfo(JsonArray children) {
+    protected String getRecordIdentifierFromRecordInfo(JsonArray children) {
         JsonObject recordInfo = (JsonObject) findChildWithName("recordInfo", children);
         return getIdFromRecordInfo(recordInfo);
     }

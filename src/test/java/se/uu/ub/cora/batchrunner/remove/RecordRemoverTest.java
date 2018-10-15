@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerSpy;
 
-public class UnusedPresentationGroupsRemoverTest {
-	UnusedPresentationsRemover remover;
+public class RecordRemoverTest {
+	RecordRemoverImp remover;
 	HttpHandlerFactorySpy httpHandlerFactory;
 	PresentationsFinderSpy presentationsFinder;
 	private String urlString;
@@ -22,7 +22,7 @@ public class UnusedPresentationGroupsRemoverTest {
 		presentationsFinder = new PresentationsFinderSpy();
 		urlString = "http://localhost:8080/presentationGroup";
 
-		remover = new UnusedPresentationsRemover();
+		remover = new RecordRemoverImp();
 		remover.setFinder(presentationsFinder);
 		remover.setHttpHandlerFactory(httpHandlerFactory);
 		remover.setUrlString(urlString);

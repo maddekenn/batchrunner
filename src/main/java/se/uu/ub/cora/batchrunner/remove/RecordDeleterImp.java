@@ -1,5 +1,6 @@
-package se.uu.ub.cora.batchrunner.change;
+package se.uu.ub.cora.batchrunner.remove;
 
+import se.uu.ub.cora.batchrunner.change.RecordDeleter;
 import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientFactory;

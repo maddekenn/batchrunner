@@ -1,4 +1,4 @@
-package se.uu.ub.cora.batchrunner.change;
+package se.uu.ub.cora.batchrunner;
 
 import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.json.parser.JsonParseException;
@@ -46,6 +46,12 @@ public class CoraClientSpy implements CoraClient {
 		this.recordType = recordType;
 		this.recordId = recordId;
 		return "OK";
+	}
+
+	@Override
+	public String readList(String recordType) {
+		this.recordType = recordType;
+		return "{\"dataList\":{\"fromNo\":\"1\",\"data\":[{\"record\":{\"data\":{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"writtenText\"}],\"name\":\"recordType\"},{\"name\":\"recordId\",\"value\":\"writtenText:9011356289912\"},{\"name\":\"type\",\"value\":\"index\"},{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"system\"},{\"name\":\"linkedRecordId\",\"value\":\"cora\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/system/cora\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"dataDivider\"},{\"name\":\"id\",\"value\":\"workOrder:3638403025511700\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"workOrder\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/recordType/workOrder\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"type\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"user\"},{\"name\":\"linkedRecordId\",\"value\":\"141414\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/user/141414\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"createdBy\"},{\"name\":\"tsCreated\",\"value\":\"2018-07-10 09:04:32.641\"},{\"repeatId\":\"0\",\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"user\"},{\"name\":\"linkedRecordId\",\"value\":\"141414\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/user/141414\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"updatedBy\"},{\"name\":\"tsUpdated\",\"value\":\"2018-07-10 09:04:32.641\"}],\"name\":\"updated\"}],\"name\":\"recordInfo\"}],\"name\":\"workOrder\"},\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/workOrder:3638403025511700\",\"accept\":\"application/vnd.uub.record+json\"},\"update\":{\"requestMethod\":\"POST\",\"rel\":\"update\",\"contentType\":\"application/vnd.uub.record+json\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/workOrder:3638403025511700\",\"accept\":\"application/vnd.uub.record+json\"},\"index\":{\"requestMethod\":\"POST\",\"rel\":\"index\",\"body\":{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"workOrder\"}],\"name\":\"recordType\"},{\"name\":\"recordId\",\"value\":\"workOrder:3638403025511700\"},{\"name\":\"type\",\"value\":\"index\"}],\"name\":\"workOrder\"},\"contentType\":\"application/vnd.uub.record+json\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/\",\"accept\":\"application/vnd.uub.record+json\"},\"delete\":{\"requestMethod\":\"DELETE\",\"rel\":\"delete\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/workOrder:3638403025511700\"}}}}],\"totalNo\":\"1\",\"containDataOfType\":\"system\",\"toNo\":\"1\"}}";
 	}
 
 }

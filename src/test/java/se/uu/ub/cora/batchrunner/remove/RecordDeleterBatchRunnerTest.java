@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Cora.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.uu.ub.cora.batchrunner.change;
+package se.uu.ub.cora.batchrunner.remove;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -27,6 +27,7 @@ import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
 import se.uu.ub.cora.batchrunner.find.RecordFinderSpy;
 import se.uu.ub.cora.client.CoraClientConfig;
 
@@ -47,8 +48,8 @@ public class RecordDeleterBatchRunnerTest {
 			IllegalAccessException, InvocationTargetException, InstantiationException {
 		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
 				"http://localhost:8080/therest/rest/record/",
-				"se.uu.ub.cora.batchrunner.change.RecordDeleterSpy",
-				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
+				"se.uu.ub.cora.batchrunner.remove.RecordDeleterSpy",
+				"se.uu.ub.cora.batchrunner.CoraClientFactorySpy",
 				"se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "metadataItemCollection",
 				"completeLanguageCollection" };
 
@@ -83,8 +84,8 @@ public class RecordDeleterBatchRunnerTest {
 			IllegalAccessException, InvocationTargetException, InstantiationException {
 		String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
 				"http://localhost:8080/therest/rest/record/",
-				"se.uu.ub.cora.batchrunner.change.RecordDeleterSpy",
-				"se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy",
+				"se.uu.ub.cora.batchrunner.remove.RecordDeleterSpy",
+				"se.uu.ub.cora.batchrunner.CoraClientFactorySpy",
 				"se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "metadataItemCollection",
 				"errorInItemCollection" };
 

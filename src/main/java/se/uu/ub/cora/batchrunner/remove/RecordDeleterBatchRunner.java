@@ -16,13 +16,14 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Cora.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.uu.ub.cora.batchrunner.change;
+package se.uu.ub.cora.batchrunner.remove;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.uu.ub.cora.batchrunner.change.RecordDeleter;
 import se.uu.ub.cora.batchrunner.find.RecordFinder;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientException;

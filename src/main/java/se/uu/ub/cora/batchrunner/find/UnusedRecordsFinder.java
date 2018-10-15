@@ -57,13 +57,13 @@ public class UnusedRecordsFinder extends MetadataFinder implements Finder {
 
 	private boolean isNotUsedInCode(JsonValue value) {
 		JsonArray children = extractChildrenFromRecordData(value);
-		String recordId = getIdFromRecordInfo(children);
+		String recordId = getRecordIdentifierFromRecordInfo(children);
 		return !pVarsUsedInCode.contains(recordId);
 	}
 
 	private void addPresentationGroupIdToFoundRecords(List<String> ids, JsonValue value) {
 		JsonArray children = extractChildrenFromRecordData(value);
-		String recordId = getIdFromRecordInfo(children);
+		String recordId = getRecordIdentifierFromRecordInfo(children);
 		ids.add(recordId);
 	}
 

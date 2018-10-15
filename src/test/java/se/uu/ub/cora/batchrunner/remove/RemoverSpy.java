@@ -6,7 +6,7 @@ import java.util.Collection;
 import se.uu.ub.cora.batchrunner.find.Finder;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
-public class RemoverSpy implements Remover {
+public class RemoverSpy implements RecordRemover {
 
 	public boolean removeRecordsWasCalled;
 	public String urlString;

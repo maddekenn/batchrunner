@@ -5,8 +5,10 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
+import se.uu.ub.cora.batchrunner.CoraClientSpy;
 import se.uu.ub.cora.batchrunner.change.RecordDeleter;
-import se.uu.ub.cora.batchrunner.change.RecordDeleterImp;
+import se.uu.ub.cora.batchrunner.remove.RecordDeleterImp;
 
 public class RecordDeleterTest {
 	private CoraClientFactorySpy coraClientFactory;

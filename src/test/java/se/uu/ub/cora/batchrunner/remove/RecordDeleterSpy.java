@@ -1,8 +1,9 @@
-package se.uu.ub.cora.batchrunner.change;
+package se.uu.ub.cora.batchrunner.remove;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import se.uu.ub.cora.batchrunner.change.RecordDeleter;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;

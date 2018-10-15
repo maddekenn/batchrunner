@@ -9,7 +9,7 @@ import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class RemoverBatchRunner {
 
-	protected static Remover remover;
+	protected static RecordRemover remover;
 
 	private RemoverBatchRunner() {
 
@@ -45,7 +45,7 @@ public class RemoverBatchRunner {
 			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException, InvocationTargetException {
 		Constructor<?> constructor = Class.forName(removerClassName).getConstructor();
-		remover = (Remover) constructor.newInstance();
+		remover = (RecordRemover) constructor.newInstance();
 
 	}
 

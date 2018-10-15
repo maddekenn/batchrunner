@@ -6,6 +6,8 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
+import se.uu.ub.cora.batchrunner.CoraClientSpy;
 import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;

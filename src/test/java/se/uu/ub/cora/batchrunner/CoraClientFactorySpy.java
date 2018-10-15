@@ -1,4 +1,4 @@
-package se.uu.ub.cora.batchrunner.change;
+package se.uu.ub.cora.batchrunner;
 
 import java.util.ArrayList;
 import java.util.List;

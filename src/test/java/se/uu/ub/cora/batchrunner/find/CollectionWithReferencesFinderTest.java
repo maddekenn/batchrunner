@@ -7,9 +7,9 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
+import se.uu.ub.cora.batchrunner.CoraClientSpy;
 import se.uu.ub.cora.batchrunner.change.CoraClientConfigSpy;
-import se.uu.ub.cora.batchrunner.change.CoraClientFactorySpy;
-import se.uu.ub.cora.batchrunner.change.CoraClientSpy;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public class CollectionWithReferencesFinderTest {

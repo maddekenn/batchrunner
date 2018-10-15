@@ -43,7 +43,7 @@ public class MetadataItemCollectionOneReferenceFinder extends MetadataFinder imp
 		JsonArray children = extractChildrenFromRecordData(value);
 		int numberOfItemReferences = getNumberOfItemReferences(children);
 
-		String recordId = getIdFromRecordInfo(children);
+		String recordId = getRecordIdentifierFromRecordInfo(children);
 		possiblyAddIdToFoundRecords(ids, recordId, numberOfItemReferences);
 	}
 
