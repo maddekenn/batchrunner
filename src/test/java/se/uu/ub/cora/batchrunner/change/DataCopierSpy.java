@@ -23,10 +23,14 @@ public class DataCopierSpy implements DataCopier {
 
 	@Override
 	public String copyTypeFromIdToNewId(String type, String id, String newId) {
+		String code = "200";
 		types.add(type);
 		ids.add(id);
 		newIds.add(newId);
-		return "a message";
+		if ("someIdViewPGroup".equals(id)) {
+			code = "404";
+		}
+		return code + " a message";
 	}
 
 	@Override

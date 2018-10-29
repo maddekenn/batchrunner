@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import se.uu.ub.cora.client.CoraClientConfig;
-import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
@@ -75,12 +73,6 @@ public class PresentationGroupNameConflictFinder implements Finder {
 	public void setHttpHandlerFactory(HttpHandlerFactory httpHandlerFactory) {
 		this.httpHandlerFactory = httpHandlerFactory;
 
-	}
-
-	public Finder usingCoraClientFactoryAndClientConfig(CoraClientFactory coraClientFactory,
-			CoraClientConfig coraClientConfig) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

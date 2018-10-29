@@ -41,4 +41,21 @@ public class RecordTypePGroupIdsModifierBatchRunnerTest {
 
 	}
 
+	@Test
+	public void testMainMethodErrorWhenModifyingFound()
+			throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
+			InstantiationException, IllegalAccessException {
+
+		String args[] = new String[] { "http://localhost:8080/therest/rest/record/",
+				"se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy",
+				"se.uu.ub.cora.batchrunner.find.FinderSpy",
+				"se.uu.ub.cora.batchrunner.change.ModifierWithErrorSpy" };
+
+		RecordTypePGroupIdsModifierBatchRunner.main(args);
+		FinderSpy finderSpy = (FinderSpy) RecordTypePGroupIdsModifierBatchRunner.finder;
+		assertTrue(finderSpy.findRecordsCalled);
+		assertEquals(finderSpy.url, "http://localhost:8080/therest/rest/record/recordType");
+
+	}
+
 }

@@ -45,10 +45,6 @@ public class DataDividerUpdater implements DataUpdater {
 		return new DataDividerUpdater(coraClientFactory, coraClientConfig);
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
 	@Override
 	public String updateDataDividerInRecordUsingTypeIdAndNewDivider(String type, String recordId,
 			String newDataDivider) {

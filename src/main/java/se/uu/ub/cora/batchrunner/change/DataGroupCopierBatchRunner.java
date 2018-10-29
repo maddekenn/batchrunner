@@ -50,10 +50,10 @@ public class DataGroupCopierBatchRunner {
 
 	private static void createPresentationsForRecordType(String recordType) {
 		for (List<String> presentation : presentationNames) {
-			String error = dataCopier.copyTypeFromIdToNewId("presentationGroup",
+			String message = dataCopier.copyTypeFromIdToNewId("presentationGroup",
 					recordType + presentation.get(0), recordType + presentation.get(1));
-			if (!error.startsWith("20")) {
-				System.out.println(error);
+			if (!message.startsWith("20")) {
+				System.out.println(message);
 			}
 
 		}

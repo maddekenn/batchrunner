@@ -49,4 +49,19 @@ public class DataGroupCopierBatchRunnerTest {
 
 	}
 
+	@Test
+	public void testMainMethodNoRecordsFound() throws ClassNotFoundException, NoSuchMethodException,
+			InvocationTargetException, InstantiationException, IllegalAccessException {
+		String args[] = new String[] { "se.uu.ub.cora.batchrunner.change.DataCopierSpy",
+				"http://localhost:8080/therest/rest/record/",
+				"se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy",
+				"se.uu.ub.cora.batchrunner.find.FinderSpy" };
+
+		DataGroupCopierBatchRunner.main(args);
+		FinderSpy finderSpy = (FinderSpy) DataGroupCopierBatchRunner.finder;
+		assertTrue(finderSpy.findRecordsCalled);
+		assertEquals(finderSpy.url, "http://localhost:8080/therest/rest/record/recordType");
+
+	}
+
 }
