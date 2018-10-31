@@ -30,7 +30,6 @@ import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLink
 
 public class DataDividerUpdater implements DataUpdater {
 
-	private String url;
 	private CoraClientFactory coraClientFactory;
 	private CoraClientConfig coraClientConfig;
 
