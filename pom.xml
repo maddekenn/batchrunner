@@ -22,7 +22,7 @@
         <httphandler.version>0.3-SNAPSHOT</httphandler.version>
         <spider.version>0.14-SNAPSHOT</spider.version>
         <cora-clientdata.version>0.1-SNAPSHOT</cora-clientdata.version>
-        <javaclient.version>0.1-SNAPSHOT</javaclient.version>
+        <javaclient.version>0.2-SNAPSHOT</javaclient.version>
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <!--<jersey.version>2.23.2</jersey.version>-->
     </properties>

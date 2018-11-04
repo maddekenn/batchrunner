@@ -18,27 +18,36 @@ public class CombinedCollectionInfoFinder implements RecordFinder {
 		this.coraClientConfig = coraClientConfig;
 	}
 
+	public static RecordFinder usingCoraClientFactoryAndClientConfig(
+			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
+		return new CombinedCollectionInfoFinder(coraClientFactory, coraClientConfig);
+	}
+
 	@Override
 	public List<RecordIdentifier> findRecordsRelatedToRecordIdentifier(
 			RecordIdentifier recordIdentifier) {
 		List<RecordIdentifier> result = new ArrayList<>();
-		RecordFinder textFinder = TextsConnectedToItemCollectionFinder
-				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
-		List<RecordIdentifier> texts = textFinder
-				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
+		findItemsAndAddToResult(recordIdentifier, result);
+		findTextsAndAddToResult(recordIdentifier, result);
 
+		return result;
+	}
+
+	private void findItemsAndAddToResult(RecordIdentifier recordIdentifier,
+			List<RecordIdentifier> result) {
 		RecordFinder refsFinder = CollectionWithReferencesFinder
 				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
 		List<RecordIdentifier> items = refsFinder
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 		result.addAll(items);
-		result.addAll(texts);
-		return result;
 	}
 
-	public static RecordFinder usingCoraClientFactoryAndClientConfig(
-			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
-		return new CombinedCollectionInfoFinder(coraClientFactory, coraClientConfig);
+	private void findTextsAndAddToResult(RecordIdentifier recordIdentifier, List<RecordIdentifier> result) {
+		RecordFinder textFinder = TextsConnectedToItemCollectionFinder
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
+		List<RecordIdentifier> texts = textFinder
+				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
+		result.addAll(texts);
 	}
 
 }

@@ -37,13 +37,21 @@ public class CollectionWithReferencesFinder implements RecordFinder {
 				.add(RecordIdentifier.usingTypeAndId(recordIdentifier.type, recordIdentifier.id));
 
 		ClientDataRecord clientDataRecord = readRecordUsingRecordIdentifier(recordIdentifier);
+		addRefsToFoundRecords(foundRecords, clientDataRecord);
+		return foundRecords;
+	}
+
+	private ClientDataRecord readRecordUsingRecordIdentifier(RecordIdentifier recordIdentifier) {
+		String readRecord = coraClient.read(recordIdentifier.type, recordIdentifier.id);
+		return ConverterHelper.getJsonAsClientDataRecord(readRecord);
+	}
+
+	private void addRefsToFoundRecords(List<RecordIdentifier> foundRecords,
+			ClientDataRecord clientDataRecord) {
 		List<ClientDataGroup> refs = getAllRefsFromCollection(clientDataRecord);
 		for (ClientDataGroup ref : refs) {
-			String itemType = ref.getFirstAtomicValueWithNameInData("linkedRecordType");
-			String itemId = ref.getFirstAtomicValueWithNameInData("linkedRecordId");
-			foundRecords.add(RecordIdentifier.usingTypeAndId(itemType, itemId));
+			addRefToFoundRecords(ref, foundRecords);
 		}
-		return foundRecords;
 	}
 
 	private List<ClientDataGroup> getAllRefsFromCollection(ClientDataRecord clientDataRecord) {
@@ -53,9 +61,10 @@ public class CollectionWithReferencesFinder implements RecordFinder {
 		return collectionItemReferences.getAllGroupsWithNameInData("ref");
 	}
 
-	private ClientDataRecord readRecordUsingRecordIdentifier(RecordIdentifier recordIdentifier) {
-		String readRecord = coraClient.read(recordIdentifier.type, recordIdentifier.id);
-		return ConverterHelper.getJsonAsClientDataRecord(readRecord);
+	private void addRefToFoundRecords(ClientDataGroup ref, List<RecordIdentifier> foundRecords) {
+		String itemType = ref.getFirstAtomicValueWithNameInData("linkedRecordType");
+		String itemId = ref.getFirstAtomicValueWithNameInData("linkedRecordId");
+		foundRecords.add(RecordIdentifier.usingTypeAndId(itemType, itemId));
 	}
 
 }

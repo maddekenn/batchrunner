@@ -1,12 +1,16 @@
 package se.uu.ub.cora.batchrunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.json.parser.JsonParseException;
 
 public class CoraClientSpy implements CoraClient {
 
-	public String recordType;
-	public String recordId;
+	public List<String> recordTypes = new ArrayList<>();
+	public List<String> recordIds = new ArrayList<>();
+	public List<String> calledMethods = new ArrayList<>();
 
 	@Override
 	public String create(String recordType, String json) {
@@ -16,8 +20,9 @@ public class CoraClientSpy implements CoraClient {
 
 	@Override
 	public String read(String recordType, String recordId) {
-		this.recordType = recordType;
-		this.recordId = recordId;
+		recordTypes.add(recordType);
+		recordIds.add(recordId);
+		calledMethods.add("read");
 		if ("metadataItemCollection".equals(recordType)) {
 			return "{\"record\":{\"data\":{\"children\":[{\"children\":[{\"name\":\"id\",\"value\":\"languageCollection\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"metadataItemCollection\"}],\"name\":\"type\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"systemOneUser\"},{\"name\":\"linkedRecordId\",\"value\":\"141414\"}],\"name\":\"createdBy\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"system\"},{\"name\":\"linkedRecordId\",\"value\":\"cora\"}],\"name\":\"dataDivider\"},{\"name\":\"tsCreated\",\"value\":\"2017-10-01 00:00:00.0\"},{\"repeatId\":\"0\",\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"systemOneUser\"},{\"name\":\"linkedRecordId\",\"value\":\"141414\"}],\"name\":\"updatedBy\"},{\"name\":\"tsUpdated\",\"value\":\"2017-11-01 18:00:00.0\"}],\"name\":\"updated\"}],\"name\":\"recordInfo\"},{\"name\":\"nameInData\",\"value\":\"language\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"coraText\"},{\"name\":\"linkedRecordId\",\"value\":\"languageCollectionText\"}],\"name\":\"textId\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"coraText\"},{\"name\":\"linkedRecordId\",\"value\":\"languageCollectionDefText\"}],\"name\":\"defTextId\"},{\"children\":[{\"repeatId\":\"0\",\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"genericCollectionItem\"},{\"name\":\"linkedRecordId\",\"value\":\"svItem\"}],\"name\":\"ref\"},{\"repeatId\":\"1\",\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"genericCollectionItem\"},{\"name\":\"linkedRecordId\",\"value\":\"enItem\"}],\"name\":\"ref\"}],\"name\":\"collectionItemReferences\"}],\"name\":\"metadata\",\"attributes\":{\"type\":\"itemCollection\"}},\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/alvin/rest/record/metadataItemCollection/languageCollection\",\"accept\":\"application/vnd.uub.record+json\"},\"read_incoming_links\":{\"requestMethod\":\"GET\",\"rel\":\"read_incoming_links\",\"url\":\"https://cora.epc.ub.uu.se/alvin/rest/record/metadataItemCollection/languageCollection/incomingLinks\",\"accept\":\"application/vnd.uub.recordList+json\"}}}}";
 		}
@@ -38,8 +43,9 @@ public class CoraClientSpy implements CoraClient {
 
 	@Override
 	public String update(String recordType, String recordId, String json) {
-		this.recordType = recordType;
-		this.recordId = recordId;
+		recordTypes.add(recordType);
+		recordIds.add(recordId);
+		calledMethods.add("read");
 		if ("someNonWorkingRecordId".equals(recordId)) {
 			throw new JsonParseException("Unable to fully parse json string");
 		}
@@ -48,15 +54,24 @@ public class CoraClientSpy implements CoraClient {
 
 	@Override
 	public String delete(String recordType, String recordId) {
-		this.recordType = recordType;
-		this.recordId = recordId;
+		recordTypes.add(recordType);
+		recordIds.add(recordId);
+		calledMethods.add("read");
 		return "OK";
 	}
 
 	@Override
 	public String readList(String recordType) {
-		this.recordType = recordType;
+		recordTypes.add(recordType);
+		calledMethods.add("read");
 		return "{\"dataList\":{\"fromNo\":\"1\",\"data\":[{\"record\":{\"data\":{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"writtenText\"}],\"name\":\"recordType\"},{\"name\":\"recordId\",\"value\":\"writtenText:9011356289912\"},{\"name\":\"type\",\"value\":\"index\"},{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"system\"},{\"name\":\"linkedRecordId\",\"value\":\"cora\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/system/cora\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"dataDivider\"},{\"name\":\"id\",\"value\":\"workOrder:3638403025511700\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"workOrder\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/recordType/workOrder\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"type\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"user\"},{\"name\":\"linkedRecordId\",\"value\":\"141414\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/user/141414\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"createdBy\"},{\"name\":\"tsCreated\",\"value\":\"2018-07-10 09:04:32.641\"},{\"repeatId\":\"0\",\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"user\"},{\"name\":\"linkedRecordId\",\"value\":\"141414\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/user/141414\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"updatedBy\"},{\"name\":\"tsUpdated\",\"value\":\"2018-07-10 09:04:32.641\"}],\"name\":\"updated\"}],\"name\":\"recordInfo\"}],\"name\":\"workOrder\"},\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/workOrder:3638403025511700\",\"accept\":\"application/vnd.uub.record+json\"},\"update\":{\"requestMethod\":\"POST\",\"rel\":\"update\",\"contentType\":\"application/vnd.uub.record+json\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/workOrder:3638403025511700\",\"accept\":\"application/vnd.uub.record+json\"},\"index\":{\"requestMethod\":\"POST\",\"rel\":\"index\",\"body\":{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"recordType\"},{\"name\":\"linkedRecordId\",\"value\":\"workOrder\"}],\"name\":\"recordType\"},{\"name\":\"recordId\",\"value\":\"workOrder:3638403025511700\"},{\"name\":\"type\",\"value\":\"index\"}],\"name\":\"workOrder\"},\"contentType\":\"application/vnd.uub.record+json\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/\",\"accept\":\"application/vnd.uub.record+json\"},\"delete\":{\"requestMethod\":\"DELETE\",\"rel\":\"delete\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/workOrder/workOrder:3638403025511700\"}}}}],\"totalNo\":\"1\",\"containDataOfType\":\"system\",\"toNo\":\"1\"}}";
+	}
+
+	@Override
+	public String readIncomingLinks(String recordType, String recordId) {
+		calledMethods.add("read");
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

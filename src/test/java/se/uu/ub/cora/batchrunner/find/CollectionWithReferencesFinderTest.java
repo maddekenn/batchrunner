@@ -35,8 +35,8 @@ public class CollectionWithReferencesFinderTest {
 		List<RecordIdentifier> items = finder
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientSpy.recordType, "metadataItemCollection");
-		assertEquals(coraClientSpy.recordId, "completeLanguageCollection");
+		assertEquals(coraClientSpy.recordTypes.get(0), "metadataItemCollection");
+		assertEquals(coraClientSpy.recordIds.get(0), "completeLanguageCollection");
 
 		assertEquals(items.size(), 3);
 		assertEquals(items.get(0).type, "metadataItemCollection");

@@ -22,15 +22,26 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 		this.coraClientConfig = coraClientConfig;
 	}
 
+	public static RecordFinder usingCoraClientFactoryAndClientConfig(
+			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
+		return new TextsConnectedToItemCollectionFinder(coraClientFactory, coraClientConfig);
+	}
+
 	@Override
 	public List<RecordIdentifier> findRecordsRelatedToRecordIdentifier(
 			RecordIdentifier recordIdentifier) {
 		List<RecordIdentifier> items = findItems(recordIdentifier);
-		return createRecordIdentifiersForTextsForItems(items);
+		return createRecordIdentifiersForTextsForCollectionAndItems(items);
 
 	}
 
-	private List<RecordIdentifier> createRecordIdentifiersForTextsForItems(
+	private List<RecordIdentifier> findItems(RecordIdentifier recordIdentifier) {
+		RecordFinder itemFinder = CollectionWithReferencesFinder
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
+		return itemFinder.findRecordsRelatedToRecordIdentifier(recordIdentifier);
+	}
+
+	private List<RecordIdentifier> createRecordIdentifiersForTextsForCollectionAndItems(
 			List<RecordIdentifier> items) {
 		List<RecordIdentifier> result = new ArrayList<>();
 		for (RecordIdentifier item : items) {
@@ -44,12 +55,6 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 		String readItem = readItemUsingRecordIdentifier(item);
 		addText(result, readItem);
 		addDefText(result, readItem);
-	}
-
-	private List<RecordIdentifier> findItems(RecordIdentifier recordIdentifier) {
-		RecordFinder itemFinder = CollectionWithReferencesFinder
-				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
-		return itemFinder.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 	}
 
 	private void addDefText(List<RecordIdentifier> result, String readItem) {
@@ -81,11 +86,6 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 	private ClientDataGroup getJsonAsClientDataGroup(String json) {
 		ClientDataRecord pGroupClientDataRecord = ConverterHelper.getJsonAsClientDataRecord(json);
 		return pGroupClientDataRecord.getClientDataGroup();
-	}
-
-	public static RecordFinder usingCoraClientFactoryAndClientConfig(
-			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
-		return new TextsConnectedToItemCollectionFinder(coraClientFactory, coraClientConfig);
 	}
 
 }

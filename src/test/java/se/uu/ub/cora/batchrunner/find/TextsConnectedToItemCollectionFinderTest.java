@@ -35,16 +35,16 @@ public class TextsConnectedToItemCollectionFinderTest {
 		List<RecordIdentifier> items = finder
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 		CoraClientSpy coraClientReadCollectionSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientReadCollectionSpy.recordType, "metadataItemCollection");
-		assertEquals(coraClientReadCollectionSpy.recordId, "completeLanguageCollection");
+		assertEquals(coraClientReadCollectionSpy.recordTypes.get(0), "metadataItemCollection");
+		assertEquals(coraClientReadCollectionSpy.recordIds.get(0), "completeLanguageCollection");
 
 		CoraClientSpy coraClientReadItemSpy = coraClientFactory.factoredClientSpies.get(2);
-		assertEquals(coraClientReadItemSpy.recordType, "genericCollectionItem");
-		assertEquals(coraClientReadItemSpy.recordId, "svItem");
+		assertEquals(coraClientReadItemSpy.recordTypes.get(0), "genericCollectionItem");
+		assertEquals(coraClientReadItemSpy.recordIds.get(0), "svItem");
 
 		CoraClientSpy coraClientReadItemSpy2 = coraClientFactory.factoredClientSpies.get(3);
-		assertEquals(coraClientReadItemSpy2.recordType, "genericCollectionItem");
-		assertEquals(coraClientReadItemSpy2.recordId, "enItem");
+		assertEquals(coraClientReadItemSpy2.recordTypes.get(0), "genericCollectionItem");
+		assertEquals(coraClientReadItemSpy2.recordIds.get(0), "enItem");
 
 		assertEquals(items.size(), 6);
 		assertCorrectRecordIdentifier(items, "languageCollectionText", 0);

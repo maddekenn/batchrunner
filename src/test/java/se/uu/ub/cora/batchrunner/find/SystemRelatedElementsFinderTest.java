@@ -37,8 +37,9 @@ public class SystemRelatedElementsFinderTest {
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientSpy.recordType, "system");
-		assertEquals(coraClientSpy.recordId, "aTestSystem");
+		assertEquals(coraClientSpy.recordTypes.get(0), "system");
+		assertEquals(coraClientSpy.recordIds.get(0), "aTestSystem");
+		assertEquals(coraClientSpy.calledMethods.get(0), "read");
 
 	}
 }

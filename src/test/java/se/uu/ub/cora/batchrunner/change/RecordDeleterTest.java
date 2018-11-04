@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 
 import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
 import se.uu.ub.cora.batchrunner.CoraClientSpy;
-import se.uu.ub.cora.batchrunner.change.RecordDeleter;
 import se.uu.ub.cora.batchrunner.remove.RecordDeleterImp;
 
 public class RecordDeleterTest {
@@ -30,8 +29,8 @@ public class RecordDeleterTest {
 		String recordId = "languageCollection";
 		String answer = recordDeleter.deleteRecordByTypeAndId(recordType, recordId);
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientSpy.recordType, "metadataItemCollection");
-		assertEquals(coraClientSpy.recordId, "languageCollection");
+		assertEquals(coraClientSpy.recordTypes.get(0), "metadataItemCollection");
+		assertEquals(coraClientSpy.recordIds.get(0), "languageCollection");
 		assertEquals(answer, "OK");
 	}
 }

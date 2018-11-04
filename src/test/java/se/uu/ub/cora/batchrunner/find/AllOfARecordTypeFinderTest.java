@@ -35,7 +35,7 @@ public class AllOfARecordTypeFinderTest {
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientSpy.recordType, "workOrder");
+		assertEquals(coraClientSpy.recordTypes.get(0), "workOrder");
 		assertEquals(foundRecords.size(), 1);
 		RecordIdentifier createdRecordIdentifier = foundRecords.get(0);
 		assertEquals(createdRecordIdentifier.type, "workOrder");

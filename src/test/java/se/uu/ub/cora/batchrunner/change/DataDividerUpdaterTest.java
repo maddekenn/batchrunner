@@ -45,8 +45,8 @@ public class DataDividerUpdaterTest {
 				"metadataItemCollection", "languageCollection", "newDataDivider");
 
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientSpy.recordType, "metadataItemCollection");
-		assertEquals(coraClientSpy.recordId, "languageCollection");
+		assertEquals(coraClientSpy.recordTypes.get(0), "metadataItemCollection");
+		assertEquals(coraClientSpy.recordIds.get(0), "languageCollection");
 
 		String dataDivider = extractDataDividerFromUpdatedJson(updatedRecord);
 		assertEquals(dataDivider, "newDataDivider");
