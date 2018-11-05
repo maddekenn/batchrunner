@@ -84,7 +84,7 @@ public class TextsConnectedToItemCollectionFinder implements RecordFinder {
 	}
 
 	private ClientDataGroup getJsonAsClientDataGroup(String json) {
-		ClientDataRecord pGroupClientDataRecord = ConverterHelper.getJsonAsClientDataRecord(json);
+		ClientDataRecord pGroupClientDataRecord = ConverterHelper.getJsonStringAsClientDataRecord(json);
 		return pGroupClientDataRecord.getClientDataGroup();
 	}
 

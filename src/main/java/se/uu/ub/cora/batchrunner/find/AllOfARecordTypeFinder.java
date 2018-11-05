@@ -51,7 +51,7 @@ public class AllOfARecordTypeFinder extends MetadataFinder implements RecordFind
 	private ClientDataGroup extractDataGroup(JsonValue value) {
 		String jsonString = getJsonValueAsString(value);
 		ClientDataRecord pGroupClientDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(jsonString);
+				.getJsonStringAsClientDataRecord(jsonString);
 		return pGroupClientDataRecord.getClientDataGroup();
 	}
 

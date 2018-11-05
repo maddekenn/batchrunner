@@ -28,6 +28,7 @@ public class RecordFinderSpy implements RecordFinder {
 	@Override
 	public List<RecordIdentifier> findRecordsRelatedToRecordIdentifier(
 			RecordIdentifier recordIdentifier) {
+		findRecordsCalled = true;
 		this.recordIdentifier = recordIdentifier;
 		List<RecordIdentifier> recordIdentifiers = new ArrayList<>();
 		recordIdentifiers.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "svItem"));

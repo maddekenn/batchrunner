@@ -21,7 +21,7 @@ public class DataGroupJsonCopier implements DataJsonCopier {
 
 	private ClientDataGroup getJsonAsDataGroup(String jsonRecord, String newId) {
 		ClientDataRecord pGroupClientDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(jsonRecord);
+				.getJsonStringAsClientDataRecord(jsonRecord);
 		ClientDataGroup pGroupClientDataGroup = pGroupClientDataRecord.getClientDataGroup();
 
 		ClientDataGroup newRecordInfo = createNewRecordInfoUsingDataGroupAndId(

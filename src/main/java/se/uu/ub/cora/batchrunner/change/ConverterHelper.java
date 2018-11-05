@@ -6,6 +6,7 @@ import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverter;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
+import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataGroupConverter;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
 import se.uu.ub.cora.json.builder.JsonBuilderFactory;
 import se.uu.ub.cora.json.builder.org.OrgJsonBuilderFactoryAdapter;
@@ -19,13 +20,23 @@ public class ConverterHelper {
 	private ConverterHelper() {
 	}
 
-	public static ClientDataRecord getJsonAsClientDataRecord(String json) {
+	public static ClientDataRecord getJsonStringAsClientDataRecord(String json) {
 		JsonObject recordJsonObject = createJsonObjectFromResponseText(json);
+		return getJsonObjectAsClientDataRecord(recordJsonObject);
+	}
 
+	public static ClientDataRecord getJsonObjectAsClientDataRecord(JsonObject recordJsonObject) {
 		JsonToDataConverterFactory recordConverterFactory = new JsonToDataConverterFactoryImp();
 		JsonToDataRecordConverter converter = JsonToDataRecordConverter
 				.forJsonObjectUsingConverterFactory(recordJsonObject, recordConverterFactory);
 		return converter.toInstance();
+	}
+
+	public static ClientDataGroup getJsonObjectAsClientDataGroup(JsonObject jsonObject) {
+		JsonToDataConverterFactory converterFactory = new JsonToDataConverterFactoryImp();
+		JsonToDataGroupConverter converter = JsonToDataGroupConverter
+				.forJsonObjectUsingConverterFactory(jsonObject, converterFactory);
+		return (ClientDataGroup) converter.toInstance();
 	}
 
 	private static JsonObject createJsonObjectFromResponseText(String responseText) {
@@ -37,9 +48,9 @@ public class ConverterHelper {
 	public static String getDataGroupAsJsonUsingConverterFactory(ClientDataGroup dataGroup,
 			DataToJsonConverterFactory jsonConverterFactory) {
 		JsonBuilderFactory factory = new OrgJsonBuilderFactoryAdapter();
-		DataToJsonConverter forClientDataElement = jsonConverterFactory
-				.createForClientDataElement(factory, dataGroup);
-		return forClientDataElement.toJson();
+		DataToJsonConverter converter = jsonConverterFactory.createForClientDataElement(factory,
+				dataGroup);
+		return converter.toJson();
 	}
 
 }

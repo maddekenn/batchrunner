@@ -54,7 +54,7 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 
 	private String getPresentationFormId(String recordTypeJson) {
 		ClientDataRecord recordTypeDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(recordTypeJson);
+				.getJsonStringAsClientDataRecord(recordTypeJson);
 		ClientDataGroup recordTypeDataGroup = recordTypeDataRecord.getClientDataGroup();
 		ClientDataGroup presentationForm = recordTypeDataGroup
 				.getFirstGroupWithNameInData("presentationFormId");
@@ -78,7 +78,7 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 
 	private String getUpdatedRecordTypeAsJson(String recordTypeJson) {
 		ClientDataRecord recordTypeDataRecord = ConverterHelper
-				.getJsonAsClientDataRecord(recordTypeJson);
+				.getJsonStringAsClientDataRecord(recordTypeJson);
 		ClientDataGroup recordTypeDataGroup = recordTypeDataRecord.getClientDataGroup();
 		updateLinkUsingDataGroupAndPresentation(formPresentation, recordTypeDataGroup);
 		updateLinkUsingDataGroupAndPresentation(formNewPresentation, recordTypeDataGroup);

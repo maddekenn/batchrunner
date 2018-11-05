@@ -43,7 +43,7 @@ public class CollectionWithReferencesFinder implements RecordFinder {
 
 	private ClientDataRecord readRecordUsingRecordIdentifier(RecordIdentifier recordIdentifier) {
 		String readRecord = coraClient.read(recordIdentifier.type, recordIdentifier.id);
-		return ConverterHelper.getJsonAsClientDataRecord(readRecord);
+		return ConverterHelper.getJsonStringAsClientDataRecord(readRecord);
 	}
 
 	private void addRefsToFoundRecords(List<RecordIdentifier> foundRecords,
