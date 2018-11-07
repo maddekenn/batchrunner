@@ -7,15 +7,21 @@ import se.uu.ub.cora.batchrunner.change.RecordDeleter;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
+import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public class RecordDeleterSpy implements RecordDeleter {
 
 	public List<String> types = new ArrayList<>();
 	public List<String> recordIds = new ArrayList<>();
+	public CoraClientFactory coraClientFactory;
+	public CoraClientConfig coraClientConfig;
+	public List<RecordIdentifier> identifiers;
+	public boolean deleteByIdentifiersWasCalled = false;
 
 	public RecordDeleterSpy(CoraClientFactory coraClientFactory,
 			CoraClientConfig coraClientConfig) {
-		// TODO Auto-generated constructor stub
+		this.coraClientFactory = coraClientFactory;
+		this.coraClientConfig = coraClientConfig;
 	}
 
 	public static RecordDeleter usingCoraClientFactoryAndClientConfig(
@@ -31,6 +37,17 @@ public class RecordDeleterSpy implements RecordDeleter {
 			throw new CoraClientException("Error from DataUpdaterSpy");
 		}
 		return "OK";
+	}
+
+	@Override
+	public List<String> deleteByRecordIdentifiers(List<RecordIdentifier> recordIdentifiers) {
+		deleteByIdentifiersWasCalled = true;
+		identifiers = new ArrayList<>();
+		identifiers.addAll(recordIdentifiers);
+
+		List<String> messages = new ArrayList<>();
+		messages.add("seom message from spy");
+		return messages;
 	}
 
 }

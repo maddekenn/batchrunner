@@ -16,6 +16,7 @@ public class RecordFinderSpy implements RecordFinder {
 	public CoraClientFactory coraClientFactory;
 	public CoraClientConfig coraClientConfig;
 	public RecordIdentifier recordIdentifier;
+	public List<RecordIdentifier> recordIdentifiers;
 
 	public RecordFinderSpy() {
 	}
@@ -30,7 +31,7 @@ public class RecordFinderSpy implements RecordFinder {
 			RecordIdentifier recordIdentifier) {
 		findRecordsCalled = true;
 		this.recordIdentifier = recordIdentifier;
-		List<RecordIdentifier> recordIdentifiers = new ArrayList<>();
+		recordIdentifiers = new ArrayList<>();
 		recordIdentifiers.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "svItem"));
 		recordIdentifiers.add(RecordIdentifier.usingTypeAndId("genericCollectionItem", "enItem"));
 		if ("errorInItemCollection".equals(recordIdentifier.id)) {
