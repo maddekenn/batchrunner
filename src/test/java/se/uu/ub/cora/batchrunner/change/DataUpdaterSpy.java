@@ -7,6 +7,7 @@ import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.client.CoraClientConfig;
 import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
+import se.uu.ub.cora.clientdata.RecordIdentifier;
 
 public class DataUpdaterSpy implements DataUpdater {
 
@@ -17,6 +18,7 @@ public class DataUpdaterSpy implements DataUpdater {
 	public List<String> dataDividers = new ArrayList<>();
 	public CoraClientFactory coraClientFactory;
 	public CoraClientConfig coraClientConfig;
+	public List<RecordIdentifier> recordIdentifiers;
 
 	public DataUpdaterSpy(CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
 		this.coraClientFactory = coraClientFactory;
@@ -44,6 +46,23 @@ public class DataUpdaterSpy implements DataUpdater {
 	public CoraClientFactory getCoraClientFactory() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<String> updateDataDividerUsingRecordIdentifiersAndNewDivider(
+			List<RecordIdentifier> recordIdentifiers, String newDataDivider) {
+		this.recordIdentifiers = new ArrayList<>();
+		this.recordIdentifiers.addAll(recordIdentifiers);
+		List<String> messages = new ArrayList<>();
+		messages.add("message from spy");
+
+		// types.add(type);
+		// recordIds.add(recordId);
+		dataDividers.add(newDataDivider);
+		// if ("errorItem".equals(recordId)) {
+		// throw new CoraClientException("Error from DataUpdaterSpy");
+		// }
+		return messages;
 	}
 
 }

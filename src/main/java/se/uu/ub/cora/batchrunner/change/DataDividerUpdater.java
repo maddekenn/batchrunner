@@ -18,13 +18,16 @@
  */
 package se.uu.ub.cora.batchrunner.change;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.uu.ub.cora.client.CoraClient;
 import se.uu.ub.cora.client.CoraClientConfig;
-import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
+import se.uu.ub.cora.clientdata.RecordIdentifier;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
 
@@ -39,9 +42,21 @@ public class DataDividerUpdater implements DataUpdater {
 		this.coraClientConfig = coraClientConfig;
 	}
 
-	public static DataDividerUpdater usingCoraClientFactoryAndClientConfig(
+	public static DataUpdater usingCoraClientFactoryAndClientConfig(
 			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
 		return new DataDividerUpdater(coraClientFactory, coraClientConfig);
+	}
+
+	@Override
+	public List<String> updateDataDividerUsingRecordIdentifiersAndNewDivider(
+			List<RecordIdentifier> recordIdentifiers, String newDataDivider) {
+		List<String> messages = new ArrayList<>();
+		for (RecordIdentifier recordIdentifier : recordIdentifiers) {
+			messages.add(updateDataDividerInRecordUsingTypeIdAndNewDivider(recordIdentifier.type,
+					recordIdentifier.id, newDataDivider));
+		}
+
+		return messages;
 	}
 
 	@Override
@@ -55,8 +70,7 @@ public class DataDividerUpdater implements DataUpdater {
 		try {
 			return coraClient.update(type, recordId, newJson);
 		} catch (Exception e) {
-			throw new CoraClientException(
-					"Unable to update json: " + newJson + " Error: " + e.getMessage());
+			return "Unable to update json: " + newJson + " Error: " + e.getMessage();
 		}
 	}
 
@@ -74,7 +88,8 @@ public class DataDividerUpdater implements DataUpdater {
 	}
 
 	private ClientDataGroup getJsonAsClientDataGroup(String json) {
-		ClientDataRecord pGroupClientDataRecord = ConverterHelper.getJsonStringAsClientDataRecord(json);
+		ClientDataRecord pGroupClientDataRecord = ConverterHelper
+				.getJsonStringAsClientDataRecord(json);
 		return pGroupClientDataRecord.getClientDataGroup();
 	}
 
@@ -93,4 +108,5 @@ public class DataDividerUpdater implements DataUpdater {
 	public CoraClientFactory getCoraClientFactory() {
 		return coraClientFactory;
 	}
+
 }

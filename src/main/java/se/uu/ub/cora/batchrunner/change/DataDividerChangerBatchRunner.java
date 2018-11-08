@@ -25,7 +25,6 @@ import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.RecordFinder;
 import se.uu.ub.cora.client.CoraClientConfig;
-import se.uu.ub.cora.client.CoraClientException;
 import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 
@@ -51,25 +50,29 @@ public class DataDividerChangerBatchRunner {
 		createFinder(finderClassName);
 
 		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
-		List<RecordIdentifier> refs = finder.findRecordsRelatedToRecordIdentifier(recordIdentifier);
+		List<RecordIdentifier> resultFromFinder = finder
+				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 
 		createDataUpdater(dataUpdaterClassName);
-		for (RecordIdentifier ref : refs) {
-			tryToUpdateRecord(newDataDivider, ref.type, ref.id);
-		}
+		List<String> updateResult = dataUpdater
+				.updateDataDividerUsingRecordIdentifiersAndNewDivider(resultFromFinder,
+						newDataDivider);
+		updateResult.forEach(System.out::println);
 		errors.forEach(System.out::println);
 		System.out.println("done ");
 	}
 
-	private static void tryToUpdateRecord(String newDataDivider, String itemType, String itemId) {
-		try {
-			String response = dataUpdater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
-					itemType, itemId, newDataDivider);
-			System.out.println("recordId :" + itemId + " response" + response);
-		} catch (CoraClientException e) {
-			errors.add(e.getMessage());
-		}
-	}
+	// private static void tryToUpdateRecord(String newDataDivider, String itemType,
+	// String itemId) {
+	// try {
+	// String response =
+	// dataUpdater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
+	// itemType, itemId, newDataDivider);
+	// System.out.println("recordId :" + itemId + " response" + response);
+	// } catch (CoraClientException e) {
+	// errors.add(e.getMessage());
+	// }
+	// }
 
 	private static void createCoraClientConfig(String[] args) {
 		String userId = args[0];

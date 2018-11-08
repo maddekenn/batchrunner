@@ -22,17 +22,8 @@ public class RecordFinderAndDeleterBatchRunner {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, InstantiationException {
-		String finderClassName = args[4];
-		String separatorClassName = args[5];
-		String deleterClassName = args[6];
-		String coraClientFactoryClassName = args[7];
-
-		createCoraClientConfig(args);
-		createCoraClientFactory(coraClientFactoryClassName);
-		createFinder(finderClassName);
-		createSeparator(separatorClassName);
-		createDeleter(deleterClassName);
+			IllegalAccessException, InvocationTargetException {
+		setUpInstancesOfClasses(args);
 		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
 
 		List<RecordIdentifier> records = finder
@@ -43,13 +34,27 @@ public class RecordFinderAndDeleterBatchRunner {
 		List<RecordIdentifier> result = resultHolder.recordIdentifiers;
 
 		printResultFromSeparator(result);
-		printMessageFromSeparator(resultHolder);
+		printMessageFromSeparator(resultHolder.messages);
 
 		List<String> deletedResult = deleter.deleteByRecordIdentifiers(result);
 		printResultFromDeleter(deletedResult);
 
 		System.out.println("done " + result.size());
 
+	}
+
+	private static void setUpInstancesOfClasses(String[] args) throws NoSuchMethodException,
+			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
+		String finderClassName = args[4];
+		String separatorClassName = args[5];
+		String deleterClassName = args[6];
+		String coraClientFactoryClassName = args[7];
+
+		createCoraClientConfig(args);
+		createCoraClientFactory(coraClientFactoryClassName);
+		createFinder(finderClassName);
+		createSeparator(separatorClassName);
+		createDeleter(deleterClassName);
 	}
 
 	private static void printResultFromDeleter(List<String> deletedResult) {
@@ -60,9 +65,9 @@ public class RecordFinderAndDeleterBatchRunner {
 		}
 	}
 
-	private static void printMessageFromSeparator(ResultHolder resultHolder) {
+	private static void printMessageFromSeparator(List<String> messages) {
 		System.out.println("messages ");
-		for (String message : resultHolder.messages) {
+		for (String message : messages) {
 			System.out.println(message);
 		}
 	}
@@ -74,37 +79,31 @@ public class RecordFinderAndDeleterBatchRunner {
 		}
 	}
 
-	private static void createFinder(String finderClassName)
-			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
-		Class<?>[] cArg = new Class[2];
-		cArg[0] = CoraClientFactory.class;
-		cArg[1] = CoraClientConfig.class;
-		Method constructor = Class.forName(finderClassName)
-				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
+	private static void createFinder(String finderClassName) throws NoSuchMethodException,
+			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
+		Method constructor = setUpArgumentsForClass(finderClassName);
 		finder = (RecordFinder) constructor.invoke(null, coraClientFactory, coraClientConfig);
 	}
 
-	private static void createSeparator(String separatorClassName)
-			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+	private static Method setUpArgumentsForClass(String className)
+			throws NoSuchMethodException, ClassNotFoundException {
 		Class<?>[] cArg = new Class[2];
 		cArg[0] = CoraClientFactory.class;
 		cArg[1] = CoraClientConfig.class;
-		Method constructor = Class.forName(separatorClassName)
-				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
+		return Class.forName(className).getMethod("usingCoraClientFactoryAndClientConfig", cArg);
+	}
+
+	private static void createSeparator(String separatorClassName) throws NoSuchMethodException,
+			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
+		Method constructor = setUpArgumentsForClass(separatorClassName);
 		separator = (RecordsSeparator) constructor.invoke(null, coraClientFactory,
 				coraClientConfig);
 	}
 
-	private static void createDeleter(String deleterClassName)
-			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
-		Class<?>[] cArg = new Class[2];
-		cArg[0] = CoraClientFactory.class;
-		cArg[1] = CoraClientConfig.class;
-		Method constructor = Class.forName(deleterClassName)
-				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
+	private static void createDeleter(String deleterClassName) throws NoSuchMethodException,
+			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
+		Method constructor = setUpArgumentsForClass(deleterClassName);
+
 		deleter = (RecordDeleter) constructor.invoke(null, coraClientFactory, coraClientConfig);
 	}
 
