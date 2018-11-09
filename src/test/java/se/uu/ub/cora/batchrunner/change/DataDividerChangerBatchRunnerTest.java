@@ -81,22 +81,5 @@ public class DataDividerChangerBatchRunnerTest {
 		assertEquals(dataUpdater.dataDividers.get(0), "someNewDataDivider");
 
 	}
-	//
-	// @Test
-	// public void testMainMethodErrorInUpdate() throws ClassNotFoundException,
-	// NoSuchMethodException,
-	// IllegalAccessException, InvocationTargetException, InstantiationException {
-	// String args[] = new String[] { "someUserId", "someAppToken",
-	// "appTokenVerifierUrl",
-	// "http://localhost:8080/therest/rest/record/",
-	// "se.uu.ub.cora.batchrunner.change.DataUpdaterSpy",
-	// "se.uu.ub.cora.batchrunner.CoraClientFactorySpy",
-	// "se.uu.ub.cora.batchrunner.find.RecordFinderSpy", "someNewDataDivider",
-	// "metadataItemCollection", "errorInItemCollection" };
-	//
-	// DataDividerChangerBatchRunner.main(args);
-	// assertEquals(DataDividerChangerBatchRunner.errors.get(0), "Error from
-	// DataUpdaterSpy");
-	// }
 
 }

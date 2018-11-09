@@ -27,9 +27,12 @@ public class RecordsToDeleteSorterTest {
 		RecordIdentifier toDelete = RecordIdentifier.usingTypeAndId("someType", "someIdToDelete");
 		RecordIdentifier parseError = RecordIdentifier.usingTypeAndId("someType",
 				"someParseErrorId");
+		RecordIdentifier coraClientError = RecordIdentifier.usingTypeAndId("someType",
+				"someCoraCliencErrorId");
 		recordIdentifiers.add(toKeep);
 		recordIdentifiers.add(toDelete);
 		recordIdentifiers.add(parseError);
+		recordIdentifiers.add(coraClientError);
 		coraClientFactory = new CoraClientFactorySpy("someUserId", "someAppToken");
 		coraClientConfig = new CoraClientConfigSpy("someUserId", "someAppToken",
 				"someAppTokenVerifierUrl", "someCoraUrl");
@@ -70,7 +73,24 @@ public class RecordsToDeleteSorterTest {
 		assertEquals(result.size(), 1);
 
 		List<String> errorMessages = resultHolder.messages;
-		assertEquals(errorMessages.size(), 1);
+		assertEquals(errorMessages.get(0),
+				"Error parsing json for type: someType and id: someParseErrorId");
+		assertEquals(errorMessages.size(), 2);
+
+	}
+
+	@Test
+	public void testCoraClientError() {
+		RecordsSeparator chooser = RecordsToDeleteSeparator
+				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
+
+		ResultHolder resultHolder = chooser.sortOutRecordIdentifiers(recordIdentifiers);
+		List<RecordIdentifier> result = resultHolder.recordIdentifiers;
+		assertEquals(result.size(), 1);
+
+		List<String> errorMessages = resultHolder.messages;
+		assertEquals(errorMessages.get(1), "some coraClientException from spy");
+		assertEquals(errorMessages.size(), 2);
 
 	}
 }

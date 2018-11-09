@@ -35,6 +35,7 @@ public class RecordsSeparatorSpy implements RecordsSeparator {
 
 		resultHolder = new ResultHolder();
 		resultHolder.addRecordIdentifier(recordIdentifiers.get(0));
+		resultHolder.addMessage("some message from spy");
 		return resultHolder;
 	}
 

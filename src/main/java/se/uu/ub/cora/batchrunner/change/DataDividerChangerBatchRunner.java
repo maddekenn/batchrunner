@@ -39,7 +39,7 @@ public class DataDividerChangerBatchRunner {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, InstantiationException {
+			IllegalAccessException, InvocationTargetException {
 		String dataUpdaterClassName = args[4];
 		String httpFactoryClassName = args[5];
 		String finderClassName = args[6];
@@ -54,25 +54,18 @@ public class DataDividerChangerBatchRunner {
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 
 		createDataUpdater(dataUpdaterClassName);
-		List<String> updateResult = dataUpdater
-				.updateDataDividerUsingRecordIdentifiersAndNewDivider(resultFromFinder,
-						newDataDivider);
-		updateResult.forEach(System.out::println);
+		updateResult(newDataDivider, resultFromFinder);
 		errors.forEach(System.out::println);
 		System.out.println("done ");
 	}
 
-	// private static void tryToUpdateRecord(String newDataDivider, String itemType,
-	// String itemId) {
-	// try {
-	// String response =
-	// dataUpdater.updateDataDividerInRecordUsingTypeIdAndNewDivider(
-	// itemType, itemId, newDataDivider);
-	// System.out.println("recordId :" + itemId + " response" + response);
-	// } catch (CoraClientException e) {
-	// errors.add(e.getMessage());
-	// }
-	// }
+	private static void updateResult(String newDataDivider,
+			List<RecordIdentifier> resultFromFinder) {
+		List<String> updateResult = dataUpdater
+				.updateDataDividerUsingRecordIdentifiersAndNewDivider(resultFromFinder,
+						newDataDivider);
+		updateResult.forEach(System.out::println);
+	}
 
 	private static void createCoraClientConfig(String[] args) {
 		String userId = args[0];
@@ -95,9 +88,8 @@ public class DataDividerChangerBatchRunner {
 
 	}
 
-	private static void createFinder(String finderClassName)
-			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+	private static void createFinder(String finderClassName) throws NoSuchMethodException,
+			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] cArg = new Class[2];
 		cArg[0] = CoraClientFactory.class;
 		cArg[1] = CoraClientConfig.class;
