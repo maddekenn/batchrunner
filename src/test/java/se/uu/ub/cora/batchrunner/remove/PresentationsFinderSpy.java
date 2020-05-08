@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.Finder;
-import se.uu.ub.cora.client.CoraClientConfig;
-import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
+import se.uu.ub.cora.javaclient.CoraClientConfig;
+import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class PresentationsFinderSpy implements Finder {
 	public boolean findRecordsCalled = false;

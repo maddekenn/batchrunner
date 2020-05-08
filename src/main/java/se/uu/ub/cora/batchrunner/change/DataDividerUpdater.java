@@ -21,15 +21,15 @@ package se.uu.ub.cora.batchrunner.change;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.uu.ub.cora.client.CoraClient;
-import se.uu.ub.cora.client.CoraClientConfig;
-import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
+import se.uu.ub.cora.javaclient.CoraClientConfig;
+import se.uu.ub.cora.javaclient.cora.CoraClient;
+import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class DataDividerUpdater implements DataUpdater {
 
@@ -75,7 +75,7 @@ public class DataDividerUpdater implements DataUpdater {
 	}
 
 	private String getDataGroupAsJson(ClientDataGroup dataGroup) {
-		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonWithoutActionLinksForLinksConverterFactory();
+		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonConverterFactoryImp();
 		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(dataGroup,
 				jsonConverterFactory);
 	}
@@ -88,7 +88,7 @@ public class DataDividerUpdater implements DataUpdater {
 	}
 
 	private ClientDataGroup getJsonAsClientDataGroup(String json) {
-		ClientDataRecord pGroupClientDataRecord = ConverterHelper
+		ClientDataRecord pGroupClientDataRecord = (ClientDataRecord) ConverterHelper
 				.getJsonStringAsClientDataRecord(json);
 		return pGroupClientDataRecord.getClientDataGroup();
 	}

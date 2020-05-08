@@ -5,7 +5,6 @@ import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
 
 public class DataGroupJsonCopier implements DataJsonCopier {
 	private static final String RECORD_INFO = "recordInfo";
@@ -46,7 +45,7 @@ public class DataGroupJsonCopier implements DataJsonCopier {
 	public String copyDataGroupAsJsonExcludeLinksUsingJsonAndNewId(String jsonRecord,
 			String newId) {
 		ClientDataGroup pGroupClientDataGroup = getJsonAsDataGroup(jsonRecord, newId);
-		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonWithoutActionLinksForLinksConverterFactory();
+		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonConverterFactoryImp();
 		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(pGroupClientDataGroup,
 				jsonConverterFactory);
 

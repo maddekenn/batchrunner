@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerSpy;
-import se.uu.ub.cora.spider.record.storage.RecordNotFoundException;
 
 public class HttpHandlerHelperTest {
 	private HttpHandlerFactorySpy httpHandlerFactory;

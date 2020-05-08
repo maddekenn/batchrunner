@@ -7,7 +7,7 @@ import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
@@ -83,7 +83,7 @@ public class RecordTypePGroupIdsModifier implements Modifier {
 		updateLinkUsingDataGroupAndPresentation(formPresentation, recordTypeDataGroup);
 		updateLinkUsingDataGroupAndPresentation(formNewPresentation, recordTypeDataGroup);
 		updateLinkUsingDataGroupAndPresentation(viewPresentation, recordTypeDataGroup);
-		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonWithoutActionLinksForLinksConverterFactory();
+		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonConverterFactoryImp();
 
 		return ConverterHelper.getDataGroupAsJsonUsingConverterFactory(recordTypeDataGroup,
 				jsonConverterFactory);

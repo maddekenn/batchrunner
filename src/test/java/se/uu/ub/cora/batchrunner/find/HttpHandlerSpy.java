@@ -134,4 +134,10 @@ public class HttpHandlerSpy implements HttpHandler {
 	public String getHeaderField(String s) {
 		return null;
 	}
+
+	@Override
+	public void setBasicAuthorization(String username, String password) {
+		// TODO Auto-generated method stub
+
+	}
 }

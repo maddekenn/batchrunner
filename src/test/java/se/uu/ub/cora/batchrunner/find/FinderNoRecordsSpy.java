@@ -3,9 +3,9 @@ package se.uu.ub.cora.batchrunner.find;
 import java.util.Collection;
 import java.util.Collections;
 
-import se.uu.ub.cora.client.CoraClientConfig;
-import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
+import se.uu.ub.cora.javaclient.CoraClientConfig;
+import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class FinderNoRecordsSpy implements Finder {
 	public boolean findRecordCalled = false;

@@ -2,7 +2,6 @@ package se.uu.ub.cora.batchrunner;
 
 import se.uu.ub.cora.httphandler.HttpHandler;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-import se.uu.ub.cora.spider.record.storage.RecordNotFoundException;
 
 public class HttpHandlerHelper {
 	private String url;

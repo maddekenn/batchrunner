@@ -2,8 +2,8 @@ package se.uu.ub.cora.batchrunner.change;
 
 import java.util.List;
 
-import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
+import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public interface DataUpdater {
 

@@ -1,15 +1,16 @@
 package se.uu.ub.cora.batchrunner.change;
 
-import org.testng.annotations.Test;
-import se.uu.ub.cora.batchrunner.find.FinderSpy;
-import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Test;
+
+import se.uu.ub.cora.batchrunner.find.FinderSpy;
+import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 
 public class OldPGroupsDeleterBatchRunnerTest {
 

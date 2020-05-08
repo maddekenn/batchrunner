@@ -8,6 +8,7 @@ import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataGroupConverter;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
+import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverterImp;
 import se.uu.ub.cora.json.builder.JsonBuilderFactory;
 import se.uu.ub.cora.json.builder.org.OrgJsonBuilderFactoryAdapter;
 import se.uu.ub.cora.json.parser.JsonObject;
@@ -27,9 +28,9 @@ public class ConverterHelper {
 
 	public static ClientDataRecord getJsonObjectAsClientDataRecord(JsonObject recordJsonObject) {
 		JsonToDataConverterFactory recordConverterFactory = new JsonToDataConverterFactoryImp();
-		JsonToDataRecordConverter converter = JsonToDataRecordConverter
-				.forJsonObjectUsingConverterFactory(recordJsonObject, recordConverterFactory);
-		return converter.toInstance();
+		JsonToDataRecordConverter converter = JsonToDataRecordConverterImp
+				.usingConverterFactory(recordConverterFactory);
+		return (ClientDataRecord) converter.toInstance(recordJsonObject);
 	}
 
 	public static ClientDataGroup getJsonObjectAsClientDataGroup(JsonObject jsonObject) {
@@ -48,8 +49,8 @@ public class ConverterHelper {
 	public static String getDataGroupAsJsonUsingConverterFactory(ClientDataGroup dataGroup,
 			DataToJsonConverterFactory jsonConverterFactory) {
 		JsonBuilderFactory factory = new OrgJsonBuilderFactoryAdapter();
-		DataToJsonConverter converter = jsonConverterFactory.createForClientDataElement(factory,
-				dataGroup);
+		DataToJsonConverter converter = jsonConverterFactory
+				.createForClientDataElementIncludingActionLinks(factory, dataGroup, false);
 		return converter.toJson();
 	}
 

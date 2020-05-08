@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 
 import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
 import se.uu.ub.cora.batchrunner.find.RecordFinderSpy;
-import se.uu.ub.cora.client.CoraClientConfig;
+import se.uu.ub.cora.javaclient.CoraClientConfig;
 
 public class RecordDeleterBatchRunnerTest {
 

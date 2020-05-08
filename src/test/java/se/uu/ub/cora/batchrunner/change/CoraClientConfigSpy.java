@@ -1,6 +1,6 @@
 package se.uu.ub.cora.batchrunner.change;
 
-import se.uu.ub.cora.client.CoraClientConfig;
+import se.uu.ub.cora.javaclient.CoraClientConfig;
 
 public class CoraClientConfigSpy extends CoraClientConfig {
 

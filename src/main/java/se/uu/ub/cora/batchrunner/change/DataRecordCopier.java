@@ -1,8 +1,8 @@
 package se.uu.ub.cora.batchrunner.change;
 
 import se.uu.ub.cora.batchrunner.HttpHandlerHelper;
+import se.uu.ub.cora.batchrunner.RecordNotFoundException;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-import se.uu.ub.cora.spider.record.storage.RecordNotFoundException;
 
 public class DataRecordCopier implements DataCopier {
 

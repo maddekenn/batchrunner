@@ -15,10 +15,11 @@ import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverter;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
-import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonWithoutActionLinksForLinksConverterFactory;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactoryImp;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
+import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverterImp;
 import se.uu.ub.cora.json.builder.JsonBuilderFactory;
 import se.uu.ub.cora.json.builder.org.OrgJsonBuilderFactoryAdapter;
 import se.uu.ub.cora.json.parser.JsonObject;
@@ -114,10 +115,10 @@ public class RecordTypePGroupIdsModifierTest {
 	}
 
 	private String getDataGroupAsJson(ClientDataGroup dataGroup) {
-		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonWithoutActionLinksForLinksConverterFactory();
+		DataToJsonConverterFactory jsonConverterFactory = new DataToJsonConverterFactoryImp();
 		JsonBuilderFactory factory = new OrgJsonBuilderFactoryAdapter();
 		DataToJsonConverter forClientDataElement = jsonConverterFactory
-				.createForClientDataElement(factory, dataGroup);
+				.createForClientDataElementIncludingActionLinks(factory, dataGroup, false);
 		return forClientDataElement.toJson();
 	}
 
@@ -125,9 +126,9 @@ public class RecordTypePGroupIdsModifierTest {
 		JsonObject recordJsonObject = createJsonObjectFromResponseText(readPresentationGroup);
 
 		JsonToDataConverterFactory recordConverterFactory = new JsonToDataConverterFactoryImp();
-		JsonToDataRecordConverter converter = JsonToDataRecordConverter
-				.forJsonObjectUsingConverterFactory(recordJsonObject, recordConverterFactory);
-		return converter.toInstance();
+		JsonToDataRecordConverter converter = JsonToDataRecordConverterImp
+				.usingConverterFactory(recordConverterFactory);
+		return (ClientDataRecord) converter.toInstance(recordJsonObject);
 	}
 
 	private JsonObject createJsonObjectFromResponseText(String responseText) {

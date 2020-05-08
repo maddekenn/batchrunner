@@ -3,8 +3,10 @@ package se.uu.ub.cora.batchrunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.uu.ub.cora.client.CoraClient;
-import se.uu.ub.cora.client.CoraClientException;
+import se.uu.ub.cora.clientdata.ClientDataGroup;
+import se.uu.ub.cora.clientdata.ClientDataRecord;
+import se.uu.ub.cora.javaclient.cora.CoraClient;
+import se.uu.ub.cora.javaclient.cora.CoraClientException;
 import se.uu.ub.cora.json.parser.JsonParseException;
 
 public class CoraClientSpy implements CoraClient {
@@ -92,6 +94,24 @@ public class CoraClientSpy implements CoraClient {
 		recordIds.add(recordId);
 		calledMethods.add("readIncomingLinks");
 		return "{\"dataList\":{\"fromNo\":\"1\",\"data\":[{\"children\":[{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"metadataGroup\"},{\"name\":\"linkedRecordId\",\"value\":\"collectionItemReferenceGroup\"},{\"children\":[{\"name\":\"nameInData\",\"value\":\"childReferences\"},{\"children\":[{\"name\":\"nameInData\",\"value\":\"childReference\"},{\"name\":\"repeatId\",\"value\":\"1\"},{\"children\":[{\"name\":\"nameInData\",\"value\":\"ref\"}],\"name\":\"linkedPath\"}],\"name\":\"linkedPath\"}],\"name\":\"linkedPath\"}],\"actionLinks\":{\"read\":{\"requestMethod\":\"GET\",\"rel\":\"read\",\"url\":\"https://cora.epc.ub.uu.se/systemone/rest/record/metadataGroup/collectionItemReferenceGroup\",\"accept\":\"application/vnd.uub.record+json\"}},\"name\":\"from\"},{\"children\":[{\"name\":\"linkedRecordType\",\"value\":\"system\"},{\"name\":\"linkedRecordId\",\"value\":\"aTestSystemWithLinks\"}],\"name\":\"to\"}],\"name\":\"recordToRecordLink\"}],\"totalNo\":\"1\",\"containDataOfType\":\"recordToRecordLink\",\"toNo\":\"1\"}}";
+	}
+
+	@Override
+	public String create(String recordType, ClientDataGroup dataGroup) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ClientDataRecord readAsDataRecord(String recordType, String recordId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String update(String recordType, String recordId, ClientDataGroup dataGroup) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

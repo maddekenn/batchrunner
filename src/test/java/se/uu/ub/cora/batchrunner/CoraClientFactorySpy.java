@@ -3,8 +3,8 @@ package se.uu.ub.cora.batchrunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.uu.ub.cora.client.CoraClient;
-import se.uu.ub.cora.client.CoraClientFactory;
+import se.uu.ub.cora.javaclient.cora.CoraClient;
+import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class CoraClientFactorySpy implements CoraClientFactory {
 

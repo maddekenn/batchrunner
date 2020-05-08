@@ -3,9 +3,9 @@ package se.uu.ub.cora.batchrunner.find;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.uu.ub.cora.client.CoraClientConfig;
-import se.uu.ub.cora.client.CoraClientFactory;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
+import se.uu.ub.cora.javaclient.CoraClientConfig;
+import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class CombinedCollectionInfoFinder implements RecordFinder {
 
