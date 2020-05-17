@@ -28,7 +28,7 @@ public class JsonToClientDataTest {
 	public void setUp() {
 		jsonParser = new JsonParserSpy();
 		converterFactory = new JsonToDataConverterFactorySpy();
-		jsonToClientData = new JsonToClientDataImp(jsonParser, converterFactory);
+		jsonToClientData = JsonToClientDataImp.usingJsonParserAndConverterFactory(jsonParser, converterFactory);
 
 	}
 

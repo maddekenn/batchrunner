@@ -33,7 +33,13 @@ public class JsonToClientDataImp implements JsonToClientData {
 	private JsonParser jsonParser;
 	private JsonToDataConverterFactory converterFactory;
 
-	public JsonToClientDataImp(JsonParser jsonParser, JsonToDataConverterFactory converterFactory) {
+	public static JsonToClientDataImp usingJsonParserAndConverterFactory(JsonParser jsonParser,
+			JsonToDataConverterFactory converterFactory) {
+		return new JsonToClientDataImp(jsonParser, converterFactory);
+	}
+
+	private JsonToClientDataImp(JsonParser jsonParser,
+			JsonToDataConverterFactory converterFactory) {
 		this.jsonParser = jsonParser;
 		this.converterFactory = converterFactory;
 	}
