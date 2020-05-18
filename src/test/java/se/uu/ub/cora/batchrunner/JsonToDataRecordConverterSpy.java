@@ -18,12 +18,27 @@
  */
 package se.uu.ub.cora.batchrunner;
 
-import se.uu.ub.cora.clientdata.ClientDataList;
+import java.util.ArrayList;
+import java.util.List;
+
+import se.uu.ub.cora.clientdata.ClientDataGroup;
+import se.uu.ub.cora.clientdata.ClientDataRecord;
+import se.uu.ub.cora.clientdata.DataRecord;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
+import se.uu.ub.cora.json.parser.JsonObject;
 
-public interface JsonToClientData {
+public class JsonToDataRecordConverterSpy implements JsonToDataRecordConverter {
 
-	ClientDataList getJsonStringAsClientDataRecordList(JsonToDataRecordConverter jsonToDataRecordConverter,
-			String jsonListToConvert);
+	public List<JsonObject> jsonObjects = new ArrayList<>();
+	public List<ClientDataRecord> returnedRecords = new ArrayList<>();
+
+	@Override
+	public DataRecord toInstance(JsonObject jsonObject) {
+		jsonObjects.add(jsonObject);
+		ClientDataGroup dataGroup = ClientDataGroup.withNameInData("fromSpy");
+		ClientDataRecord returnedRecord = ClientDataRecord.withClientDataGroup(dataGroup);
+		returnedRecords.add(returnedRecord);
+		return returnedRecord;
+	}
 
 }

@@ -18,10 +18,9 @@
  */
 package se.uu.ub.cora.batchrunner;
 
-import se.uu.ub.cora.clientdata.ClientData;
 import se.uu.ub.cora.clientdata.ClientDataList;
-import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverter;
-import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataConverterFactory;
+import se.uu.ub.cora.clientdata.ClientDataRecord;
+import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
 import se.uu.ub.cora.json.parser.JsonArray;
 import se.uu.ub.cora.json.parser.JsonObject;
 import se.uu.ub.cora.json.parser.JsonParser;
@@ -31,41 +30,38 @@ import se.uu.ub.cora.json.parser.JsonValue;
 public class JsonToClientDataImp implements JsonToClientData {
 
 	private JsonParser jsonParser;
-	private JsonToDataConverterFactory converterFactory;
+	private JsonToDataRecordConverter jsonToDataRecordConverter;
 
-	public static JsonToClientDataImp usingJsonParserAndConverterFactory(JsonParser jsonParser,
-			JsonToDataConverterFactory converterFactory) {
-		return new JsonToClientDataImp(jsonParser, converterFactory);
+	public static JsonToClientDataImp usingJsonParser(JsonParser jsonParser) {
+		return new JsonToClientDataImp(jsonParser);
 	}
 
-	private JsonToClientDataImp(JsonParser jsonParser,
-			JsonToDataConverterFactory converterFactory) {
+	private JsonToClientDataImp(JsonParser jsonParser) {
 		this.jsonParser = jsonParser;
-		this.converterFactory = converterFactory;
 	}
 
 	@Override
-	public ClientDataList getJsonStringAsClientDataRecordList(String jsonListToConvert) {
+	public ClientDataList getJsonStringAsClientDataRecordList(
+			JsonToDataRecordConverter jsonToDataRecordConverter, String jsonListToConvert) {
+		this.jsonToDataRecordConverter = jsonToDataRecordConverter;
 		JsonObject listObject = getListAsObject(jsonParser, jsonListToConvert);
 		ClientDataList dataList = createClientDataList(listObject);
 
-		convertAndAddRecordsToDataList(converterFactory, listObject, dataList);
+		convertAndAddRecordsToDataList(listObject, dataList);
 		return dataList;
 	}
 
-	private void convertAndAddRecordsToDataList(JsonToDataConverterFactory converterFactory,
-			JsonObject listObject, ClientDataList dataList) {
+	private void convertAndAddRecordsToDataList(JsonObject listObject, ClientDataList dataList) {
 		JsonArray valueAsJsonArray = listObject.getValueAsJsonArray("data");
 		for (JsonValue value : valueAsJsonArray) {
-			convertAndAddRecordToDataList(converterFactory, dataList, (JsonObject) value);
+			convertAndAddRecordToDataList(dataList, (JsonObject) value);
 		}
 	}
 
-	private void convertAndAddRecordToDataList(JsonToDataConverterFactory converterFactory,
-			ClientDataList dataList, JsonObject record) {
-		JsonToDataConverter converter = converterFactory.createForJsonObject(record);
-		ClientData dataElement = (ClientData) converter.toInstance();
-		dataList.addData(dataElement);
+	private void convertAndAddRecordToDataList(ClientDataList dataList, JsonObject record) {
+		ClientDataRecord dataRecord = (ClientDataRecord) jsonToDataRecordConverter
+				.toInstance(record);
+		dataList.addData(dataRecord);
 	}
 
 	private JsonObject getListAsObject(JsonParser jsonParser, String jsonListToConvert) {
@@ -91,8 +87,8 @@ public class JsonToClientDataImp implements JsonToClientData {
 		return jsonParser;
 	}
 
-	public JsonToDataConverterFactory getJsonToDataConverterFactory() {
-		return converterFactory;
+	public JsonToDataRecordConverter getjsonToDataRecordConverter() {
+		return jsonToDataRecordConverter;
 	}
 
 }
