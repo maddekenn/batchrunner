@@ -20,10 +20,24 @@ package se.uu.ub.cora.batchrunner;
 
 import se.uu.ub.cora.clientdata.ClientDataList;
 import se.uu.ub.cora.clientdata.converter.jsontojava.JsonToDataRecordConverter;
+import se.uu.ub.cora.json.parser.JsonParser;
 
+/**
+ * JsonToClientData is a helper class for parsing json and converting it to ClientData. A
+ * {@link JsonParser} MUST be provided on instantiation
+ */
 public interface JsonToClientData {
 
-	ClientDataList getJsonStringAsClientDataRecordList(JsonToDataRecordConverter jsonToDataRecordConverter,
-			String jsonListToConvert);
+	/**
+	 * Converts a json string to a {@link ClientDataList}, containing a list of {@ClientDataRecord}
+	 * 
+	 * @param jsonToDataRecordConverter,
+	 *            a {@link JsonToDataRecordConverter} to use for converting each record in the list
+	 * 
+	 * @param jsonListToConvert,
+	 *            a String containing the json to convert
+	 */
+	ClientDataList getJsonStringAsClientDataRecordList(
+			JsonToDataRecordConverter jsonToDataRecordConverter, String jsonListToConvert);
 
 }
