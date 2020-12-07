@@ -11,6 +11,9 @@ public class CoraClientFactorySpy implements CoraClientFactory {
 	public List<CoraClientSpy> factoredClientSpies = new ArrayList<>();
 	public String appTokenVerifierUrl;
 	public String baseUrl;
+	public String userId;
+	public String appToken;
+	public String authToken;
 
 	public CoraClientFactorySpy(String appTokenVerifierUrl, String baseUrl) {
 		this.appTokenVerifierUrl = appTokenVerifierUrl;
@@ -19,6 +22,8 @@ public class CoraClientFactorySpy implements CoraClientFactory {
 
 	@Override
 	public CoraClient factor(String userId, String appToken) {
+		this.userId = userId;
+		this.appToken = appToken;
 		CoraClientSpy coraClientSpy = new CoraClientSpy();
 		factoredClientSpies.add(coraClientSpy);
 		return coraClientSpy;
@@ -27,6 +32,14 @@ public class CoraClientFactorySpy implements CoraClientFactory {
 	public static CoraClientFactorySpy usingAppTokenVerifierUrlAndBaseUrl(
 			String appTokenVerifierUrl, String baseUrl) {
 		return new CoraClientFactorySpy(appTokenVerifierUrl, baseUrl);
+	}
+
+	@Override
+	public CoraClient factorUsingAuthToken(String authToken) {
+		this.authToken = authToken;
+		CoraClientSpy coraClientSpy = new CoraClientSpy();
+		factoredClientSpies.add(coraClientSpy);
+		return coraClientSpy;
 	}
 
 }

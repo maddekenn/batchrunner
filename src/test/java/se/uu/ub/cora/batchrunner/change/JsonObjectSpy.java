@@ -36,7 +36,7 @@ public class JsonObjectSpy implements JsonObject {
 	public List<JsonObjectSpy> getValueObjectsReturned = new ArrayList<>();
 	public List<JsonArraySpy> getValueArraysReturned = new ArrayList<>();
 	public List<JsonStringSpy> getValueStringsReturned = new ArrayList<>();
-	private String jsonFormattedString;
+	public String jsonFormattedString;
 
 	@Override
 	public JsonValueType getValueType() {

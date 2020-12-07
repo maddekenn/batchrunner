@@ -16,10 +16,20 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Cora.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.uu.ub.cora.batchrunner.index;
+package se.uu.ub.cora.batchrunner;
 
-public interface DataIndexer {
+import se.uu.ub.cora.clientdata.ClientDataGroup;
+import se.uu.ub.cora.clientdata.ClientDataRecord;
+import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
+import se.uu.ub.cora.json.parser.JsonObject;
 
-	void indexDataWithRecordType(String recordType);
+public interface JsonToClientDataConverter {
+
+	ClientDataRecord getJsonObjectAsClientDataRecord(JsonObject jsonObject);
+
+	ClientDataRecord getJsonStringAsClientDataRecord(String jsonToConvert);
+
+	String getDataGroupAsJsonUsingConverterFactory(ClientDataGroup dataGroup,
+			DataToJsonConverterFactory jsonConverterFactory);
 
 }

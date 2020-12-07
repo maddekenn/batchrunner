@@ -18,8 +18,24 @@
  */
 package se.uu.ub.cora.batchrunner.index;
 
-public interface DataIndexer {
+import se.uu.ub.cora.javaclient.cora.CoraClient;
 
-	void indexDataWithRecordType(String recordType);
+public class DataIndexerSpy implements DataIndexer {
+
+	public CoraClient coraClient;
+	public String indexRecordType;
+
+	public DataIndexerSpy(CoraClient coraClient) {
+		this.coraClient = coraClient;
+	}
+
+	public static DataIndexer usingCoraClient(CoraClient coraClient) {
+		return new DataIndexerSpy(coraClient);
+	}
+
+	@Override
+	public void indexDataWithRecordType(String recordType) {
+		indexRecordType = recordType;
+	}
 
 }
