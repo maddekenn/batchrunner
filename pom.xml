@@ -18,12 +18,12 @@
     <name>Batchrunner</name>
 
     <properties>
-        <json.version>2.1.0</json.version>
-        <httphandler.version>2.0.0</httphandler.version>
-        <spider.version>3.13.0</spider.version>
-        <cora-clientdata.version>3.5.0</cora-clientdata.version>
-        <storage.version>3.6.0</storage.version>
-        <javaclient.version>1.8-SNAPSHOT</javaclient.version>
+        <json.version>2.5.0</json.version>
+        <httphandler.version>2.3.0</httphandler.version>
+        <spider.version>5.2.0</spider.version>
+        <clientdata.version>3.10.0</clientdata.version>
+        <storage.version>4.2.0</storage.version>
+        <javaclient.version>1.10.0</javaclient.version>
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
     </properties>
 
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>se.uu.ub.cora</groupId>
             <artifactId>cora-clientdata</artifactId>
-            <version>${cora-clientdata.version}</version>
+            <version>${clientdata.version}</version>
             <scope>compile</scope>
         </dependency>
        <dependency>

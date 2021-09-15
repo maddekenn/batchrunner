@@ -57,8 +57,8 @@ public class AllOfARecordTypeFinder extends MetadataFinder implements RecordFind
 	}
 
 	private String getJsonValueAsString(JsonValue value) {
-		JsonObject record = (JsonObject) value;
-		return record.toJsonFormattedString();
+		JsonObject dataRecord = (JsonObject) value;
+		return dataRecord.toJsonFormattedString();
 	}
 
 	private RecordIdentifier getRecordIdentifierFromDataGroup(ClientDataGroup dataGroup) {

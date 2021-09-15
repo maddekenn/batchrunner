@@ -29,16 +29,22 @@ public class AllOfARecordTypeFinderTest {
 
 	@Test
 	public void testFindAllOfRecordType() {
-		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId("workOrder", null);
+		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId("demo", null);
 
 		List<RecordIdentifier> foundRecords = finder
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
 
 		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
-		assertEquals(coraClientSpy.recordTypes.get(0), "workOrder");
-		assertEquals(foundRecords.size(), 1);
-		RecordIdentifier createdRecordIdentifier = foundRecords.get(0);
-		assertEquals(createdRecordIdentifier.type, "workOrder");
-		assertEquals(createdRecordIdentifier.id, "workOrder:3638403025511700");
+		assertEquals(coraClientSpy.recordTypes.get(0), "demo");
+		assertEquals(foundRecords.size(), 2);
+		assertCorrectRecordIdentifier(foundRecords, 0, "asdf");
+		assertCorrectRecordIdentifier(foundRecords, 1, "sdfsdf");
+	}
+
+	private void assertCorrectRecordIdentifier(List<RecordIdentifier> foundRecords, int index,
+			String id) {
+		RecordIdentifier createdRecordIdentifier = foundRecords.get(index);
+		assertEquals(createdRecordIdentifier.type, "demo");
+		assertEquals(createdRecordIdentifier.id, id);
 	}
 }
