@@ -3,6 +3,7 @@ package se.uu.ub.cora.batchrunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.javaclient.cora.CoraClient;
@@ -142,9 +143,14 @@ public class CoraClientSpy implements CoraClient {
 	}
 
 	private ClientDataRecord createClientDataGroupAddingIndexToNameInData(int index) {
-		ClientDataRecord clientDataGroup = ClientDataRecord
-				.withClientDataGroup(ClientDataGroup.withNameInData("spyDataGroup" + index));
-		return clientDataGroup;
+		ClientDataGroup clientDataGroup = ClientDataGroup.withNameInData("spyDataGroup" + index);
+		ClientDataGroup recordInfo = ClientDataGroup.withNameInData("recordInfo");
+		recordInfo.addChild(
+				ClientDataAtomic.withNameInDataAndValue("id", "spyDataGroup" + index + "Id"));
+		clientDataGroup.addChild(recordInfo);
+		ClientDataRecord clientDataRecord = ClientDataRecord.withClientDataGroup(clientDataGroup);
+
+		return clientDataRecord;
 	}
 
 	@Override

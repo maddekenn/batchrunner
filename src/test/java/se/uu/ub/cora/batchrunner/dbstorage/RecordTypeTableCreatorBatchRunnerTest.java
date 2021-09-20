@@ -27,7 +27,17 @@ import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
+import se.uu.ub.cora.batchrunner.CoraClientSpy;
+
 public class RecordTypeTableCreatorBatchRunnerTest {
+
+	private String args[] = new String[] { "someUserId", "someAppToken", "appTokenVerifierUrl",
+			"http://localhost:8080/therest/rest/record/",
+			"se.uu.ub.cora.batchrunner.dbstorage.SqlConnectionProviderSpy",
+			"jdbc:postgresql://diva-cora:544545/diva", "someUser", "somePassword",
+			"se.uu.ub.cora.batchrunner.dbstorage.TableCreatorSpy",
+			"se.uu.ub.cora.batchrunner.CoraClientFactorySpy" };
 
 	// "jdbc:postgresql://diva-cora-docker-postgresql:5432/diva", "diva", "diva")
 	@Test
@@ -44,17 +54,13 @@ public class RecordTypeTableCreatorBatchRunnerTest {
 	public void testConncectionProviderCreatedCorrectly()
 			throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException, InstantiationException {
-		String args[] = new String[] {
-				"se.uu.ub.cora.batchrunner.dbstorage.SqlConnectionProviderSpy",
-				"jdbc:postgresql://diva-cora:544545/diva", "someUser", "somePassword",
-				"se.uu.ub.cora.batchrunner.dbstorage.TableCreatorSpy" };
 
 		RecordTypeTableCreatorBatchRunner.main(args);
 
 		SqlConnectionProviderSpy connectionProvider = (SqlConnectionProviderSpy) RecordTypeTableCreatorBatchRunner.connectionProvider;
-		assertEquals(connectionProvider.url, args[1]);
-		assertEquals(connectionProvider.user, args[2]);
-		assertEquals(connectionProvider.password, args[3]);
+		assertEquals(connectionProvider.url, args[5]);
+		assertEquals(connectionProvider.user, args[6]);
+		assertEquals(connectionProvider.password, args[7]);
 
 	}
 
@@ -62,10 +68,6 @@ public class RecordTypeTableCreatorBatchRunnerTest {
 	public void testTableCreatorCreatedCorrectly()
 			throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException, InstantiationException {
-		String args[] = new String[] {
-				"se.uu.ub.cora.batchrunner.dbstorage.SqlConnectionProviderSpy",
-				"jdbc:postgresql://diva-cora:544545/diva", "someUser", "somePassword",
-				"se.uu.ub.cora.batchrunner.dbstorage.TableCreatorSpy" };
 
 		RecordTypeTableCreatorBatchRunner.main(args);
 
@@ -75,7 +77,37 @@ public class RecordTypeTableCreatorBatchRunnerTest {
 	}
 
 	@Test
-	public void testCreateTables() {
+	public void testCoraClientCreatedCorrectly()
+			throws NoSuchMethodException, SecurityException, ClassNotFoundException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		RecordTypeTableCreatorBatchRunner.main(args);
+		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) RecordTypeTableCreatorBatchRunner.coraClientFactory;
+
+		assertTrue(coraClientFactory instanceof CoraClientFactorySpy);
+		assertEquals(coraClientFactory.appTokenVerifierUrl, "appTokenVerifierUrl");
+		assertEquals(coraClientFactory.baseUrl, "http://localhost:8080/therest/rest/record/");
+
+	}
+
+	@Test
+	public void testCreateCalledCorrectly()
+			throws NoSuchMethodException, SecurityException, ClassNotFoundException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		RecordTypeTableCreatorBatchRunner.main(args);
+		CoraClientFactorySpy coraClientFactory = (CoraClientFactorySpy) RecordTypeTableCreatorBatchRunner.coraClientFactory;
+
+		assertEquals(coraClientFactory.userId, "someUserId");
+		assertEquals(coraClientFactory.appToken, "someAppToken");
+
+		CoraClientSpy coraClientSpy = coraClientFactory.factoredClientSpies.get(0);
+		assertEquals(coraClientSpy.recordTypes.get(0), "recordType");
+
+		TableCreatorSpy tableCreator = (TableCreatorSpy) RecordTypeTableCreatorBatchRunner.tableCreator;
+		assertEquals(tableCreator.sentInTableNames.size(),
+				coraClientSpy.returnedListOfRecords.size());
+		assertEquals(tableCreator.sentInTableNames.get(0), "spyDataGroup0Id");
+		assertEquals(tableCreator.sentInTableNames.get(1), "spyDataGroup1Id");
+		assertEquals(tableCreator.sentInTableNames.get(2), "spyDataGroup2Id");
 
 	}
 

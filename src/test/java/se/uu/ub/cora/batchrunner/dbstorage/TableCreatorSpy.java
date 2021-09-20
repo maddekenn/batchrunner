@@ -18,6 +18,7 @@
  */
 package se.uu.ub.cora.batchrunner.dbstorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.uu.ub.cora.connection.SqlConnectionProvider;
@@ -25,6 +26,7 @@ import se.uu.ub.cora.connection.SqlConnectionProvider;
 public class TableCreatorSpy implements TableCreator {
 
 	public SqlConnectionProvider sqlConnectionProvider;
+	public List<String> sentInTableNames = new ArrayList<>();
 
 	public TableCreatorSpy(SqlConnectionProvider sqlConnectionProvider) {
 		this.sqlConnectionProvider = sqlConnectionProvider;
@@ -37,7 +39,7 @@ public class TableCreatorSpy implements TableCreator {
 
 	@Override
 	public void createTables(List<String> tableNames) {
-		// TODO Auto-generated method stub
+		sentInTableNames.addAll(tableNames);
 
 	}
 
