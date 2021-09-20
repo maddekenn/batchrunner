@@ -18,41 +18,27 @@
  */
 package se.uu.ub.cora.batchrunner.dbstorage;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 import se.uu.ub.cora.connection.SqlConnectionProvider;
-import se.uu.ub.cora.sqldatabase.SqlStorageException;
 
-public class CoraTableCreator implements TableCreator {
+public class TableCreatorSpy implements TableCreator {
 
-	public static CoraTableCreator usingConnectionProvider(
-			SqlConnectionProvider sqlConnectionProvider) {
-		return new CoraTableCreator(sqlConnectionProvider);
+	public SqlConnectionProvider sqlConnectionProvider;
+
+	public TableCreatorSpy(SqlConnectionProvider sqlConnectionProvider) {
+		this.sqlConnectionProvider = sqlConnectionProvider;
 	}
 
-	private SqlConnectionProvider sqlConnectionProvider;
-
-	private CoraTableCreator(SqlConnectionProvider sqlConnectionProvider) {
-		this.sqlConnectionProvider = sqlConnectionProvider;
+	public static TableCreatorSpy usingConnectionProvider(
+			SqlConnectionProvider sqlConnectionProvider) {
+		return new TableCreatorSpy(sqlConnectionProvider);
 	}
 
 	@Override
 	public void createTables(List<String> tableNames) {
-		for (String tableName : tableNames) {
+		// TODO Auto-generated method stub
 
-			String sql = "create table " + tableName
-					+ " (id varchar, record jsonb, PRIMARY KEY(id));";
-			try (Connection connection = sqlConnectionProvider.getConnection();
-					PreparedStatement prepareStatement = connection.prepareStatement(sql);) {
-				prepareStatement.executeUpdate();
-			} catch (SQLException e) {
-				throw SqlStorageException.withMessageAndException(
-						"Error executing prepared statement: " + e.getMessage(), e);
-			}
-		}
 	}
 
 }

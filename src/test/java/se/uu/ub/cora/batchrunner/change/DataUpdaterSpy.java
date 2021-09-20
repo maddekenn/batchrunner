@@ -3,9 +3,9 @@ package se.uu.ub.cora.batchrunner.change;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.uu.ub.cora.batchrunner.CoraClientConfig;
 import se.uu.ub.cora.batchrunner.find.HttpHandlerFactorySpy;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
-import se.uu.ub.cora.javaclient.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClientException;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 

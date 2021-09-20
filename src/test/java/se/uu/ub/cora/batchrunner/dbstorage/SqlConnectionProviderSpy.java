@@ -31,6 +31,24 @@ public class SqlConnectionProviderSpy implements SqlConnectionProvider {
 	public ConnectionSpy factoredConnection;
 
 	public List<ConnectionSpy> factoredConnections = new ArrayList<>();
+	public String url;
+	public String user;
+	public String password;
+
+	public SqlConnectionProviderSpy(String url, String user, String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
+	}
+
+	public SqlConnectionProviderSpy() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static SqlConnectionProviderSpy usingUriAndUserAndPassword(String url, String user,
+			String password) {
+		return new SqlConnectionProviderSpy(url, user, password);
+	}
 
 	@Override
 	public Connection getConnection() {

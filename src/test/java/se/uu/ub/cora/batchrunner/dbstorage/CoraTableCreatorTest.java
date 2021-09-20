@@ -39,7 +39,7 @@ public class CoraTableCreatorTest {
 
 	@Test
 	public void testCreateTables() {
-		TableCreator tableCreator = new CoraTableCreator(sqlConnectionProvider);
+		TableCreator tableCreator = CoraTableCreator.usingConnectionProvider(sqlConnectionProvider);
 
 		List<String> tableNames = List.of("person", "organisation", "project");
 		tableCreator.createTables(tableNames);
@@ -67,7 +67,7 @@ public class CoraTableCreatorTest {
 	@Test(expectedExceptions = SqlStorageException.class)
 	public void testWhenError() {
 		sqlConnectionProvider.throwException = true;
-		TableCreator tableCreator = new CoraTableCreator(sqlConnectionProvider);
+		TableCreator tableCreator = CoraTableCreator.usingConnectionProvider(sqlConnectionProvider);
 		tableCreator.createTables(List.of("person"));
 	}
 

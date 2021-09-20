@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2021 Uppsala University Library
  *
@@ -19,15 +18,64 @@
  */
 package se.uu.ub.cora.batchrunner.dbstorage;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+
+import org.testng.annotations.Test;
 
 public class RecordTypeTableCreatorBatchRunnerTest {
 
-	public void testMainMethod() throws ClassNotFoundException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, InstantiationException {
-		String args[] = new String[] {};
+	// "jdbc:postgresql://diva-cora-docker-postgresql:5432/diva", "diva", "diva")
+	@Test
+	public void testConstructorIsPrivate() throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
+		Constructor<RecordTypeTableCreatorBatchRunner> constructor = RecordTypeTableCreatorBatchRunner.class
+				.getDeclaredConstructor();
+		assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+		constructor.setAccessible(true);
+		constructor.newInstance();
+	}
+
+	@Test
+	public void testConncectionProviderCreatedCorrectly()
+			throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
+		String args[] = new String[] {
+				"se.uu.ub.cora.batchrunner.dbstorage.SqlConnectionProviderSpy",
+				"jdbc:postgresql://diva-cora:544545/diva", "someUser", "somePassword",
+				"se.uu.ub.cora.batchrunner.dbstorage.TableCreatorSpy" };
 
 		RecordTypeTableCreatorBatchRunner.main(args);
+
+		SqlConnectionProviderSpy connectionProvider = (SqlConnectionProviderSpy) RecordTypeTableCreatorBatchRunner.connectionProvider;
+		assertEquals(connectionProvider.url, args[1]);
+		assertEquals(connectionProvider.user, args[2]);
+		assertEquals(connectionProvider.password, args[3]);
+
+	}
+
+	@Test
+	public void testTableCreatorCreatedCorrectly()
+			throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
+		String args[] = new String[] {
+				"se.uu.ub.cora.batchrunner.dbstorage.SqlConnectionProviderSpy",
+				"jdbc:postgresql://diva-cora:544545/diva", "someUser", "somePassword",
+				"se.uu.ub.cora.batchrunner.dbstorage.TableCreatorSpy" };
+
+		RecordTypeTableCreatorBatchRunner.main(args);
+
+		TableCreatorSpy tableCreator = (TableCreatorSpy) RecordTypeTableCreatorBatchRunner.tableCreator;
+		assertEquals(tableCreator.sqlConnectionProvider,
+				RecordTypeTableCreatorBatchRunner.connectionProvider);
+	}
+
+	@Test
+	public void testCreateTables() {
 
 	}
 

@@ -147,4 +147,16 @@ public class CoraClientSpy implements CoraClient {
 		return clientDataGroup;
 	}
 
+	@Override
+	public String indexData(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String removeFromIndex(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

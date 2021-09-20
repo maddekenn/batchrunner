@@ -21,13 +21,13 @@ package se.uu.ub.cora.batchrunner.change;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.uu.ub.cora.batchrunner.CoraClientConfig;
 import se.uu.ub.cora.clientdata.ClientDataAtomic;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactory;
 import se.uu.ub.cora.clientdata.converter.javatojson.DataToJsonConverterFactoryImp;
-import se.uu.ub.cora.javaclient.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClient;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
@@ -88,7 +88,7 @@ public class DataDividerUpdater implements DataUpdater {
 	}
 
 	private ClientDataGroup getJsonAsClientDataGroup(String json) {
-		ClientDataRecord pGroupClientDataRecord = (ClientDataRecord) ConverterHelper
+		ClientDataRecord pGroupClientDataRecord = ConverterHelper
 				.getJsonStringAsClientDataRecord(json);
 		return pGroupClientDataRecord.getClientDataGroup();
 	}

@@ -20,8 +20,8 @@ package se.uu.ub.cora.batchrunner.index;
 
 import java.util.List;
 
+import se.uu.ub.cora.batchrunner.CoraClientConfig;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
-import se.uu.ub.cora.javaclient.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClient;
 import se.uu.ub.cora.javaclient.cora.CoraClientException;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;

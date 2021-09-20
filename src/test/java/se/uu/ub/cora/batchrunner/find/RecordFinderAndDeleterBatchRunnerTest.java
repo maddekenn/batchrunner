@@ -10,10 +10,10 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.batchrunner.CoraClientConfig;
 import se.uu.ub.cora.batchrunner.CoraClientFactorySpy;
 import se.uu.ub.cora.batchrunner.remove.RecordDeleterSpy;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
-import se.uu.ub.cora.javaclient.CoraClientConfig;
 
 public class RecordFinderAndDeleterBatchRunnerTest {
 
