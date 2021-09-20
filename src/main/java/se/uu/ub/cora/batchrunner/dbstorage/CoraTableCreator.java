@@ -43,7 +43,7 @@ public class CoraTableCreator implements TableCreator {
 	public void createTables(List<String> tableNames) {
 		for (String tableName : tableNames) {
 
-			String sql = "create table " + tableName
+			String sql = "CREATE TABLE IF NOT EXISTS " + tableName
 					+ " (id varchar, record jsonb, PRIMARY KEY(id));";
 			try (Connection connection = sqlConnectionProvider.getConnection();
 					PreparedStatement prepareStatement = connection.prepareStatement(sql);) {

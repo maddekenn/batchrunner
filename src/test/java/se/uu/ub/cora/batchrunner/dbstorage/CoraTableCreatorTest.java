@@ -57,8 +57,8 @@ public class CoraTableCreatorTest {
 	private void assertCorrectFactoredAndCalledConnection(List<ConnectionSpy> factoredConnections,
 			int index, String tableName) {
 		ConnectionSpy connectionSpy = factoredConnections.get(index);
-		assertEquals(connectionSpy.sql,
-				"create table " + tableName + " (id varchar, record jsonb, PRIMARY KEY(id));");
+		assertEquals(connectionSpy.sql, "CREATE TABLE IF NOT EXISTS " + tableName
+				+ " (id varchar, record jsonb, PRIMARY KEY(id));");
 
 		PreparedStatementSpy preparedStatementSpy = (PreparedStatementSpy) connectionSpy.preparedStatementSpy;
 		assertTrue(preparedStatementSpy.executeUpdateWasCalled);
