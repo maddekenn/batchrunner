@@ -71,7 +71,7 @@ public class ConnectionSpy implements Connection {
 		preparedStatementSpy = new PreparedStatementSpy();
 
 		if (throwException) {
-			throw new SQLException("error thrown from prepareStatement in spy");
+			throw new SQLException("Error thrown from prepareStatement in spy");
 		}
 		return preparedStatementSpy;
 	}

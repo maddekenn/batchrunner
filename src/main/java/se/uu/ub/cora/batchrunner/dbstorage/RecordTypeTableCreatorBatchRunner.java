@@ -89,22 +89,37 @@ public class RecordTypeTableCreatorBatchRunner {
 		CoraClient coraClient = coraClientFactory.factor(coraClientConfig.userId,
 				coraClientConfig.appToken);
 		List<ClientDataRecord> recordTypes = coraClient.readListAsDataRecords("recordType");
-		List<String> recordTypeIds = createListWithRecordTypesIds(recordTypes);
+		List<String> recordTypeIds = createListWithImplementingRecordTypesIds(recordTypes);
 
-		tableCreator.createTables(recordTypeIds);
+		List<String> messages = tableCreator.createTables(recordTypeIds);
+		for (String message : messages) {
+			System.out.println(message);
+		}
 	}
 
-	private static List<String> createListWithRecordTypesIds(List<ClientDataRecord> recordTypes) {
+	private static List<String> createListWithImplementingRecordTypesIds(
+			List<ClientDataRecord> recordTypes) {
 		List<String> recordTypeIds = new ArrayList<>();
 		for (ClientDataRecord clientRecord : recordTypes) {
-			String recordId = extractRecordId(clientRecord);
-			recordTypeIds.add(recordId);
+			ClientDataGroup clientDataGroup = clientRecord.getClientDataGroup();
+			possiblyAddRecordTypeId(recordTypeIds, clientDataGroup);
 		}
 		return recordTypeIds;
 	}
 
-	private static String extractRecordId(ClientDataRecord clientRecord) {
-		ClientDataGroup clientDataGroup = clientRecord.getClientDataGroup();
+	private static void possiblyAddRecordTypeId(List<String> recordTypeIds,
+			ClientDataGroup clientDataGroup) {
+		if (recordTypeIsImplementing(clientDataGroup)) {
+			String recordId = extractRecordId(clientDataGroup);
+			recordTypeIds.add(recordId);
+		}
+	}
+
+	private static boolean recordTypeIsImplementing(ClientDataGroup clientDataGroup) {
+		return "false".equals(clientDataGroup.getFirstAtomicValueWithNameInData("abstract"));
+	}
+
+	private static String extractRecordId(ClientDataGroup clientDataGroup) {
 		ClientDataGroup recordInfo = clientDataGroup.getFirstGroupWithNameInData("recordInfo");
 		return recordInfo.getFirstAtomicValueWithNameInData("id");
 	}

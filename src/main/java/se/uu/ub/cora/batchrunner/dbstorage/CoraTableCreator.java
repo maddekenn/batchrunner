@@ -21,10 +21,10 @@ package se.uu.ub.cora.batchrunner.dbstorage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import se.uu.ub.cora.connection.SqlConnectionProvider;
-import se.uu.ub.cora.sqldatabase.SqlStorageException;
 
 public class CoraTableCreator implements TableCreator {
 
@@ -40,19 +40,22 @@ public class CoraTableCreator implements TableCreator {
 	}
 
 	@Override
-	public void createTables(List<String> tableNames) {
-		for (String tableName : tableNames) {
+	public List<String> createTables(List<String> recordTypeIds) {
+		List<String> messages = new ArrayList<>();
+		for (String recordTypeId : recordTypeIds) {
 
-			String sql = "CREATE TABLE IF NOT EXISTS " + tableName
+			String sql = "CREATE TABLE IF NOT EXISTS " + recordTypeId
 					+ " (id varchar, record jsonb, PRIMARY KEY(id));";
 			try (Connection connection = sqlConnectionProvider.getConnection();
 					PreparedStatement prepareStatement = connection.prepareStatement(sql);) {
 				prepareStatement.executeUpdate();
+				messages.add("Table created for recordType " + recordTypeId);
 			} catch (SQLException e) {
-				throw SqlStorageException.withMessageAndException(
-						"Error executing prepared statement: " + e.getMessage(), e);
+				messages.add(
+						"Error when creating table for " + recordTypeId + ". " + e.getMessage());
 			}
 		}
+		return messages;
 	}
 
 }

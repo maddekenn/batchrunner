@@ -90,7 +90,7 @@ public class RecordTypeTableCreatorBatchRunnerTest {
 	}
 
 	@Test
-	public void testCreateCalledCorrectly()
+	public void testCreateCalledCorrectlyOnlyImplementingSentToCreator()
 			throws NoSuchMethodException, SecurityException, ClassNotFoundException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		RecordTypeTableCreatorBatchRunner.main(args);
@@ -103,12 +103,10 @@ public class RecordTypeTableCreatorBatchRunnerTest {
 		assertEquals(coraClientSpy.recordTypes.get(0), "recordType");
 
 		TableCreatorSpy tableCreator = (TableCreatorSpy) RecordTypeTableCreatorBatchRunner.tableCreator;
-		assertEquals(tableCreator.sentInTableNames.size(),
-				coraClientSpy.returnedListOfRecords.size());
+		assertEquals(tableCreator.sentInTableNames.size(), 3);
 		assertEquals(tableCreator.sentInTableNames.get(0), "spyDataGroup0Id");
 		assertEquals(tableCreator.sentInTableNames.get(1), "spyDataGroup1Id");
 		assertEquals(tableCreator.sentInTableNames.get(2), "spyDataGroup2Id");
 
 	}
-
 }

@@ -22,6 +22,6 @@ import java.util.List;
 
 public interface TableCreator {
 
-	void createTables(List<String> tableNames);
+	List<String> createTables(List<String> tableNames);
 
 }

@@ -136,21 +136,38 @@ public class CoraClientSpy implements CoraClient {
 	@Override
 	public List<ClientDataRecord> readListAsDataRecords(String recordType) {
 		recordTypes.add(recordType);
-		returnedListOfRecords.add(createClientDataGroupAddingIndexToNameInData(0));
-		returnedListOfRecords.add(createClientDataGroupAddingIndexToNameInData(1));
-		returnedListOfRecords.add(createClientDataGroupAddingIndexToNameInData(2));
+		returnedListOfRecords.add(createClientDataGroupAddingIndexToNameInData(0, recordType));
+		returnedListOfRecords.add(createClientDataGroupAddingIndexToNameInData(1, recordType));
+		returnedListOfRecords.add(createClientDataGroupAddingIndexToNameInData(2, recordType));
+		if ("recordType".equals(recordType)) {
+			returnedListOfRecords.add(createClientDataGroupAddingIndexToNameInData(3, recordType));
+		}
 		return returnedListOfRecords;
 	}
 
-	private ClientDataRecord createClientDataGroupAddingIndexToNameInData(int index) {
+	private ClientDataRecord createClientDataGroupAddingIndexToNameInData(int index,
+			String recordType) {
 		ClientDataGroup clientDataGroup = ClientDataGroup.withNameInData("spyDataGroup" + index);
+		addRecordInfo(index, clientDataGroup);
+		if ("recordType".equals(recordType)) {
+			if (index <= 2) {
+				clientDataGroup
+						.addChild(ClientDataAtomic.withNameInDataAndValue("abstract", "false"));
+			} else {
+				clientDataGroup
+						.addChild(ClientDataAtomic.withNameInDataAndValue("abstract", "true"));
+			}
+		}
+		ClientDataRecord clientDataRecord = ClientDataRecord.withClientDataGroup(clientDataGroup);
+
+		return clientDataRecord;
+	}
+
+	private void addRecordInfo(int index, ClientDataGroup clientDataGroup) {
 		ClientDataGroup recordInfo = ClientDataGroup.withNameInData("recordInfo");
 		recordInfo.addChild(
 				ClientDataAtomic.withNameInDataAndValue("id", "spyDataGroup" + index + "Id"));
 		clientDataGroup.addChild(recordInfo);
-		ClientDataRecord clientDataRecord = ClientDataRecord.withClientDataGroup(clientDataGroup);
-
-		return clientDataRecord;
 	}
 
 	@Override

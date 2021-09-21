@@ -26,8 +26,6 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import se.uu.ub.cora.sqldatabase.SqlStorageException;
-
 public class CoraTableCreatorTest {
 
 	private SqlConnectionProviderSpy sqlConnectionProvider;
@@ -42,7 +40,11 @@ public class CoraTableCreatorTest {
 		TableCreator tableCreator = CoraTableCreator.usingConnectionProvider(sqlConnectionProvider);
 
 		List<String> tableNames = List.of("person", "organisation", "project");
-		tableCreator.createTables(tableNames);
+		List<String> messages = tableCreator.createTables(tableNames);
+		assertEquals(messages.size(), 3);
+		assertEquals(messages.get(0), "Table created for recordType person");
+		assertEquals(messages.get(1), "Table created for recordType organisation");
+		assertEquals(messages.get(2), "Table created for recordType project");
 
 		assertTrue(sqlConnectionProvider.connectionWasCalled);
 		List<ConnectionSpy> factoredConnections = sqlConnectionProvider.factoredConnections;
@@ -64,11 +66,14 @@ public class CoraTableCreatorTest {
 		assertTrue(preparedStatementSpy.executeUpdateWasCalled);
 	}
 
-	@Test(expectedExceptions = SqlStorageException.class)
+	@Test
 	public void testWhenError() {
 		sqlConnectionProvider.throwException = true;
 		TableCreator tableCreator = CoraTableCreator.usingConnectionProvider(sqlConnectionProvider);
-		tableCreator.createTables(List.of("person"));
+		List<String> messages = tableCreator.createTables(List.of("person"));
+		assertEquals(messages.size(), 1);
+		assertEquals(messages.get(0),
+				"Error when creating table for person. Error thrown from prepareStatement in spy");
 	}
 
 }
