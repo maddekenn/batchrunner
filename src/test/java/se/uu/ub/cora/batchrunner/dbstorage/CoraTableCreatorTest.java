@@ -60,7 +60,7 @@ public class CoraTableCreatorTest {
 			int index, String tableName) {
 		ConnectionSpy connectionSpy = factoredConnections.get(index);
 		assertEquals(connectionSpy.sql, "CREATE TABLE IF NOT EXISTS " + tableName
-				+ " (id varchar, record jsonb, PRIMARY KEY(id));");
+				+ " (id varchar(255), datadivider varchar(255), record jsonb, PRIMARY KEY(id));");
 
 		PreparedStatementSpy preparedStatementSpy = (PreparedStatementSpy) connectionSpy.preparedStatementSpy;
 		assertTrue(preparedStatementSpy.executeUpdateWasCalled);

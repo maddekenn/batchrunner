@@ -45,7 +45,7 @@ public class CoraTableCreator implements TableCreator {
 		for (String recordTypeId : recordTypeIds) {
 
 			String sql = "CREATE TABLE IF NOT EXISTS " + recordTypeId
-					+ " (id varchar, record jsonb, PRIMARY KEY(id));";
+					+ " (id varchar(255), datadivider varchar(255), record jsonb, PRIMARY KEY(id));";
 			try (Connection connection = sqlConnectionProvider.getConnection();
 					PreparedStatement prepareStatement = connection.prepareStatement(sql);) {
 				prepareStatement.executeUpdate();
