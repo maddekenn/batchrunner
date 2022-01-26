@@ -18,30 +18,10 @@
  */
 package se.uu.ub.cora.batchrunner.dbstorage;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import se.uu.ub.cora.connection.SqlConnectionProvider;
+public interface TableInserter {
 
-public class TableCreatorSpy implements TableCreator {
-
-	public SqlConnectionProvider sqlConnectionProvider;
-	public List<String> sentInTableNames = new ArrayList<>();
-
-	public TableCreatorSpy(SqlConnectionProvider sqlConnectionProvider) {
-		this.sqlConnectionProvider = sqlConnectionProvider;
-	}
-
-	public static TableCreatorSpy usingConnectionProvider(
-			SqlConnectionProvider sqlConnectionProvider) {
-		return new TableCreatorSpy(sqlConnectionProvider);
-	}
-
-	@Override
-	public List<String> createTables(List<String> tableNames) {
-		sentInTableNames.addAll(tableNames);
-		return Collections.emptyList();
-	}
+	List<String> insertIntoTables(List<String> recordTypeIds);
 
 }
