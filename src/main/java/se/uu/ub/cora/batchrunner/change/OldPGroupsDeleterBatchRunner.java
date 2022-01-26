@@ -1,13 +1,13 @@
 package se.uu.ub.cora.batchrunner.change;
 
-import se.uu.ub.cora.batchrunner.find.Finder;
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import se.uu.ub.cora.batchrunner.find.Finder;
+import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 
 public class OldPGroupsDeleterBatchRunner {
 

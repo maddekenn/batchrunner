@@ -18,17 +18,31 @@
     <name>Batchrunner</name>
 
     <properties>
+        <logger.version>2.3.0</logger.version>
         <json.version>2.5.0</json.version>
         <httphandler.version>2.3.0</httphandler.version>
         <spider.version>5.2.0</spider.version>
         <clientdata.version>3.10.0</clientdata.version>
         <storage.version>4.2.0</storage.version>
-        <javaclient.version>1.10.0</javaclient.version>
-        <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
-    </properties>
+        <javaclient.version>1.12-SNAPSHOT</javaclient.version>
+        <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
+		<jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
+		<jersey.version>3.0.2</jersey.version>
+		<servlet-api.version>5.0.0</servlet-api.version>
+        <sqldatabase.version>4.1.0</sqldatabase.version>
+        <xmlutils.version>1.1.0</xmlutils.version>
+		<xmlconverter.version>1.6.0</xmlconverter.version>
+		<coradata.version>5.3.0</coradata.version>
+   </properties>
 
 
     <dependencies>
+    	<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>logger</artifactId>
+			<version>${logger.version}</version>
+			<scope>compile</scope>
+		</dependency>
         <dependency>
             <groupId>se.uu.ub.cora</groupId>
             <artifactId>json</artifactId>
@@ -70,11 +84,62 @@
 			<version>${javaclient.version}</version>
 			<scope>compile</scope>
 		</dependency>
-        <dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>sqldatabase</artifactId>
+			<version>${sqldatabase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>xmlutils</artifactId>
+			<version>${xmlutils.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>xmlconverter</artifactId>
+			<version>${xmlconverter.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>coradata</artifactId>
+			<version>${coradata.version}</version>
+		</dependency>
+       <dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>${javax.ws.rs.version}</version>
 			<scope>compile</scope>
+		</dependency>
+			<!-- The JAXB APIs are considered to be Java EE APIs, and therefore are 
+			no longer contained on the default class path in Java SE 9. In Java 11 they 
+			are completely removed from the JDK. -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${jaxb-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${jersey.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-common</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
 		</dependency>
     </dependencies>
 

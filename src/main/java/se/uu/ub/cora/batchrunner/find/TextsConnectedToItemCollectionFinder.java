@@ -7,8 +7,8 @@ import se.uu.ub.cora.batchrunner.change.ConverterHelper;
 import se.uu.ub.cora.clientdata.ClientDataGroup;
 import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
-import se.uu.ub.cora.javaclient.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClient;
+import se.uu.ub.cora.javaclient.cora.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class TextsConnectedToItemCollectionFinder implements RecordFinder {

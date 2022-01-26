@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-import se.uu.ub.cora.javaclient.CoraClientConfig;
+import se.uu.ub.cora.javaclient.cora.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class FinderNoRecordsSpy implements Finder {

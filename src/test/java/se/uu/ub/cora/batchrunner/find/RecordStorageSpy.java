@@ -152,4 +152,17 @@ public class RecordStorageSpy implements RecordStorage {
 		dataDivider.addChild(new DataAtomicSpy("linkedRecordId", dataDividerId));
 		return dataDivider;
 	}
+
+	@Override
+	public long getTotalNumberOfRecordsForType(String type, DataGroup filter) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long getTotalNumberOfRecordsForAbstractType(String abstractType,
+			List<String> implementingTypes, DataGroup filter) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

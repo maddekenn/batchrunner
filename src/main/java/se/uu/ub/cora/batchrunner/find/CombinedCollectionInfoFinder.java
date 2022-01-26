@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.uu.ub.cora.clientdata.RecordIdentifier;
-import se.uu.ub.cora.javaclient.CoraClientConfig;
+import se.uu.ub.cora.javaclient.cora.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
 public class CombinedCollectionInfoFinder implements RecordFinder {
@@ -42,7 +42,8 @@ public class CombinedCollectionInfoFinder implements RecordFinder {
 		result.addAll(items);
 	}
 
-	private void findTextsAndAddToResult(RecordIdentifier recordIdentifier, List<RecordIdentifier> result) {
+	private void findTextsAndAddToResult(RecordIdentifier recordIdentifier,
+			List<RecordIdentifier> result) {
 		RecordFinder textFinder = TextsConnectedToItemCollectionFinder
 				.usingCoraClientFactoryAndClientConfig(coraClientFactory, coraClientConfig);
 		List<RecordIdentifier> texts = textFinder
