@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.uu.ub.cora.batchrunner.find.RecordFinder;
+import se.uu.ub.cora.clientdata.ClientDataGroup;
+import se.uu.ub.cora.clientdata.ClientDataRecord;
 import se.uu.ub.cora.clientdata.RecordIdentifier;
+import se.uu.ub.cora.javaclient.cora.CoraClient;
 import se.uu.ub.cora.javaclient.cora.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
@@ -47,16 +50,37 @@ public class DataDividerChangerBatchRunner {
 
 		createCoraClientConfig(args);
 		createCoraClientFactory(httpFactoryClassName);
-		createFinder(finderClassName);
+		createFinder(finderClassName, args);
 
 		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
 		List<RecordIdentifier> resultFromFinder = finder
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
+		DataChangerFactoryImp dataChangerFactory = new DataChangerFactoryImp();
 
-		createDataUpdater(dataUpdaterClassName);
-		updateResult(newDataDivider, resultFromFinder);
-		errors.forEach(System.out::println);
+		CoraClient coraClient = coraClientFactory.factorUsingAuthToken(args[11]);
+		for (RecordIdentifier relatedRecord : resultFromFinder) {
+
+			ClientDataRecord clientDataRecord = coraClient.readAsDataRecord(relatedRecord.type,
+					relatedRecord.id);
+			DataChanger dataChanger = dataChangerFactory.factor(relatedRecord.type,
+					clientDataRecord.getClientDataGroup());
+			ClientDataGroup changedGroup = dataChanger.changeReference(args[8], args[9], args[10]);
+			if (changedGroup != null) {
+				String updateMessage = coraClient.update(relatedRecord.type, relatedRecord.id,
+						changedGroup);
+				System.out.println("update message " + updateMessage);
+			}
+			System.out.println("recordIdentifier2 " + relatedRecord.type + " " + relatedRecord.id);
+			// }
+			// }
+		}
+		// }
+
+		// createDataUpdater(dataUpdaterClassName);
+		// updateResult(newDataDivider, resultFromFinder);
+		// errors.forEach(System.out::println);
 		System.out.println("done ");
+
 	}
 
 	private static void updateResult(String newDataDivider,
@@ -88,14 +112,17 @@ public class DataDividerChangerBatchRunner {
 
 	}
 
-	private static void createFinder(String finderClassName) throws NoSuchMethodException,
-			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
-		Class<?>[] cArg = new Class[2];
+	private static void createFinder(String finderClassName, String[] args)
+			throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException,
+			InvocationTargetException {
+		Class<?>[] cArg = new Class[3];
 		cArg[0] = CoraClientFactory.class;
 		cArg[1] = CoraClientConfig.class;
+		cArg[2] = String.class;
 		Method constructor = Class.forName(finderClassName)
 				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
-		finder = (RecordFinder) constructor.invoke(null, coraClientFactory, coraClientConfig);
+		finder = (RecordFinder) constructor.invoke(null, coraClientFactory, coraClientConfig,
+				args[11]);
 	}
 
 	private static void createDataUpdater(String updaterClassName) throws NoSuchMethodException,

@@ -18,6 +18,8 @@ public class CoraClientSpy implements CoraClient {
 	public List<ClientDataRecord> returnedListOfRecords = new ArrayList<>();
 	public String returnedList;
 	public boolean throwErrorWhenIndexing = false;
+	private ClientDataRecord readDataRecord;
+	public List<ClientDataGroup> updatedGroups = new ArrayList<>();
 
 	@Override
 	public String create(String recordType, String json) {
@@ -113,14 +115,22 @@ public class CoraClientSpy implements CoraClient {
 
 	@Override
 	public ClientDataRecord readAsDataRecord(String recordType, String recordId) {
-		// TODO Auto-generated method stub
-		return null;
+		recordTypes.add(recordType);
+		recordIds.add(recordId);
+		calledMethods.add("readAsDataRecord");
+		ClientDataGroup dataGroup = ClientDataGroup.withNameInData("someClientDataGroup");
+		readDataRecord = ClientDataRecord.withClientDataGroup(dataGroup);
+		returnedListOfRecords.add(readDataRecord);
+		return readDataRecord;
 	}
 
 	@Override
 	public String update(String recordType, String recordId, ClientDataGroup dataGroup) {
-		// TODO Auto-generated method stub
-		return null;
+		recordTypes.add(recordType);
+		recordIds.add(recordId);
+		updatedGroups.add(dataGroup);
+		calledMethods.add("update");
+		return "some answer from cora client spy update";
 	}
 
 	@Override

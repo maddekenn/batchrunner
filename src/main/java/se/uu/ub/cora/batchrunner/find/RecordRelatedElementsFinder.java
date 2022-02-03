@@ -22,6 +22,7 @@ public class RecordRelatedElementsFinder implements RecordFinder {
 	private CoraClientFactory coraClientFactory;
 	private CoraClientConfig coraClientConfig;
 	private CoraClient coraClient;
+	private String authToken;
 
 	public RecordRelatedElementsFinder(CoraClientFactory coraClientFactory,
 			CoraClientConfig coraClientConfig) {
@@ -30,15 +31,31 @@ public class RecordRelatedElementsFinder implements RecordFinder {
 
 	}
 
+	public RecordRelatedElementsFinder(CoraClientFactory coraClientFactory,
+			CoraClientConfig coraClientConfig, String authToken) {
+		this.coraClientFactory = coraClientFactory;
+		this.coraClientConfig = coraClientConfig;
+		this.authToken = authToken;
+
+	}
+
 	public static RecordFinder usingCoraClientFactoryAndClientConfig(
 			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
 		return new RecordRelatedElementsFinder(coraClientFactory, coraClientConfig);
 	}
 
+	public static RecordFinder usingCoraClientFactoryAndClientConfig(
+			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig,
+			String authToken) {
+		return new RecordRelatedElementsFinder(coraClientFactory, coraClientConfig, authToken);
+	}
+
 	@Override
 	public List<RecordIdentifier> findRecordsRelatedToRecordIdentifier(
 			RecordIdentifier recordIdentifier) {
-		coraClient = coraClientFactory.factor(coraClientConfig.userId, coraClientConfig.appToken);
+		// coraClient = coraClientFactory.factor(coraClientConfig.userId,
+		// coraClientConfig.appToken);
+		coraClient = coraClientFactory.factorUsingAuthToken(authToken);
 		ClientDataRecord readRecord = getRecordForRecordIdentifier(recordIdentifier);
 		return possiblyHandleIncomingLinks(recordIdentifier, readRecord);
 	}
