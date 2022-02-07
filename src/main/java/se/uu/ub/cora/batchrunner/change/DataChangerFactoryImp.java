@@ -10,10 +10,11 @@ public class DataChangerFactoryImp implements DataChangerFactory {
 		if ("metadataGroup".equals(referenceType)) {
 			return new MetadataGroupChildChanger(dataGroupToChange);
 		}
-		// fel, ska inte vara eller, fixa
-		if ("presentationCollectionVar".equals(referenceType)
-				|| "presentationSurroundingContainer".equals(referenceType)) {
+		if ("presentationCollectionVar".equals(referenceType)) {
 			return new PresentationCollectionVarChanger(dataGroupToChange);
+		}
+		if ("presentationSurroundingContainer".equals(referenceType)) {
+			return new PresentationSurroundingContainerChanger(dataGroupToChange);
 		}
 		throw NotImplementedException
 				.withMessage("DataChanger not implemented for " + referenceType);

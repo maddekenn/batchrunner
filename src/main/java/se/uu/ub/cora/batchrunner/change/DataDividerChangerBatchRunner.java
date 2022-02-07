@@ -65,14 +65,10 @@ public class DataDividerChangerBatchRunner {
 			DataChanger dataChanger = dataChangerFactory.factor(relatedRecord.type,
 					clientDataRecord.getClientDataGroup());
 			ClientDataGroup changedGroup = dataChanger.changeReference(args[8], args[9], args[10]);
-			if (changedGroup != null) {
-				String updateMessage = coraClient.update(relatedRecord.type, relatedRecord.id,
-						changedGroup);
-				System.out.println("update message " + updateMessage);
-			}
+			String updateMessage = coraClient.update(relatedRecord.type, relatedRecord.id,
+					changedGroup);
+			System.out.println("update message " + updateMessage);
 			System.out.println("recordIdentifier2 " + relatedRecord.type + " " + relatedRecord.id);
-			// }
-			// }
 		}
 		// }
 

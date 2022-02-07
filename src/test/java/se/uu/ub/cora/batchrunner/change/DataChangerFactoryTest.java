@@ -22,9 +22,19 @@ public class DataChangerFactoryTest {
 	@Test
 	public void testFactorForPresentationCollectionVar() {
 		DataChangerFactory factory = new DataChangerFactoryImp();
-		ClientDataGroup dataGroupToChange = ClientDataGroup.withNameInData("metadata");
+		ClientDataGroup dataGroupToChange = ClientDataGroup.withNameInData("presentation");
 		PresentationCollectionVarChanger dataChanger = (PresentationCollectionVarChanger) factory
 				.factor("presentationCollectionVar", dataGroupToChange);
+		assertSame(dataChanger.getDataGroup(), dataGroupToChange);
+
+	}
+
+	@Test
+	public void testFactorForPresentationSurroundingContainer() {
+		DataChangerFactory factory = new DataChangerFactoryImp();
+		ClientDataGroup dataGroupToChange = ClientDataGroup.withNameInData("presentation");
+		PresentationSurroundingContainerChanger dataChanger = (PresentationSurroundingContainerChanger) factory
+				.factor("presentationSurroundingContainer", dataGroupToChange);
 		assertSame(dataChanger.getDataGroup(), dataGroupToChange);
 
 	}
