@@ -38,7 +38,7 @@ public class MetadataChangerBatchRunner {
 	protected static CoraClientFactory coraClientFactory;
 	protected static CoraClientConfig coraClientConfig;
 	static List<String> errors = new ArrayList<>();
-	public static DataChangerFactory dataChangerFactory;
+	protected static DataChangerFactory dataChangerFactory;
 
 	private MetadataChangerBatchRunner() {
 	}
