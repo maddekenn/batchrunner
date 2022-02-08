@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Uppsala University Library
+ * Copyright 2018, 2022 Uppsala University Library
  *
  * This file is part of Cora.
  *
@@ -18,6 +18,7 @@
  */
 package se.uu.ub.cora.batchrunner.change;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,60 +32,55 @@ import se.uu.ub.cora.javaclient.cora.CoraClient;
 import se.uu.ub.cora.javaclient.cora.CoraClientConfig;
 import se.uu.ub.cora.javaclient.cora.CoraClientFactory;
 
-public class DataDividerChangerBatchRunner {
+public class MetadataChangerBatchRunner {
 	protected static RecordFinder finder;
 	protected static DataUpdater dataUpdater;
 	protected static CoraClientFactory coraClientFactory;
 	protected static CoraClientConfig coraClientConfig;
 	static List<String> errors = new ArrayList<>();
+	public static DataChangerFactory dataChangerFactory;
 
-	private DataDividerChangerBatchRunner() {
+	private MetadataChangerBatchRunner() {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
-		String dataUpdaterClassName = args[4];
+			IllegalAccessException, InvocationTargetException, InstantiationException {
+		String dataChangerFactoryClassName = args[4];
 		String httpFactoryClassName = args[5];
 		String finderClassName = args[6];
-		String newDataDivider = args[7];
 
 		createCoraClientConfig(args);
 		createCoraClientFactory(httpFactoryClassName);
 		createFinder(finderClassName, args);
 
-		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[8], args[9]);
+		RecordIdentifier recordIdentifier = RecordIdentifier.usingTypeAndId(args[7], args[8]);
 		List<RecordIdentifier> resultFromFinder = finder
 				.findRecordsRelatedToRecordIdentifier(recordIdentifier);
-		DataChangerFactoryImp dataChangerFactory = new DataChangerFactoryImp();
+		constructDataChangerFactory(dataChangerFactoryClassName);
 
-		CoraClient coraClient = coraClientFactory.factorUsingAuthToken(args[11]);
+		CoraClient coraClient = coraClientFactory.factorUsingAuthToken(args[10]);
 		for (RecordIdentifier relatedRecord : resultFromFinder) {
 
 			ClientDataRecord clientDataRecord = coraClient.readAsDataRecord(relatedRecord.type,
 					relatedRecord.id);
 			DataChanger dataChanger = dataChangerFactory.factor(relatedRecord.type,
 					clientDataRecord.getClientDataGroup());
-			ClientDataGroup changedGroup = dataChanger.changeReference(args[8], args[9], args[10]);
+			ClientDataGroup changedGroup = dataChanger.changeReference(args[7], args[8], args[9]);
 			String updateMessage = coraClient.update(relatedRecord.type, relatedRecord.id,
 					changedGroup);
 			System.out.println("update message " + updateMessage);
 			System.out.println("recordIdentifier2 " + relatedRecord.type + " " + relatedRecord.id);
 		}
-		// }
 
-		// createDataUpdater(dataUpdaterClassName);
-		// updateResult(newDataDivider, resultFromFinder);
-		// errors.forEach(System.out::println);
 		System.out.println("done ");
 
 	}
 
-	private static void updateResult(String newDataDivider,
-			List<RecordIdentifier> resultFromFinder) {
-		List<String> updateResult = dataUpdater
-				.updateDataDividerUsingRecordIdentifiersAndNewDivider(resultFromFinder,
-						newDataDivider);
-		updateResult.forEach(System.out::println);
+	private static void constructDataChangerFactory(String dataChangerFactoryClassName)
+			throws NoSuchMethodException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		Constructor<?> constructor = Class.forName(dataChangerFactoryClassName).getConstructor();
+		dataChangerFactory = (DataChangerFactory) constructor.newInstance();
 	}
 
 	private static void createCoraClientConfig(String[] args) {
@@ -118,17 +114,7 @@ public class DataDividerChangerBatchRunner {
 		Method constructor = Class.forName(finderClassName)
 				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
 		finder = (RecordFinder) constructor.invoke(null, coraClientFactory, coraClientConfig,
-				args[11]);
-	}
-
-	private static void createDataUpdater(String updaterClassName) throws NoSuchMethodException,
-			ClassNotFoundException, IllegalAccessException, InvocationTargetException {
-		Class<?>[] cArg = new Class[2];
-		cArg[0] = CoraClientFactory.class;
-		cArg[1] = CoraClientConfig.class;
-		Method constructor = Class.forName(updaterClassName)
-				.getMethod("usingCoraClientFactoryAndClientConfig", cArg);
-		dataUpdater = (DataUpdater) constructor.invoke(null, coraClientFactory, coraClientConfig);
+				args[10]);
 	}
 
 }

@@ -124,10 +124,10 @@ public class RecordStorageSpy implements RecordStorage {
 		return null;
 	}
 
-	@Override
-	public boolean recordsExistForRecordType(String s) {
-		return false;
-	}
+	// @Override
+	// public boolean recordsExistForRecordType(String s) {
+	// return false;
+	// }
 
 	@Override
 	public boolean recordExistsForAbstractOrImplementingRecordTypeAndRecordId(String s, String s1) {

@@ -17,6 +17,7 @@ public class RecordFinderSpy implements RecordFinder {
 	public CoraClientConfig coraClientConfig;
 	public RecordIdentifier recordIdentifier;
 	public List<RecordIdentifier> recordIdentifiers;
+	public String authToken;
 
 	public RecordFinderSpy() {
 	}
@@ -24,6 +25,13 @@ public class RecordFinderSpy implements RecordFinder {
 	public RecordFinderSpy(CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
 		this.coraClientFactory = coraClientFactory;
 		this.coraClientConfig = coraClientConfig;
+	}
+
+	public RecordFinderSpy(CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig,
+			String authToken) {
+		this.coraClientFactory = coraClientFactory;
+		this.coraClientConfig = coraClientConfig;
+		this.authToken = authToken;
 	}
 
 	@Override
@@ -44,6 +52,12 @@ public class RecordFinderSpy implements RecordFinder {
 	public static RecordFinder usingCoraClientFactoryAndClientConfig(
 			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig) {
 		return new RecordFinderSpy(coraClientFactory, coraClientConfig);
+	}
+
+	public static RecordFinder usingCoraClientFactoryAndClientConfig(
+			CoraClientFactory coraClientFactory, CoraClientConfig coraClientConfig,
+			String authToken) {
+		return new RecordFinderSpy(coraClientFactory, coraClientConfig, authToken);
 	}
 
 }
